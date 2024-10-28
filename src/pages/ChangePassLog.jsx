@@ -5,7 +5,14 @@ import BtnYellow from "../components/BtnYellow";
 import { useNavigate, useLocation } from "react-router-dom";
 import { updateDoc } from "firebase/firestore";
 import { collection, getDocs, query, where, doc } from "firebase/firestore";
+import { auth } from "../lib/firebase";
+import { updatePassword } from "firebase/auth";
 import { db } from "../lib/firebase";
+import {
+  getAuth,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+} from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -20,7 +27,7 @@ export default function ChangePassLog() {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
-
+    const user = getAuth().currentUser;
     const usersRef = collection(db, "users");
     const q = query(
       usersRef,
@@ -37,12 +44,35 @@ export default function ChangePassLog() {
         toast.error("รหัสผ่านใหม่ และ ยืนยันรหัสผ่านใหม่ไม่ตรงกัน");
         return;
       } else {
-        await updateDoc(doc(db, "users", userId), {
-          password: newPassword,
-        });
+        if (user) {
+          const credential = EmailAuthProvider.credential(
+            user.email,
+            oldPassword
+          );
+          try {
+            // ทำการยืนยันตัวตนใหม่
+            await reauthenticateWithCredential(user, credential);
+            // อัปเดตรหัสผ่าน
+            await updatePassword(user, newPassword);
+            // อัปเดตใน Firestore
+            await updateDoc(doc(db, "users", userId), {
+              password: newPassword,
+            });
+            toast.success("สำเร็จ");
+          } catch (error) {
+            toast.error("การยืนยันตัวตนล้มเหลว: " + error.message);
+          }
+        } else {
+          toast.error("ผู้ใช้ไม่ได้เข้าสู่ระบบ");
+        }
+
         toast.success("สำเร็จ");
       }
     }
+    // await updatePassword(user, newPassword);
+    // await updateDoc(doc(db, "users", userId), {
+    //   password: newPassword,
+    // });
   };
   //whawha@bumail.net
   return (
