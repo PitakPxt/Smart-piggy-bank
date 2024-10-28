@@ -26,9 +26,8 @@ export default function Forget() {
       toast.error("ยังไม่ได้ลงทะเบียน Email");
     } else {
       const userId = querySnapshot.docs[0].id;
-      console.log("User ID:", userId);
       toast.success("อีเมล์ถูกต้อง");
-      navigate("/ChangePassLog", { state: { userId } });
+      navigate("/ChangePassLog", { state: { userId, email } });
     }
   };
 

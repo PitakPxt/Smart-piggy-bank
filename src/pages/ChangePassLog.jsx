@@ -5,7 +5,6 @@ import BtnYellow from "../components/BtnYellow";
 import { useNavigate, useLocation } from "react-router-dom";
 import { updateDoc } from "firebase/firestore";
 import { collection, getDocs, query, where, doc } from "firebase/firestore";
-import { auth } from "../lib/firebase";
 import { updatePassword } from "firebase/auth";
 import { db } from "../lib/firebase";
 import {
@@ -19,11 +18,10 @@ import "react-toastify/dist/ReactToastify.css";
 export default function ChangePassLog() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userId } = location.state; // รับ userId จาก state
+  const { userId, email } = location.state;
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const passwordRef = collection(db, "password");
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -32,7 +30,7 @@ export default function ChangePassLog() {
     const q = query(
       usersRef,
       where("password", "==", oldPassword),
-      where("email", "==", "whawha@bumail.net")
+      where("email", "==", email)
     );
     const querySnapshot = await getDocs(q);
 
@@ -45,36 +43,25 @@ export default function ChangePassLog() {
         return;
       } else {
         if (user) {
-          const credential = EmailAuthProvider.credential(
-            user.email,
-            oldPassword
-          );
+          const credential = EmailAuthProvider.credential(email, oldPassword);
+          console.log(credential);
           try {
-            // ทำการยืนยันตัวตนใหม่
             await reauthenticateWithCredential(user, credential);
-            // อัปเดตรหัสผ่าน
             await updatePassword(user, newPassword);
-            // อัปเดตใน Firestore
             await updateDoc(doc(db, "users", userId), {
               password: newPassword,
             });
-            toast.success("สำเร็จ");
+            toast.success("เปลี่ยนรหัสผ่านสำเร็จ");
+            navigate("/login");
           } catch (error) {
             toast.error("การยืนยันตัวตนล้มเหลว: " + error.message);
           }
         } else {
           toast.error("ผู้ใช้ไม่ได้เข้าสู่ระบบ");
         }
-
-        toast.success("สำเร็จ");
       }
     }
-    // await updatePassword(user, newPassword);
-    // await updateDoc(doc(db, "users", userId), {
-    //   password: newPassword,
-    // });
   };
-  //whawha@bumail.net
   return (
     <>
       <ToastContainer position="top-center" />
