@@ -8,28 +8,33 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { auth } from "../lib/firebase";
+import { db } from "../lib/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 export default function Forget() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const usersRef = collection(db, "users");
 
-  const handleForget = async (e) => {
+  const fetchEmail = async (e) => {
     e.preventDefault();
-    db.collection("email-user").doc(email).get();
+
+    const q = query(usersRef, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      toast.error("ยังไม่ได้ลงทะเบียน Email");
+    } else {
+      const userId = querySnapshot.docs[0].id;
+      console.log("User ID:", userId);
+      toast.success("อีเมล์ถูกต้อง");
+      navigate("/ChangePassLog", { state: { userId } });
+    }
   };
-  // onAuthStateChanged(auth, (user) => {
-  //   if (user) {
-  //     toast.success("ส่งอีเมล์สำเร็จ");
-  //     const uid = user.uid;
-  //   } else {
-  //     toast.error("อีเมล์นี้ยังไม่ได้ลงทะเบียน");
-  //     return;
-  //   }
-  // });
 
   return (
     <>
+      <ToastContainer position="top-center" />
       <div className="w-full h-full flex flex-col justify-center items-center">
         <div className="w-[856px] h-[742px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
           <Link to="/login">
@@ -37,7 +42,7 @@ export default function Forget() {
           </Link>
           <div className="w-full h-full flex flex-col justify-center items-center">
             <form
-              onSubmit={handleForget}
+              onSubmit={fetchEmail}
               className="w-[512px] h-[524px] flex flex-col items-center"
             >
               <img

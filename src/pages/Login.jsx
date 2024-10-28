@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getAuth } from "firebase/auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -21,9 +22,10 @@ export default function Login() {
       await logIn(email, password);
       navigate("/home");
       toast.success("เข้าสู่ระบบสำเร็จ");
+
+      console.log(user);
     } catch (error) {
       console.log(error);
-      setError(error.message);
       toast.error("อีเมล์ หรือ รหัสผ่านไม่ถูกต้อง");
     }
   };

@@ -6,12 +6,13 @@ import DefaultProfile from "@images/default-Profile.svg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { auth, db, storage } from "../lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { arrayUnion } from "firebase/firestore";
 
 export default function Regisret() {
   const navigate = useNavigate();
@@ -85,31 +86,40 @@ export default function Regisret() {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setProgress(progress);
-          console.log("progress", progress);
         },
         (error) => {
           console.error("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ:", error);
           setIsUploading(false);
         },
         async () => {
-          console.log("phone", phone);
           const imageURL = await getDownloadURL(uploadTask.snapshot.ref);
           await setDoc(doc(db, "users", user.uid), {
             name: name,
             phone: phone,
             email: email,
+            password: password,
             savingNumber: savingNumber,
             profileImageURL: imageURL,
           });
-          await setDoc(doc(db, "email-user", email), {});
+          // await setDoc(
+          //   doc(db, "email-user", "email"),
+          //   {
+          //     email: arrayUnion(email),
+          //   },
+          //   { merge: true }
+          // );
+          // await setDoc(
+          //   doc(db, "phone-user", "phone"),
+          //   {
+          //     phone: arrayUnion(phone),
+          //   },
+          //   { merge: true }
+          // );
           // await updateProfile(user, {
           //   displayName: name,
           //   photoURL: imageURL,
           //   phoneNumber: phone,
           // });
-          console.log("phone", phone);
-          console.log(user);
-
           console.log("บันทึกข้อมูลผู้ใช้และรูปภาพสำเร็จ");
           setIsUploading(false);
           navigate("/login");
