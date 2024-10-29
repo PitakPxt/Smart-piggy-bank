@@ -10,6 +10,8 @@ import Otp from "@pages/Otp";
 import Forget from "@pages/Forget";
 import Regisret from "@pages/Regisret";
 import ChangePassLog from "@pages/ChangePassLog";
+import FriendPartyModal from "@components/modals/FriendPartyModal";
+import AddFriendModal from "@components/modals/AddFriendModal";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -23,6 +25,7 @@ function App() {
           {/* <Route path="CreateParty" element={<CreateParty />} /> */}
           {/* <Route path="Community" element={<Community />} /> */}
           {/* <Route path="Profile" element={<Profile />} /> */}
+          <Route path="add-friend" element={<AddFriendModal />} />
           <Route path="changepasslog" element={<ChangePassLog />} />
           <Route path="otp" element={<Otp />} />
           <Route path="home" element={<Home />} />

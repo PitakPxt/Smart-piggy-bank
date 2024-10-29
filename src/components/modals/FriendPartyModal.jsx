@@ -4,9 +4,17 @@ import ImgFriend from "@images/whawha.jpg";
 import DeleteIcon from "@images/icon-delete.svg";
 import AcceptIcon from "@images/icon-accept.svg";
 import RefuseIcon from "@images/icon-refuse.svg";
+import AddFriendModal from "@components/modals/AddFriendModal";
+import { useNavigate } from "react-router-dom";
 
-export default function FriendRequstModal() {
+export default function FriendPartyModal() {
   const [activeTab, setActiveTab] = useState("friends");
+  const [showAddFriendModal, setShowAddFriendModal] = useState(false);
+  const [phone, setPhone] = useState("");
+
+  const handleAddFriendClick = () => {
+    setShowAddFriendModal(true);
+  };
 
   return (
     <>
@@ -44,6 +52,7 @@ export default function FriendRequstModal() {
 
           {activeTab === "friends" && (
             <BtnYellow
+              onClick={handleAddFriendClick}
               className="w-[274px] text-h3-bold text-black text-center mb-5"
               text="เพิ่มเพื่อน!"
             />
@@ -86,10 +95,14 @@ export default function FriendRequstModal() {
           )}
         </div>
       </div>
+      {showAddFriendModal && (
+        <AddFriendModal onClose={() => setShowAddFriendModal(false)} />
+      )}
     </>
   );
 }
 
+//เพื่อนที่เรามี
 const FriendItem = ({ name = "Whawha" }) => {
   return (
     <div className="flex items-center gap-3 rounded-full justify-between">
@@ -99,6 +112,7 @@ const FriendItem = ({ name = "Whawha" }) => {
   );
 };
 
+//คำขอเป็นเพื่อน
 const FriendRequestItem = ({ name = "Whawha" }) => {
   return (
     <div className="flex items-center gap-3 rounded-full justify-between">
@@ -119,6 +133,7 @@ const FriendRequestItem = ({ name = "Whawha" }) => {
   );
 };
 
+//ชื่อผู้ใช้ รูปภาพและชื่อผู้ใช้
 const UserItem = ({ name = "Whawha" }) => {
   return (
     <div className="flex items-center gap-3">

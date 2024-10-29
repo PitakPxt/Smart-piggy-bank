@@ -1,12 +1,35 @@
 import LogoImage from "@images/logo-pic.svg";
-
 import HamburgerMenu from "@images/hamburger-menu.svg";
-import FriendRequstModal from "@modals/FriendPartyModal";
-
+import FriendPartyModal from "@modals/FriendPartyModal";
+import BtnYellow from "../components/BtnYellow";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserAuth } from "../context/AuthContext";
 import { cn } from "../lib/tailwindcss";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const { user, logOut } = useUserAuth();
+
+  const handleRegister = async () => {
+    try {
+      navigate("/register");
+      console.log(user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleLogin = async () => {
+    try {
+      logOut();
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="w-full flex pt-[20px] pb-[16px] items-center justify-between">
@@ -14,19 +37,37 @@ export default function Navbar() {
           <img src={LogoImage} alt="" className="size-[88px]" />
           <h1 className="text-h3-bold">Smart Piggy Bank</h1>
         </Link>
+
         <div className="flex gap-5 text-h3-bold ">
-          <NavbarItem text="ปลดล็อค" href="/unlock" />
-          <NavbarItem text="สร้างปาร์ตี้" href="/create-party" />
-          <a href="#" role="button" className="px-4 py-2  ">
-            <div className="relative">
-              <span className="text-secondary-300">คอมมูนิตี้</span>{" "}
-              {/* <FriendRequstModal /> */}
-            </div>
-          </a>
-          <NavbarItem text="โปรไฟล์" href="/profile" />
-          <a className="px-4 py-2" style={{ display: "none" }}>
-            <img src={HamburgerMenu} alt="" className="size-[34px]" />
-          </a>
+          {user ? (
+            <>
+              <NavbarItem text="ปลดล็อค" href="/unlock" />
+              <NavbarItem text="สร้างปาร์ตี้" href="/create-party" />
+              <div role="button" className="px-4 py-2">
+                <div className="relative">
+                  <span className="text-secondary-300">คอมมูนิตี้</span>
+                  <FriendPartyModal />
+                </div>
+              </div>
+              <NavbarItem text="โปรไฟล์" href="/profile" />
+              <a className="px-4 py-2" style={{ display: "none" }}>
+                <img src={HamburgerMenu} alt="" className="size-[34px]" />
+              </a>
+              <BtnYellow
+                className="px-7"
+                text={"ออกจากระบบ"}
+                onClick={handleLogin}
+              />
+            </>
+          ) : (
+            <>
+              <BtnYellow
+                className="px-7"
+                text="สมัครสมาชิก"
+                onClick={handleRegister}
+              />
+            </>
+          )}
         </div>
       </div>
     </>

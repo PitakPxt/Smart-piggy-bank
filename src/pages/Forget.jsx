@@ -33,7 +33,6 @@ export default function Forget() {
 
   return (
     <>
-      <ToastContainer position="top-center" />
       <div className="w-full h-full flex flex-col justify-center items-center">
         <div className="w-[856px] h-[742px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
           <Link to="/login">

@@ -64,7 +64,6 @@ export default function ChangePassLog() {
   };
   return (
     <>
-      <ToastContainer position="top-center" />
       <div className="w-full h-full flex flex-col justify-center items-center">
         <form
           onSubmit={handleChangePassword}
