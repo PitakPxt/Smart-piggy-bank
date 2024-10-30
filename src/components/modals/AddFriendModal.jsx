@@ -27,10 +27,20 @@ export default function AddFriendModal({ onClose }) {
 
   const handleAddFriend = async (e) => {
     e.preventDefault();
+
+    // เป็นเพื่อนกัน
+    // await setDoc(
+    //   doc(db, "friendships", phone),
+    //   {
+    //     friendsRequest: arrayUnion(addPhone),
+    //   },
+    //   { merge: true }
+    // );
+
     await setDoc(
-      doc(db, "friendships", phone),
+      doc(db, "friends", addPhone),
       {
-        phone: arrayUnion(addPhone),
+        friendsRequest: arrayUnion(phone),
       },
       { merge: true }
     );

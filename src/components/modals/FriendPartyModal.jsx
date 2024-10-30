@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import BtnYellow from "@components/BtnYellow";
 import ImgFriend from "@images/whawha.jpg";
 import DeleteIcon from "@images/icon-delete.svg";
 import AcceptIcon from "@images/icon-accept.svg";
 import RefuseIcon from "@images/icon-refuse.svg";
 import AddFriendModal from "@components/modals/AddFriendModal";
-import { useNavigate } from "react-router-dom";
-
+import { useUserAuth } from "../../context/AuthContext";
+import { db } from "../../lib/firebase";
+import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { collection, getDocs, query, where, addDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 export default function FriendPartyModal() {
   const [activeTab, setActiveTab] = useState("friends");
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
@@ -65,8 +68,8 @@ export default function FriendPartyModal() {
                   เพื่อน
                 </h4>
                 <div className="w-full flex flex-col gap-4">
-                  <FriendItem name="Whawha" />
-                  <FriendItem name="Whawha" />
+                  <FriendItem name="Whawha" src={ImgFriend} />
+                  <FriendItem name="Whawha" src={ImgFriend} />
                   <span className="h-[1px] w-full bg-neutral-white-500 mb-[16px]"></span>
                 </div>
               </div>
@@ -75,8 +78,7 @@ export default function FriendPartyModal() {
                   คำขอเป็นเพื่อน
                 </h4>
                 <div className="w-full flex flex-col gap-4">
-                  <FriendRequestItem name="Whawha" />
-                  <FriendRequestItem name="Whawha" />
+                  <FriendRequestItem name="Whawha" src={ImgFriend} />
                 </div>
               </div>
             </>
@@ -88,8 +90,9 @@ export default function FriendPartyModal() {
                 คำเชิญเข้าร่วมปาร์ตี้
               </h4>
               <div className="w-full flex flex-col gap-4">
-                <FriendRequestItem name="Whawha" />
-                <FriendRequestItem name="Whawha" />
+                <FriendRequestItem name="Wha" src={ImgFriend} />
+                <FriendRequestItem name="Wha" src={ImgFriend} />
+                <FriendRequestItem name="Wha" src={ImgFriend} />
               </div>
             </div>
           )}
@@ -103,25 +106,75 @@ export default function FriendPartyModal() {
 }
 
 //เพื่อนที่เรามี
-const FriendItem = ({ name = "Whawha" }) => {
+const FriendItem = ({ name, src }) => {
   return (
     <div className="flex items-center gap-3 rounded-full justify-between">
-      <UserItem name={name} />
+      <UserItem name={name} src={src} />
       <img src={DeleteIcon} alt="" />
     </div>
   );
 };
 
 //คำขอเป็นเพื่อน
-const FriendRequestItem = ({ name = "Whawha" }) => {
+const FriendRequestItem = ({ name, src }) => {
+  const { user } = useUserAuth();
+  const [friendRequests, setFriendRequests] = useState([]);
+  const [userPhone, setUserPhone] = useState("");
+
+  useEffect(() => {
+    const fetchUserPhoneAndRequests = async () => {
+      try {
+        // ดึงเบอร์โทรของผู้ใช้ที่ล็อกอิน
+        const userDoc = doc(db, "users", user.uid);
+        const userData = await getDoc(userDoc);
+
+        if (userData.exists()) {
+          const phone = userData.data().phone;
+          setUserPhone(phone);
+          console.log("userPhone", phone);
+
+          // ดึงข้อมูล friendsRequest จาก document ที่ตรงกับเบอร์โทร
+          const friendDoc = doc(db, "friends", phone);
+          const friendData = await getDoc(friendDoc);
+
+          if (friendData.exists()) {
+            // ดึง array ของ friendsRequest
+            const requests = friendData.data().friendsRequest || [];
+            setFriendRequests(requests);
+            console.log("Friend requests:", requests);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching friend requests:", error);
+        toast.error("ไม่สามารถดึงข้อมูลคำขอเป็นเพื่อนได้");
+      }
+    };
+
+    fetchUserPhoneAndRequests();
+  }, [user.uid]);
+
+  const handleAcceptFriendRequest = async (requestPhone) => {
+    try {
+      // เพิ่มเข้า friendships
+      const friendDoc = doc(db, "friends", userPhone);
+      await updateDoc(friendDoc, {
+        friendships: arrayUnion(requestPhone),
+      });
+    } catch (error) {
+      console.error("Error accepting friend request:", error);
+      toast.error("ไม่สามารถยอมรับคำขอเป็นเพื่อนได้");
+    }
+  };
+
   return (
     <div className="flex items-center gap-3 rounded-full justify-between">
-      <UserItem name={name} />
+      <UserItem name={name} src={src} />
       <div className="flex gap-2">
         <img
           className="px-[24px] py-[8px] bg-success-400 rounded-xl"
           src={AcceptIcon}
           alt=""
+          onClick={() => handleAcceptFriendRequest(name)}
         />
         <img
           className="px-[24px] py-[8px] bg-error-400 rounded-xl"
@@ -134,12 +187,12 @@ const FriendRequestItem = ({ name = "Whawha" }) => {
 };
 
 //ชื่อผู้ใช้ รูปภาพและชื่อผู้ใช้
-const UserItem = ({ name = "Whawha" }) => {
+const UserItem = ({ name, src }) => {
   return (
     <div className="flex items-center gap-3">
       <img
         className="size-[54px] border-neutral-white-500 object-cover rounded-full p-[2px] border-2"
-        src={ImgFriend}
+        src={src}
         alt=""
       />
       <h4 className="w-[96px] text-h4-bold text-neutral-black-800 truncate">

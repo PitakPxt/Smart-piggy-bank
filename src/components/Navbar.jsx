@@ -2,15 +2,35 @@ import LogoImage from "@images/logo-pic.svg";
 import HamburgerMenu from "@images/hamburger-menu.svg";
 import FriendPartyModal from "@modals/FriendPartyModal";
 import BtnYellow from "../components/BtnYellow";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/AuthContext";
 import { cn } from "../lib/tailwindcss";
 import { Link } from "react-router-dom";
 
+import React, { useEffect, useRef, useState } from "react";
+
 export default function Navbar() {
   const navigate = useNavigate();
   const { user, logOut } = useUserAuth();
+  const [showFriendPartyModal, setShowFriendPartyModal] = useState(false);
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setShowFriendPartyModal(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleShowFriendPartyModal = () => {
+    setShowFriendPartyModal(true);
+  };
 
   const handleRegister = async () => {
     try {
@@ -44,9 +64,14 @@ export default function Navbar() {
               <NavbarItem text="ปลดล็อค" href="/unlock" />
               <NavbarItem text="สร้างปาร์ตี้" href="/create-party" />
               <div role="button" className="px-4 py-2">
-                <div className="relative">
-                  <span className="text-secondary-300">คอมมูนิตี้</span>
-                  <FriendPartyModal />
+                <div className="relative" ref={modalRef}>
+                  <span
+                    onClick={handleShowFriendPartyModal}
+                    className="text-secondary-300"
+                  >
+                    คอมมูนิตี้
+                  </span>
+                  {showFriendPartyModal && <FriendPartyModal />}
                 </div>
               </div>
               <NavbarItem text="โปรไฟล์" href="/profile" />

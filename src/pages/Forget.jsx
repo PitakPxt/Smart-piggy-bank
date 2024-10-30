@@ -14,11 +14,11 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 export default function Forget() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
-  const usersRef = collection(db, "users");
 
   const fetchEmail = async (e) => {
     e.preventDefault();
 
+    const usersRef = collection(db, "users");
     const q = query(usersRef, where("email", "==", email));
     const querySnapshot = await getDocs(q);
 
@@ -27,7 +27,7 @@ export default function Forget() {
     } else {
       const userId = querySnapshot.docs[0].id;
       toast.success("อีเมล์ถูกต้อง");
-      navigate("/ChangePassLog", { state: { userId, email } });
+      navigate("/changepasslog", { state: { userId, email } });
     }
   };
 
