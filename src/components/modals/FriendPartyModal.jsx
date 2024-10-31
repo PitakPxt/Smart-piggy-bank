@@ -11,81 +11,6 @@ import { doc, getDoc, updateDoc, arrayUnion, setDoc } from "firebase/firestore";
 import { collection, getDocs, query, where, addDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 
-const FriendList = () => {
-  const { user } = useUserAuth();
-  const [friends, setFriends] = useState([]);
-  const [userPhone, setUserPhone] = useState("");
-
-  useEffect(() => {
-    const fetchFriends = async () => {
-      try {
-        // ดึงเบอร์โทรของผู้ใช้ที่ล็อกอิน
-        const userDoc = doc(db, "users", user.uid);
-        const userData = await getDoc(userDoc);
-
-        if (userData.exists()) {
-          const phone = userData.data().phone;
-          setUserPhone(phone);
-
-          // ดึงข้อมูล friendships
-          const friendDoc = doc(db, "friends", phone);
-          const friendData = await getDoc(friendDoc);
-
-          if (friendData.exists()) {
-            const friendships = friendData.data().friendships || [];
-
-            // ดึงข้อมูลผู้ใช้สำหรับแต่ละเพื่อน
-            const friendsWithData = await Promise.all(
-              friendships.map(async (friendPhone) => {
-                const usersRef = collection(db, "users");
-                const q = query(usersRef, where("phone", "==", friendPhone));
-                const querySnapshot = await getDocs(q);
-
-                if (!querySnapshot.empty) {
-                  const friendData = querySnapshot.docs[0].data();
-                  return {
-                    phone: friendPhone,
-                    name: friendData.name,
-                    profileImage: friendData.profileImageURL || ImgFriend,
-                  };
-                }
-                return {
-                  phone: friendPhone,
-                  name: friendPhone,
-                  profileImage: ImgFriend,
-                };
-              })
-            );
-
-            setFriends(friendsWithData);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching friends:", error);
-        toast.error("ไม่สามารถดึงข้อมูลเพื่อนได้");
-      }
-    };
-
-    fetchFriends();
-  }, [user.uid]);
-
-  return (
-    <div className="w-full flex flex-col">
-      <h4 className="text-h4-bold text-neutral-black-800 mb-[14px]">เพื่อน</h4>
-      <div className="w-full flex flex-col gap-4">
-        {friends.map((friend, index) => (
-          <FriendItem
-            key={index}
-            name={friend.name}
-            src={friend.profileImage}
-          />
-        ))}
-        <span className="h-[1px] w-full bg-neutral-white-500 mb-[16px]"></span>
-      </div>
-    </div>
-  );
-};
-
 export default function FriendPartyModal() {
   const [activeTab, setActiveTab] = useState("friends");
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
@@ -170,11 +95,50 @@ export default function FriendPartyModal() {
 ////////////////////////////////////////////////////////////
 //เพื่อนที่เรามี
 ////////////////////////////////////////////////////////////
-const FriendItem = ({ name, src }) => {
+
+const FriendItem = ({ name, src, phone, userPhone }) => {
+  const handleDeleteFriend = async () => {
+    try {
+      // ลบเพื่อนออกจากรายการของเรา
+      const myFriendDoc = doc(db, "friends", userPhone);
+      const myFriendData = await getDoc(myFriendDoc);
+
+      if (myFriendData.exists()) {
+        const currentFriendships = myFriendData.data().friendships || [];
+        await updateDoc(myFriendDoc, {
+          friendships: currentFriendships.filter((friend) => friend !== phone),
+        });
+      }
+
+      // ลบเราออกจากรายการเพื่อนของเขา
+      const theirFriendDoc = doc(db, "friends", phone);
+      const theirFriendData = await getDoc(theirFriendDoc);
+
+      if (theirFriendData.exists()) {
+        const theirFriendships = theirFriendData.data().friendships || [];
+        await updateDoc(theirFriendDoc, {
+          friendships: theirFriendships.filter(
+            (friend) => friend !== userPhone
+          ),
+        });
+      }
+
+      toast.success("ลบเพื่อนสำเร็จ");
+    } catch (error) {
+      console.error("Error deleting friend:", error);
+      toast.error("ไม่สามารถลบเพื่อนได้");
+    }
+  };
+
   return (
     <div className="flex items-center gap-3 rounded-full justify-between">
       <UserItem name={name} src={src} />
-      <img src={DeleteIcon} alt="" />
+      <img
+        src={DeleteIcon}
+        alt="ลบเพื่อน"
+        className="cursor-pointer"
+        onClick={handleDeleteFriend}
+      />
     </div>
   );
 };
@@ -345,6 +309,83 @@ const FriendRequestItem = ({ name, src }) => {
           </div>
         </div>
       ))}
+    </div>
+  );
+};
+
+const FriendList = () => {
+  const { user } = useUserAuth();
+  const [friends, setFriends] = useState([]);
+  const [userPhone, setUserPhone] = useState("");
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        // ดึงเบอร์โทรของผู้ใช้ที่ล็อกอิน
+        const userDoc = doc(db, "users", user.uid);
+        const userData = await getDoc(userDoc);
+
+        if (userData.exists()) {
+          const phone = userData.data().phone;
+          setUserPhone(phone);
+
+          // ดึงข้อมูล friendships
+          const friendDoc = doc(db, "friends", phone);
+          const friendData = await getDoc(friendDoc);
+
+          if (friendData.exists()) {
+            const friendships = friendData.data().friendships || [];
+
+            // ดึงข้อมูลผู้ใช้สำหรับแต่ละเพื่อน
+            const friendsWithData = await Promise.all(
+              friendships.map(async (friendPhone) => {
+                const usersRef = collection(db, "users");
+                const q = query(usersRef, where("phone", "==", friendPhone));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                  const friendData = querySnapshot.docs[0].data();
+                  return {
+                    phone: friendPhone,
+                    name: friendData.name,
+                    profileImage: friendData.profileImageURL || ImgFriend,
+                  };
+                }
+                return {
+                  phone: friendPhone,
+                  name: friendPhone,
+                  profileImage: ImgFriend,
+                };
+              })
+            );
+
+            setFriends(friendsWithData);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching friends:", error);
+        toast.error("ไม่สามารถดึงข้อมูลเพื่อนได้");
+      }
+    };
+
+    fetchFriends();
+  }, [user.uid]);
+
+  return (
+    <div className="w-full flex flex-col">
+      <h4 className="text-h4-bold text-neutral-black-800 mb-[14px]">เพื่อน</h4>
+      <div className="w-full flex flex-col gap-4">
+        {friends.map((friend, index) => (
+          <FriendItem
+            key={index}
+            name={friend.name}
+            src={friend.profileImage}
+            phone={friend.phone}
+            userPhone={userPhone}
+          />
+        ))}
+        <span className="h-[1px] w-full bg-neutral-white-500 mb-[16px]"></span>
+      </div>
     </div>
   );
 };
