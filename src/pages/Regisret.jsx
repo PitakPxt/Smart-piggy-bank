@@ -13,8 +13,9 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { arrayUnion } from "firebase/firestore";
-
+import { useUserAuth } from "../context/AuthContext";
 export default function Regisret() {
+  const { logOut } = useUserAuth();
   const navigate = useNavigate();
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
@@ -123,6 +124,7 @@ export default function Regisret() {
           console.log("บันทึกข้อมูลผู้ใช้และรูปภาพสำเร็จ");
           setIsUploading(false);
           navigate("/login");
+          logOut();
         }
       );
     } catch (error) {
