@@ -79,7 +79,7 @@ export default function FriendPartyModal() {
                 คำเชิญเข้าร่วมปาร์ตี้
               </h4>
               <div className="w-full flex flex-col gap-4">
-                <FriendRequestItem name="Wha" src={ImgFriend} />
+                <PartyRequestItem />
               </div>
             </div>
           )}
@@ -305,6 +305,140 @@ const FriendRequestItem = ({ name, src }) => {
               className="px-[18px] py-[8px] bg-error-400 rounded-xl cursor-pointer"
               src={RefuseIcon}
               onClick={() => handleRefuseFriendRequest(request.phone)}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+////////////////////////////////////////////////////////////
+//คำเชิญเข้าปาร์ตี้
+////////////////////////////////////////////////////////////
+const PartyRequestItem = () => {
+  const { user } = useUserAuth();
+  const [partyRequests, setPartyRequests] = useState([]);
+  const [userPhone, setUserPhone] = useState("");
+
+  useEffect(() => {
+    const fetchPartyRequests = async () => {
+      try {
+        // ดึงเบอร์โทรของผู้ใช้ที่ล็อกอิน
+        const userDoc = doc(db, "users", user.uid);
+        const userData = await getDoc(userDoc);
+
+        if (userData.exists()) {
+          const phone = userData.data().phone;
+          setUserPhone(phone);
+
+          // ดึงข้อมูล partyRequest
+          const friendDoc = doc(db, "friends", phone);
+          const friendData = await getDoc(friendDoc);
+
+          if (friendData.exists()) {
+            const requests = friendData.data().partyRequest || [];
+
+            // ดึงข้อมูลผู้ใช้สำหรับแต่ละ request
+            const requestsWithUserData = await Promise.all(
+              requests.map(async (requestPhone) => {
+                const usersRef = collection(db, "users");
+                const q = query(usersRef, where("phone", "==", requestPhone));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                  const requestUserData = querySnapshot.docs[0].data();
+                  return {
+                    phone: requestPhone,
+                    name: requestUserData.name,
+                    profileImage: requestUserData.profileImageURL,
+                  };
+                }
+                return {
+                  phone: requestPhone,
+                  name: requestPhone,
+                  profileImage: ImgFriend,
+                };
+              })
+            );
+
+            setPartyRequests(requestsWithUserData);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching party requests:", error);
+        toast.error("ไม่สามารถดึงข้อมูลคำเชิญเข้าปาร์ตี้ได้");
+      }
+    };
+
+    fetchPartyRequests();
+  }, [user.uid]);
+
+  const handleAcceptPartyRequest = async (requestPhone) => {
+    try {
+      // อัพเดทข้อมูลของผู้ใช้ที่กดยอมรับ
+      const myFriendDoc = doc(db, "friends", userPhone);
+      await updateDoc(myFriendDoc, {
+        partyRequest: partyRequests
+          .filter((request) => request.phone !== requestPhone)
+          .map((request) => request.phone),
+      });
+
+      // อัพเดท state
+      setPartyRequests((prevRequests) =>
+        prevRequests.filter((request) => request.phone !== requestPhone)
+      );
+
+      toast.success("ยอมรับคำเชิญเข้าปาร์ตี้สำเร็จ");
+    } catch (error) {
+      console.error("Error accepting party request:", error);
+      toast.error("ไม่สามารถยอมรับคำเชิญเข้าปาร์ตี้ได้");
+    }
+  };
+
+  const handleRefusePartyRequest = async (requestPhone) => {
+    try {
+      // อัพเดทข้อมูลของผู้ใช้ที่กดปฏิเสธ
+      const myFriendDoc = doc(db, "friends", userPhone);
+      await updateDoc(myFriendDoc, {
+        partyRequest: partyRequests
+          .filter((request) => request.phone !== requestPhone)
+          .map((request) => request.phone),
+      });
+
+      // อัพเดท state
+      setPartyRequests((prevRequests) =>
+        prevRequests.filter((request) => request.phone !== requestPhone)
+      );
+
+      toast.success("ปฏิเสธคำเชิญเข้าปาร์ตี้สำเร็จ");
+    } catch (error) {
+      console.error("Error refusing party request:", error);
+      toast.error("ไม่สามารถปฏิเสธคำเชิญเข้าปาร์ตี้ได้");
+    }
+  };
+
+  return (
+    <div className="w-full flex flex-col gap-4">
+      {partyRequests.map((request, index) => (
+        <div
+          key={index}
+          className="flex items-center gap-3 rounded-full justify-between"
+        >
+          <UserItem
+            name={request.name}
+            src={request.profileImage || ImgFriend}
+          />
+          <div className="flex gap-2">
+            <img
+              className="px-[18px] py-[8px] bg-success-400 rounded-xl cursor-pointer"
+              src={AcceptIcon}
+              onClick={() => handleAcceptPartyRequest(request.phone)}
+            />
+            <img
+              className="px-[18px] py-[8px] bg-error-400 rounded-xl cursor-pointer"
+              src={RefuseIcon}
+              onClick={() => handleRefusePartyRequest(request.phone)}
             />
           </div>
         </div>

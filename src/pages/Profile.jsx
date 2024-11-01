@@ -13,6 +13,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const { user, logOut } = useUserAuth();
   const [userData, setUserData] = useState(null);
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (user?.uid) {

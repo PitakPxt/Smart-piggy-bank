@@ -6,11 +6,19 @@ import Whawha from "../assets/images/whawha.jpg";
 import IconPlus from "../assets/images/icon-plus.svg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import InvitePartyModal from "../components/modals/InvitePartyModal";
 
 export default function CreateParty() {
   const [nameParty, setNameParty] = useState("");
   const [target, setTarget] = useState("");
   const [days, setDays] = useState("");
+  const [showInvitePartyModal, setShowInvitePartyModal] = useState(false);
+
+  const handleShowInvitePartyModal = () => {
+    setShowInvitePartyModal(true);
+  };
 
   const handleCreateParty = async () => {
     console.log("สร้างปาร์ตี้สำเร็จ");
@@ -65,7 +73,7 @@ export default function CreateParty() {
                 <h3 className="text-h3-bold mb-[10px]">เชิญเพื่อน : </h3>
                 <ul className="flex flex-wrap gap-[16px]">
                   {addFriendParty(Whawha)}
-                  {addFriendButton(IconPlus)}
+                  {addFriendButton(IconPlus, handleShowInvitePartyModal)}
                 </ul>
               </div>
             </div>
@@ -74,6 +82,11 @@ export default function CreateParty() {
               text={"สร้างปาร์ตี้"}
               onClick={handleCreateParty}
             />
+            {showInvitePartyModal && (
+              <InvitePartyModal
+                onClose={() => setShowInvitePartyModal(false)}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -81,22 +94,23 @@ export default function CreateParty() {
   );
 }
 
-function addFriendButton(src) {
+function addFriendButton(src, onClickHandler) {
   return (
-    <button
+    <div
       className="w-[66px] h-[66px] flex justify-center items-center rounded-full 
-    border-2 border-neutral-white-500 bg-neutral-white-100"
+    border-2 border-neutral-white-500 bg-neutral-white-100 cursor-pointer "
+      onClick={onClickHandler}
     >
       <img className="size-[26px]" src={src} />
-    </button>
+    </div>
   );
 }
 
 function addFriendParty(src) {
   return (
-    <li className="rounded-full bg-neutral-white-100 ">
+    <li className="rounded-full bg-neutral-white-100">
       <img
-        className="w-[68px] h-[68px] p-[2px] rounded-full border-2 border-neutral-white-500 object-cover"
+        className="w-[68px] h-[68px] p-[2px] rounded-full border-2 border-neutral-white-500 object-cover "
         src={src}
         alt=""
       />
