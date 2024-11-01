@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
 import InputLabel from "@components/InputLabel";
 import BtnYellow from "@components/BtnYellow";
 import BtnClose from "@components/BtnClose";
+import React, { useState, useEffect } from "react";
 import { setDoc, doc, getDoc, arrayUnion } from "firebase/firestore";
 import { useUserAuth } from "../../context/AuthContext";
 import { db } from "../../lib/firebase";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function AddFriendModal({ onClose }) {
@@ -21,22 +21,11 @@ export default function AddFriendModal({ onClose }) {
         setPhone(userData.data().phone);
       }
     };
-
     fetchUserPhone();
   }, [user.uid]);
 
   const handleAddFriend = async (e) => {
     e.preventDefault();
-
-    // เป็นเพื่อนกัน
-    // await setDoc(
-    //   doc(db, "friendships", phone),
-    //   {
-    //     friendsRequest: arrayUnion(addPhone),
-    //   },
-    //   { merge: true }
-    // );
-
     await setDoc(
       doc(db, "friends", addPhone),
       {

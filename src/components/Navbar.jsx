@@ -41,10 +41,9 @@ export default function Navbar() {
     }
   };
 
-  const handleLogin = async () => {
+  const handleCreateParty = async () => {
     try {
-      logOut();
-      navigate("/login");
+      navigate("/create-party");
     } catch (error) {
       console.log(error);
     }
@@ -61,8 +60,8 @@ export default function Navbar() {
         <div className="flex gap-5 text-h3-bold ">
           {user ? (
             <>
-              <NavbarItem text="ปลดล็อค" href="/unlock" />
-              <NavbarItem text="สร้างปาร์ตี้" href="/create-party" />
+              <NavbarItem text="ปลดล็อค" to="/unlock-pin" />
+              <NavbarItem text="สร้างปาร์ตี้" to="/create-party" />
               <div role="button" className="px-4 py-2">
                 <div className="relative" ref={modalRef}>
                   <span
@@ -74,15 +73,10 @@ export default function Navbar() {
                   {showFriendPartyModal && <FriendPartyModal />}
                 </div>
               </div>
-              <NavbarItem text="โปรไฟล์" href="/profile" />
+              <NavbarItem text="โปรไฟล์" to="/profile" />
               <a className="px-4 py-2" style={{ display: "none" }}>
                 <img src={HamburgerMenu} alt="" className="size-[34px]" />
               </a>
-              <BtnYellow
-                className="px-7"
-                text={"ออกจากระบบ"}
-                onClick={handleLogin}
-              />
             </>
           ) : (
             <>
@@ -99,9 +93,9 @@ export default function Navbar() {
   );
 }
 
-const NavbarItem = ({ text, className, href }) => {
+const NavbarItem = ({ text, className, to }) => {
   return (
-    <Link className={cn("px-4 py-2 ", className)} href={href}>
+    <Link className={cn("px-4 py-2 ", className)} to={to}>
       <span className="text-secondary-300">{text}</span>
     </Link>
   );

@@ -116,11 +116,7 @@ export default function Regisret() {
           //   },
           //   { merge: true }
           // );
-          // await updateProfile(user, {
-          //   displayName: name,
-          //   photoURL: imageURL,
-          //   phoneNumber: phone,
-          // });
+
           console.log("บันทึกข้อมูลผู้ใช้และรูปภาพสำเร็จ");
           setIsUploading(false);
           navigate("/login");

@@ -1,20 +1,19 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import InputPin from "../components/InputPin";
 import LogoPicUnlockPin from "../assets/images/logo-pic-unlockPin.png";
 import BtnYellow from "../components/BtnYellow";
 import BtnBack from "../components/BtnBack";
-// import Layout from "../components/Layout";
-// import Navbar from "../components/Navbar";
 
 export default function UnlockPin() {
   return (
     <>
-      {/* <Layout>
-        <Navbar /> */}
       <div className="w-full h-full flex flex-col justify-center items-center">
         <div className="w-[856px] h-[828px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
           <div className="w-full h-full flex flex-col justify-center items-center ">
-            <BtnBack />
+            <Link to="/home">
+              <BtnBack />
+            </Link>
             <div className="flex flex-col justify-center text-center gap-2 mb-[38px]">
               <div className="flex flex-col gap-[18px]">
                 <img src={LogoPicUnlockPin} alt="" className="" />
@@ -37,7 +36,6 @@ export default function UnlockPin() {
           </div>
         </div>
       </div>
-      {/* </Layout> */}
     </>
   );
 }

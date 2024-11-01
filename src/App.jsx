@@ -21,10 +21,10 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="register" element={<Regisret />} />
           <Route path="login" element={<Login />} />
-          {/* <Route path="UnlockPin" element={<UnlockPin />} /> */}
-          {/* <Route path="CreateParty" element={<CreateParty />} /> */}
+          <Route path="unlock-pin" element={<UnlockPin />} />
+          <Route path="create-party" element={<CreateParty />} />
           {/* <Route path="Community" element={<Community />} /> */}
-          {/* <Route path="Profile" element={<Profile />} /> */}
+          <Route path="profile" element={<Profile />} />
           <Route path="add-friend" element={<AddFriendModal />} />
           <Route path="changepasslog" element={<ChangePassLog />} />
           <Route path="otp" element={<Otp />} />
