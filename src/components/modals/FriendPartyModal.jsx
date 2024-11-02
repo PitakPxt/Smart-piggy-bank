@@ -376,20 +376,39 @@ const PartyRequestItem = () => {
 
   const handleAcceptPartyRequest = async (requestPhone) => {
     try {
-      // อัพเดทข้อมูลของผู้ใช้ที่กดยอมรับ
-      const myFriendDoc = doc(db, "friends", userPhone);
-      await updateDoc(myFriendDoc, {
-        partyRequest: partyRequests
-          .filter((request) => request.phone !== requestPhone)
-          .map((request) => request.phone),
-      });
+      // ดึงข้อมูล user ที่ถูกเชิญ (ตัวเรา)
+      const userDoc = doc(db, "users", user.uid);
+      const userData = await getDoc(userDoc);
 
-      // อัพเดท state
-      setPartyRequests((prevRequests) =>
-        prevRequests.filter((request) => request.phone !== requestPhone)
-      );
+      if (userData.exists()) {
+        const userName = userData.data().name;
 
-      toast.success("ยอมรับคำเชิญเข้าปาร์ตี้สำเร็จ");
+        // ดึงข้อมูล party และอัพเดท member
+        const partyDoc = doc(db, "party", "pitak");
+        const partyData = await getDoc(partyDoc);
+
+        if (partyData.exists()) {
+          const currentMembers = partyData.data().member || [];
+          await updateDoc(partyDoc, {
+            member: [...currentMembers, userName], // เพิ่มชื่อของเราเข้าไปใน member
+          });
+        }
+
+        // อัพเดทข้อมูลคำขอปาร์ตี้
+        const myFriendDoc = doc(db, "friends", userPhone);
+        await updateDoc(myFriendDoc, {
+          partyRequest: partyRequests
+            .filter((request) => request.phone !== requestPhone)
+            .map((request) => request.phone),
+        });
+
+        // อัพเดท state
+        setPartyRequests((prevRequests) =>
+          prevRequests.filter((request) => request.phone !== requestPhone)
+        );
+
+        toast.success("ยอมรับคำเชิญเข้าปาร์ตี้สำเร็จ");
+      }
     } catch (error) {
       console.error("Error accepting party request:", error);
       toast.error("ไม่สามารถยอมรับคำเชิญเข้าปาร์ตี้ได้");

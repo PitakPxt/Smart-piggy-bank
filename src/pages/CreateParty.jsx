@@ -5,24 +5,70 @@ import BtnYellow from "../components/BtnYellow";
 import Whawha from "../assets/images/whawha.jpg";
 import IconPlus from "../assets/images/icon-plus.svg";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import InvitePartyModal from "../components/modals/InvitePartyModal";
+import { useUserAuth } from "../context/AuthContext";
+import { setDoc, doc, getDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 export default function CreateParty() {
   const [nameParty, setNameParty] = useState("");
   const [target, setTarget] = useState("");
   const [days, setDays] = useState("");
   const [showInvitePartyModal, setShowInvitePartyModal] = useState(false);
+  const [invitedFriends, setInvitedFriends] = useState([]);
+  const [phone, setPhone] = useState("");
+  const { user } = useUserAuth();
+
+  useEffect(() => {
+    const fetchUserPhone = async () => {
+      try {
+        if (!user) return;
+
+        const userDoc = doc(db, "users", user.uid);
+        const userData = await getDoc(userDoc);
+
+        if (userData.exists()) {
+          const userName = userData.data().name;
+          setPhone(userName);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        toast.error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
+      }
+    };
+
+    fetchUserPhone();
+  }, [user]);
 
   const handleShowInvitePartyModal = () => {
     setShowInvitePartyModal(true);
   };
 
   const handleCreateParty = async () => {
-    console.log("สร้างปาร์ตี้สำเร็จ");
-    console.log(nameParty, target, days);
+    try {
+      await setDoc(doc(db, "party", phone), {
+        friends: invitedFriends.map((friend) => friend.name),
+        partyName: nameParty,
+        target: Number(target),
+        days: days,
+        createdAt: new Date(),
+        createdBy: phone,
+      });
+
+      toast.success("สร้างปาร์ตี้สำเร็จ");
+    } catch (error) {
+      console.error("Error creating party:", error);
+      toast.error("เกิดข้อผิดพลาดในการสร้างปาร์ตี้");
+    }
+  };
+
+  const handleInviteFriend = (friendData) => {
+    const newFriends = Array.isArray(friendData) ? friendData : [friendData];
+    setInvitedFriends((prev) => [...prev, ...newFriends]);
+    toast.success("เพิ่มเพื่อนสำเร็จ");
   };
 
   return (
@@ -72,7 +118,18 @@ export default function CreateParty() {
               <div>
                 <h3 className="text-h3-bold mb-[10px]">เชิญเพื่อน : </h3>
                 <ul className="flex flex-wrap gap-[16px]">
-                  {addFriendParty(Whawha)}
+                  {invitedFriends.map((friend) => (
+                    <li
+                      key={friend.phone}
+                      className="flex flex-col items-center"
+                    >
+                      <img
+                        className="w-[68px] h-[68px] p-[2px] rounded-full border-2 border-neutral-white-500 object-cover"
+                        src={friend.profileImageURL || Whawha}
+                        alt={friend.name}
+                      />
+                    </li>
+                  ))}
                   {addFriendButton(IconPlus, handleShowInvitePartyModal)}
                 </ul>
               </div>
@@ -85,6 +142,7 @@ export default function CreateParty() {
             {showInvitePartyModal && (
               <InvitePartyModal
                 onClose={() => setShowInvitePartyModal(false)}
+                onInviteFriend={handleInviteFriend}
               />
             )}
           </div>
@@ -103,17 +161,5 @@ function addFriendButton(src, onClickHandler) {
     >
       <img className="size-[26px]" src={src} />
     </div>
-  );
-}
-
-function addFriendParty(src) {
-  return (
-    <li className="rounded-full bg-neutral-white-100">
-      <img
-        className="w-[68px] h-[68px] p-[2px] rounded-full border-2 border-neutral-white-500 object-cover "
-        src={src}
-        alt=""
-      />
-    </li>
   );
 }

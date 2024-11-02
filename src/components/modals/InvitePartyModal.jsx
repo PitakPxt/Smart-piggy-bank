@@ -20,7 +20,7 @@ import { db } from "../../lib/firebase";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function InvitePartyModal({ onClose }) {
+export default function InvitePartyModal({ onClose, onInviteFriend }) {
   const { user } = useUserAuth();
   const [phone, setPhone] = useState("");
   const [friends, setFriends] = useState([]);
@@ -45,21 +45,34 @@ export default function InvitePartyModal({ onClose }) {
     fetchData();
   }, [user.uid]);
 
-  const handleAddFriend = async (e) => {
-    e.preventDefault();
-    await setDoc(
-      doc(db, "friends", addPhone),
-      {
-        PartyRequest: arrayUnion(phone),
-      },
-      { merge: true }
-    );
-    toast.success("เพิ่มเพื่อนสำเร็จ");
-    onClose();
-  };
-
   const handleRemoveFriend = (friendPhone) => {
     setFriends((prev) => prev.filter((phone) => phone !== friendPhone));
+  };
+
+  const handleInvite = async () => {
+    try {
+      const friendRef = doc(db, "friends", phone);
+      await updateDoc(friendRef, {
+        partyRequest: arrayUnion(currentUserPhone),
+      });
+
+      // ส่งข้อมูลเพื่อนที่เชิญไปยัง CreateParty
+      onInviteFriend({
+        phone: phone,
+        profileImageURL: friendData.profileImageURL,
+      });
+
+      onInvited(phone);
+    } catch (error) {
+      console.error("Error sending party invite:", error);
+    }
+  };
+
+  const handleInvitedFriend = (friendData) => {
+    // ส่งข้อมูลเพื่อนไปที่ CreateParty
+    onInviteFriend(friendData);
+    // ลบเพื่อนออกจากรายการ
+    setFriends((prev) => prev.filter((phone) => phone !== friendData.phone));
   };
 
   return (
@@ -77,7 +90,7 @@ export default function InvitePartyModal({ onClose }) {
                   key={friendPhone}
                   phone={friendPhone}
                   currentUserPhone={phone}
-                  onInvited={handleRemoveFriend}
+                  onInvited={handleInvitedFriend}
                 />
               ))}
             </div>
@@ -115,7 +128,7 @@ const InviteItem = ({ phone, currentUserPhone, onInvited }) => {
           partyRequest: friendDoc.data()?.partyRequest || [],
         });
 
-        // เช็คว่าเคยเชิญไปแล้วหรือไม่
+        // เช็คว่าเคยเชิญไปแล้วหรือยัง
         if (friendDoc.data()?.partyRequest?.includes(currentUserPhone)) {
           setIsInvited(true);
         }
@@ -127,13 +140,18 @@ const InviteItem = ({ phone, currentUserPhone, onInvited }) => {
   const handleInvite = async () => {
     try {
       const friendRef = doc(db, "friends", phone);
-
       await updateDoc(friendRef, {
         partyRequest: arrayUnion(currentUserPhone),
       });
 
-      // เรียก callback เพื่อลบรายชื่อออกจาก UI
-      onInvited(phone);
+      // ส่งข้อมูลเพื่อนกลับไปที่ InvitePartyModal
+      onInvited({
+        phone: phone,
+        name: friendData.name,
+        profileImageURL: friendData.profileImageURL,
+      });
+
+      setIsInvited(true);
     } catch (error) {
       console.error("Error sending party invite:", error);
     }
