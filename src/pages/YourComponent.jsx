@@ -3,13 +3,31 @@ import { useUserAuth } from "../context/AuthContext";
 
 function YourComponent() {
   const [savingData, setSavingData] = useState(null);
-  const { getData } = useUserAuth();
+  const { getRealtimeDb } = useUserAuth();
   const userId = "00002";
 
   useEffect(() => {
-    const unsubscribe = getData(`saving/${userId}`, (data) => {
+    const unsubscribe = getRealtimeDb(`saving/${userId}`, async (data) => {
       setSavingData(data);
       console.log("ข้อมูลการออม:", data);
+
+      try {
+        const { setDoc, doc } = await import("firebase/firestore");
+        const { db } = await import("../lib/firebase");
+
+        await setDoc(doc(db, "saving", userId), {
+          coin1: data.coin1 || 0,
+          coin2: data.coin2 || 0,
+          coin5: data.coin5 || 0,
+          coin10: data.coin10 || 0,
+          total: calculateTotal(data),
+          updatedAt: new Date().toISOString(),
+        });
+
+        console.log("บันทึกข้อมูลลง Firestore สำเร็จ");
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการบันทึกลง Firestore:", error);
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -23,6 +41,7 @@ function YourComponent() {
       (data.coin10 || 0) * 10
     );
   };
+
   return (
     <div>
       {savingData ? (

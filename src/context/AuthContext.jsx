@@ -21,26 +21,25 @@ export const AuthContextProvider = ({ children }) => {
     return signOut(auth);
   };
 
-  const getData = (path, callback) => {
+  const getRealtimeDb = (path, callback) => {
     const dataRef = ref(realtimeDb, path);
     return onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
       callback(data);
-      console.log(data);
     });
   };
 
-  const setData = (path, data) => {
+  const setRealtimeDb = (path, data) => {
     const dataRef = ref(realtimeDb, path);
     return set(dataRef, data);
   };
 
-  const pushData = (path, data) => {
+  const pushRealtimeDb = (path, data) => {
     const dataRef = ref(realtimeDb, path);
     return push(dataRef, data);
   };
 
-  const removeData = (path) => {
+  const removeRealtimeDb = (path) => {
     const dataRef = ref(realtimeDb, path);
     return remove(dataRef);
   };
@@ -60,10 +59,10 @@ export const AuthContextProvider = ({ children }) => {
         user,
         logIn,
         logOut,
-        getData,
-        setData,
-        pushData,
-        removeData,
+        getRealtimeDb,
+        setRealtimeDb,
+        pushRealtimeDb,
+        removeRealtimeDb,
       }}
     >
       {children}
