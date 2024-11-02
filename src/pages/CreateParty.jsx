@@ -19,7 +19,7 @@ export default function CreateParty() {
   const [days, setDays] = useState("");
   const [showInvitePartyModal, setShowInvitePartyModal] = useState(false);
   const [invitedFriends, setInvitedFriends] = useState([]);
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState("");
   const { user } = useUserAuth();
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function CreateParty() {
 
         if (userData.exists()) {
           const userName = userData.data().name;
-          setPhone(userName);
+          setName(userName);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -49,13 +49,13 @@ export default function CreateParty() {
 
   const handleCreateParty = async () => {
     try {
-      await setDoc(doc(db, "party", phone), {
+      await setDoc(doc(db, "party", name), {
         friends: invitedFriends.map((friend) => friend.name),
         partyName: nameParty,
         target: Number(target),
         days: days,
         createdAt: new Date(),
-        createdBy: phone,
+        createdBy: name,
       });
 
       toast.success("สร้างปาร์ตี้สำเร็จ");

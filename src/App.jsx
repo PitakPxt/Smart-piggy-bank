@@ -12,6 +12,7 @@ import Regisret from "@pages/Regisret";
 import ChangePassLog from "@pages/ChangePassLog";
 import FriendPartyModal from "@components/modals/FriendPartyModal";
 import AddFriendModal from "@components/modals/AddFriendModal";
+import YourComponent from "@pages/YourComponent";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="unlock-pin" element={<UnlockPin />} />
           <Route path="create-party" element={<CreateParty />} />
           {/* <Route path="Community" element={<Community />} /> */}
+          <Route path="saving" element={<YourComponent />} />
           <Route path="profile" element={<Profile />} />
           <Route path="add-friend" element={<AddFriendModal />} />
           <Route path="changepasslog" element={<ChangePassLog />} />
