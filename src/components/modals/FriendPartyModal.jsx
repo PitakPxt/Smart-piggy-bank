@@ -339,9 +339,15 @@ const PartyRequestItem = () => {
           if (friendData.exists()) {
             const requests = friendData.data().partyRequest || [];
 
-            // ดึงข้อมูลผู้ใช้สำหรับแต่ละ request
-            const requestsWithUserData = await Promise.all(
-              requests.map(async (requestPhone) => {
+            // ดึงข้อมูลผู้ใช้และข้อมูลปาร์ตี้สำหรับแต่ละ request
+            const requestsWithData = await Promise.all(
+              requests.map(async (request) => {
+                // ถ้า request เป็น object ที่มี phone และ partyId
+                const requestPhone =
+                  typeof request === "object" ? request.phone : request;
+                const partyId =
+                  typeof request === "object" ? request.partyId : null;
+
                 const usersRef = collection(db, "users");
                 const q = query(usersRef, where("phone", "==", requestPhone));
                 const querySnapshot = await getDocs(q);
@@ -351,18 +357,20 @@ const PartyRequestItem = () => {
                   return {
                     phone: requestPhone,
                     name: requestUserData.name,
-                    profileImage: requestUserData.profileImageURL,
+                    profileImage: requestUserData.profileImageURL || ImgFriend,
+                    partyId: partyId, // เพิ่ม partyId
                   };
                 }
                 return {
                   phone: requestPhone,
                   name: requestPhone,
                   profileImage: ImgFriend,
+                  partyId: partyId,
                 };
               })
             );
 
-            setPartyRequests(requestsWithUserData);
+            setPartyRequests(requestsWithData);
           }
         }
       } catch (error) {
@@ -381,16 +389,17 @@ const PartyRequestItem = () => {
       const userData = await getDoc(userDoc);
 
       if (userData.exists()) {
-        const userName = userData.data().name;
+        // เปลี่ยนจากการใช้ชื่อเป็นการใช้ uid
+        const userId = user.uid;
 
-        // ดึงข้อมูล party และอัพเดท member
+        // ดึงข้อมูล party และอัพเดท members
         const partyDoc = doc(db, "party", "pitak");
         const partyData = await getDoc(partyDoc);
 
         if (partyData.exists()) {
-          const currentMembers = partyData.data().member || [];
+          const currentMembers = partyData.data().members || [];
           await updateDoc(partyDoc, {
-            member: [...currentMembers, userName], // เพิ่มชื่อของเราเข้าไปใน member
+            members: [...currentMembers, userId], // เพิ่ม uid แทนชื่อ
           });
         }
 

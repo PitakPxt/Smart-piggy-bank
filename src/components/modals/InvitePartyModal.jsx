@@ -49,25 +49,6 @@ export default function InvitePartyModal({ onClose, onInviteFriend }) {
     setFriends((prev) => prev.filter((phone) => phone !== friendPhone));
   };
 
-  const handleInvite = async () => {
-    try {
-      const friendRef = doc(db, "friends", phone);
-      await updateDoc(friendRef, {
-        partyRequest: arrayUnion(currentUserPhone),
-      });
-
-      // ส่งข้อมูลเพื่อนที่เชิญไปยัง CreateParty
-      onInviteFriend({
-        phone: phone,
-        profileImageURL: friendData.profileImageURL,
-      });
-
-      onInvited(phone);
-    } catch (error) {
-      console.error("Error sending party invite:", error);
-    }
-  };
-
   const handleInvitedFriend = (friendData) => {
     // ส่งข้อมูลเพื่อนไปที่ CreateParty
     onInviteFriend(friendData);
@@ -139,16 +120,17 @@ const InviteItem = ({ phone, currentUserPhone, onInvited }) => {
 
   const handleInvite = async () => {
     try {
-      const friendRef = doc(db, "friends", phone);
-      await updateDoc(friendRef, {
-        partyRequest: arrayUnion(currentUserPhone),
-      });
+      // const friendRef = doc(db, "friends", phone);
+      // await updateDoc(friendRef, {
+      //   partyRequest: arrayUnion(currentUserPhone),
+      // });
 
       // ส่งข้อมูลเพื่อนกลับไปที่ InvitePartyModal
       onInvited({
         phone: phone,
         name: friendData.name,
         profileImageURL: friendData.profileImageURL,
+        phone,
       });
 
       setIsInvited(true);

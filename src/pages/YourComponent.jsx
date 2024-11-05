@@ -4,7 +4,7 @@ import { useUserAuth } from "../context/AuthContext";
 function YourComponent() {
   const [savingData, setSavingData] = useState(null);
   const { getRealtimeDb } = useUserAuth();
-  const userId = "00002";
+  const userId = "00001";
 
   useEffect(() => {
     const unsubscribe = getRealtimeDb(`saving/${userId}`, async (data) => {

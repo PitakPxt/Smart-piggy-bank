@@ -3,16 +3,18 @@ import BtnBack from "../components/BtnBack";
 import InputLabel from "../components/InputLabel";
 import BtnYellow from "../components/BtnYellow";
 import Whawha from "../assets/images/whawha.jpg";
+import LogoDelete from "../assets/images/delete-Player.png";
 import IconPlus from "../assets/images/icon-plus.svg";
+import InvitePartyModal from "../components/modals/InvitePartyModal";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import InvitePartyModal from "../components/modals/InvitePartyModal";
 import { useUserAuth } from "../context/AuthContext";
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { arrayUnion, updateDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 export default function CreateParty() {
   const [nameParty, setNameParty] = useState("");
   const [target, setTarget] = useState("");
@@ -20,19 +22,22 @@ export default function CreateParty() {
   const [showInvitePartyModal, setShowInvitePartyModal] = useState(false);
   const [invitedFriends, setInvitedFriends] = useState([]);
   const [name, setName] = useState("");
+  const [userPhone, setUserPhone] = useState("");
   const { user } = useUserAuth();
-
+  const navigate = useNavigate();
   useEffect(() => {
-    const fetchUserPhone = async () => {
-      try {
-        if (!user) return;
+    if (!user) return;
 
+    const fetchUserData = async () => {
+      try {
         const userDoc = doc(db, "users", user.uid);
         const userData = await getDoc(userDoc);
 
         if (userData.exists()) {
           const userName = userData.data().name;
+          const userPhone = userData.data().phone;
           setName(userName);
+          setUserPhone(userPhone);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -40,7 +45,7 @@ export default function CreateParty() {
       }
     };
 
-    fetchUserPhone();
+    fetchUserData();
   }, [user]);
 
   const handleShowInvitePartyModal = () => {
@@ -50,7 +55,7 @@ export default function CreateParty() {
   const handleCreateParty = async () => {
     try {
       await setDoc(doc(db, "party", name), {
-        friends: invitedFriends.map((friend) => friend.name),
+        members: [user.uid],
         partyName: nameParty,
         target: Number(target),
         days: days,
@@ -58,7 +63,20 @@ export default function CreateParty() {
         createdBy: name,
       });
 
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, {
+        party: arrayUnion(name),
+      });
+
+      invitedFriends.forEach((friend) => {
+        const friendRef = doc(db, "friends", friend.phone);
+        updateDoc(friendRef, {
+          partyRequest: arrayUnion(userPhone),
+        });
+      });
+
       toast.success("สร้างปาร์ตี้สำเร็จ");
+      navigate("/party");
     } catch (error) {
       console.error("Error creating party:", error);
       toast.error("เกิดข้อผิดพลาดในการสร้างปาร์ตี้");
@@ -69,6 +87,13 @@ export default function CreateParty() {
     const newFriends = Array.isArray(friendData) ? friendData : [friendData];
     setInvitedFriends((prev) => [...prev, ...newFriends]);
     toast.success("เพิ่มเพื่อนสำเร็จ");
+  };
+
+  const handleRemoveFriend = (phoneToRemove) => {
+    setInvitedFriends((prev) =>
+      prev.filter((friend) => friend.phone !== phoneToRemove)
+    );
+    toast.success("ลบเพื่อนสำเร็จ");
   };
 
   return (
@@ -117,15 +142,21 @@ export default function CreateParty() {
               />
               <div>
                 <h3 className="text-h3-bold mb-[10px]">เชิญเพื่อน : </h3>
-                <ul className="flex flex-wrap gap-[16px]">
+                <ul className="flex flex-wrap gap-[16px] ">
                   {invitedFriends.map((friend) => (
                     <li
                       key={friend.phone}
-                      className="flex flex-col items-center"
+                      className="flex flex-col items-center relative w-[68px] h-[68px]"
                     >
+                      <div
+                        className="absolute -right-0 -top-0 z-5 cursor-pointer size-[20px] bg-neutral-white-100 rounded-full"
+                        onClick={() => handleRemoveFriend(friend.phone)}
+                      >
+                        <img src={LogoDelete} alt="delete" />
+                      </div>
                       <img
-                        className="w-[68px] h-[68px] p-[2px] rounded-full border-2 border-neutral-white-500 object-cover"
-                        src={friend.profileImageURL || Whawha}
+                        className="w-full h-full p-[2px] rounded-full border-2 border-neutral-white-500 object-cover"
+                        src={friend.profileImageURL}
                         alt={friend.name}
                       />
                     </li>

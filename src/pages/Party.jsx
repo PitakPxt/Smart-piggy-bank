@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import LogoNumber1 from "../assets/images/number-1.png";
 import LogoNumber2 from "../assets/images/number-2.png";
 import LogoNumber3 from "../assets/images/number-3.png";
@@ -18,7 +19,9 @@ export default function Party() {
           className="w-[768px] h-[814px] flex flex-col justify-start items-center
           bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg gap-[18px] pt-[42px] relative"
         >
-          <BtnBack />
+          <Link to="/home">
+            <BtnBack />
+          </Link>
           <div className="text-center items-center mt-[28px]">
             <h2 className="text-h2-bold">ปาร์ตี้ : {partyName}</h2>
             <div className="flex gap-[28px]">
@@ -135,13 +138,13 @@ export default function Party() {
               </li>
             </ul>
           </div>
-          <a
+          <div
             className="px-[32px] py-[12px] absolute bottom-[24px] bg-transparent border-2 border-error-300 text-error-300 text-h3-bold 
             rounded-xl drop-shadow-lg hover:border-error-200 hover:bg-error-200 hover:text-neutral-white-100"
             type="submit"
           >
             สิ้นสุดปาร์ตี้
-          </a>
+          </div>
         </div>
       </div>
     </>
