@@ -324,6 +324,7 @@ const PartyRequestItem = () => {
   useEffect(() => {
     const fetchPartyRequests = async () => {
       try {
+        // ดึงเบอร์โทรของผู้ใช้ที่ล็อกอิน
         const userDoc = doc(db, "users", user.uid);
         const userData = await getDoc(userDoc);
 
@@ -331,43 +332,44 @@ const PartyRequestItem = () => {
           const phone = userData.data().phone;
           setUserPhone(phone);
 
+          // ดึงข้อมูล partyRequest
           const friendDoc = doc(db, "friends", phone);
           const friendData = await getDoc(friendDoc);
 
           if (friendData.exists()) {
             const requests = friendData.data().partyRequest || [];
 
+            // ดึงข้อมูลผู้ใช้และข้อมูลปาร์ตี้สำหรับแต่ละ request
             const requestsWithData = await Promise.all(
               requests.map(async (request) => {
-                // ดึงชื่อจาก request
-                const requestName =
-                  typeof request === "object" ? request : request;
+                // ถ้า request เป็น object ที่มี phone และ partyId
+                const requestPhone =
+                  typeof request === "object" ? request.phone : request;
+                const partyId =
+                  typeof request === "object" ? request.partyId : null;
 
-                // ค้นหาข้อมูลผู้ใช้จาก users collection โดยใช้ชื่อ
                 const usersRef = collection(db, "users");
-                const q = query(usersRef, where("name", "==", requestName));
+                const q = query(usersRef, where("phone", "==", requestPhone));
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
                   const requestUserData = querySnapshot.docs[0].data();
                   return {
-                    phone: requestUserData.phone,
+                    phone: requestPhone,
                     name: requestUserData.name,
-                    profileImage: requestUserData.profileImageURL,
-                    partyId:
-                      typeof request === "object" ? request.partyId : null,
+                    profileImage: requestUserData.profileImageURL || ImgFriend,
+                    partyId: partyId, // เพิ่ม partyId
                   };
                 }
                 return {
-                  phone: "",
-                  name: requestName,
+                  phone: requestPhone,
+                  name: requestPhone,
                   profileImage: ImgFriend,
-                  partyId: null,
+                  partyId: partyId,
                 };
               })
             );
 
-            console.log("Requests with data:", requestsWithData);
             setPartyRequests(requestsWithData);
           }
         }
@@ -380,23 +382,24 @@ const PartyRequestItem = () => {
     fetchPartyRequests();
   }, [user.uid]);
 
-  const handleAcceptPartyRequest = async (requestPhone, partyId) => {
+  const handleAcceptPartyRequest = async (requestPhone) => {
     try {
       // ดึงข้อมูล user ที่ถูกเชิญ (ตัวเรา)
       const userDoc = doc(db, "users", user.uid);
       const userData = await getDoc(userDoc);
 
       if (userData.exists()) {
+        // เปลี่ยนจากการใช้ชื่อเป็นการใช้ uid
         const userId = user.uid;
 
-        // ดึงข้อมูล party และอัพเดท members โดยใช้ partyId จาก request
-        const partyDoc = doc(db, "party", partyId);
+        // ดึงข้อมูล party และอัพเดท members
+        const partyDoc = doc(db, "party", "pitak");
         const partyData = await getDoc(partyDoc);
 
         if (partyData.exists()) {
           const currentMembers = partyData.data().members || [];
           await updateDoc(partyDoc, {
-            members: [...currentMembers, userId],
+            members: [...currentMembers, userId], // เพิ่ม uid แทนชื่อ
           });
         }
 
@@ -405,10 +408,7 @@ const PartyRequestItem = () => {
         await updateDoc(myFriendDoc, {
           partyRequest: partyRequests
             .filter((request) => request.phone !== requestPhone)
-            .map((request) => ({
-              phone: request.phone,
-              partyId: request.partyId,
-            })),
+            .map((request) => request.phone),
         });
 
         // อัพเดท state
@@ -453,14 +453,15 @@ const PartyRequestItem = () => {
           key={index}
           className="flex items-center gap-3 rounded-full justify-between"
         >
-          <UserItem name={request.name} src={request.profileImage} />
+          <UserItem
+            name={request.name}
+            src={request.profileImage || ImgFriend}
+          />
           <div className="flex gap-2">
             <img
               className="px-[18px] py-[8px] bg-success-400 rounded-xl cursor-pointer"
               src={AcceptIcon}
-              onClick={() =>
-                handleAcceptPartyRequest(request.phone, request.partyId)
-              }
+              onClick={() => handleAcceptPartyRequest(request.phone)}
             />
             <img
               className="px-[18px] py-[8px] bg-error-400 rounded-xl cursor-pointer"
