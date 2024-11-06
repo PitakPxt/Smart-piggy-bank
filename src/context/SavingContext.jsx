@@ -31,7 +31,7 @@ export function SavingProvider({ children }) {
               (data.coin5 || 0) * 5 +
               (data.coin10 || 0) * 10,
             updatedAt: new Date().toISOString(),
-            status: data.status || false,
+            // status: data.status || false,
           });
         } catch (error) {
           console.error(`Error updating document ${docId}:`, error);

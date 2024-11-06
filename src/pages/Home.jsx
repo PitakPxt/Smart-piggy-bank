@@ -28,14 +28,16 @@ export default function Home() {
 
     // ดึงข้อมูล user document เพื่อหา savingNumber
     const userDocRef = doc(db, "users", user.uid);
+    console.log(userDocRef.id);
 
     const unsubscribe = onSnapshot(userDocRef, (userDoc) => {
       if (userDoc.exists()) {
         const { savingNumber } = userDoc.data();
-
+        console.log(savingNumber);
         // ดึงข้อมูล saving document
         const savingDocRef = doc(db, "saving", savingNumber);
         onSnapshot(savingDocRef, (savingDoc) => {
+          console.log(savingDoc.data());
           if (savingDoc.exists()) {
             const data = savingDoc.data();
             setSavingData({
@@ -82,7 +84,7 @@ export default function Home() {
     <div className="flex flex-col w-full h-full justify-center items-center">
       <div className="flex flex-col w-[856px] h-[649px] bg-neutral-white-100 opacity-95 rounded-3xl drop-shadow-lg mx-auto overflow-hidden justify-center items-center mb-[50px]">
         <h1 className="w-[384px] h-[96px] mb-[76px] bg-primary-400 text-center text-h2-bold rounded-3xl content-center drop-shadow-lg">
-          ยอดรวม : {savingData?.total || 0}
+          ยอดรวม : {savingData?.total || 0} บาท
         </h1>
         <div className="grid grid-cols-2 gap-4">
           {coins.map((coin, index) => (

@@ -71,7 +71,7 @@ export default function CreateParty() {
       invitedFriends.forEach((friend) => {
         const friendRef = doc(db, "friends", friend.phone);
         updateDoc(friendRef, {
-          partyRequest: arrayUnion(userPhone),
+          partyRequest: arrayUnion(name),
         });
       });
 
