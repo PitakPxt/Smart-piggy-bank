@@ -23,7 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="register" element={<Regisret />} />
-            <Route path="login" element={<Login />} />
+            <Route path="/" element={<Login />} />
             <Route path="unlock-pin" element={<UnlockPin />} />
             <Route path="create-party" element={<CreateParty />} />
             <Route path="party" element={<Party />} />
