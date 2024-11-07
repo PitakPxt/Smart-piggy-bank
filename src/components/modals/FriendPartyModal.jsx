@@ -382,15 +382,19 @@ const PartyRequestItem = () => {
     fetchPartyRequests();
   }, [user.uid]);
 
-  const handleAcceptPartyRequest = async (requestPhone) => {
+  const handleAcceptPartyRequest = async (requestPhone, partyId) => {
     try {
       // ดึงข้อมูล user ที่ถูกเชิญ (ตัวเรา)
       const userDoc = doc(db, "users", user.uid);
       const userData = await getDoc(userDoc);
 
       if (userData.exists()) {
-        // เปลี่ยนจากการใช้ชื่อเป็นการใช้ uid
         const userId = user.uid;
+
+        // อัพเดทข้อมูล party ในเอกสารของผู้ใช้
+        await updateDoc(userDoc, {
+          party: "pitak", // เพิ่มชื่อปาร์ตี้ในข้อมูลผู้ใช้
+        });
 
         // ดึงข้อมูล party และอัพเดท members
         const partyDoc = doc(db, "party", "pitak");
@@ -399,7 +403,7 @@ const PartyRequestItem = () => {
         if (partyData.exists()) {
           const currentMembers = partyData.data().members || [];
           await updateDoc(partyDoc, {
-            members: [...currentMembers, userId], // เพิ่ม uid แทนชื่อ
+            members: [...currentMembers, userId],
           });
         }
 
@@ -411,7 +415,6 @@ const PartyRequestItem = () => {
             .map((request) => request.phone),
         });
 
-        // อัพเดท state
         setPartyRequests((prevRequests) =>
           prevRequests.filter((request) => request.phone !== requestPhone)
         );
@@ -461,7 +464,9 @@ const PartyRequestItem = () => {
             <img
               className="px-[18px] py-[8px] bg-success-400 rounded-xl cursor-pointer"
               src={AcceptIcon}
-              onClick={() => handleAcceptPartyRequest(request.phone)}
+              onClick={() =>
+                handleAcceptPartyRequest(request.phone, request.partyId)
+              }
             />
             <img
               className="px-[18px] py-[8px] bg-error-400 rounded-xl cursor-pointer"

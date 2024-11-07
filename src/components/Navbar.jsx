@@ -52,7 +52,7 @@ export default function Navbar() {
   return (
     <>
       <div className="w-full flex pt-[20px] pb-[16px] items-center justify-between">
-        <Link to="/login" className="flex items-center gap-[6px]">
+        <Link to="/home" className="flex items-center gap-[6px]">
           <img src={LogoImage} alt="" className="size-[88px]" />
           <h1 className="text-h3-bold">Smart Piggy Bank</h1>
         </Link>

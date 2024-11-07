@@ -65,7 +65,7 @@ export default function CreateParty() {
 
       const userRef = doc(db, "users", user.uid);
       await updateDoc(userRef, {
-        party: arrayUnion(name),
+        party: name,
       });
 
       invitedFriends.forEach((friend) => {
