@@ -197,13 +197,19 @@ export default function Party() {
 
   const handleEndParty = useCallback(async () => {
     try {
-      // TODO: เพิ่มโค้ดสำหรับจัดการการสิ้นสุดปาร์ตี้
+      // เลือก 3 อันดับแรกจาก playerData
+      const topPlayers = playerData.slice(0, 3).map((player) => ({
+        name: player.name,
+        amount: player.amount,
+        avatar: player.avatar,
+      }));
+
       setShowPartySucceedModal(false);
-      navigate("/ranking");
+      navigate("/ranking", { state: { topPlayers } });
     } catch (error) {
       console.error("Error ending party:", error);
     }
-  }, [navigate]);
+  }, [navigate, playerData]);
 
   const handleCancelParty = useCallback(() => {
     setShowPartySucceedModal(false);

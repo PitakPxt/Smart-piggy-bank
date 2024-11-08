@@ -11,7 +11,7 @@ import Forget from "@pages/Forget";
 import Regisret from "@pages/Regisret";
 import ChangePassLog from "@pages/ChangePassLog";
 import Party from "@pages/Party";
-import Rang from "@pages/Rang";
+import Ranking from "@pages/Ranking";
 
 import AddFriendModal from "@components/modals/AddFriendModal";
 import YourComponent from "@pages/YourComponent";
@@ -29,7 +29,7 @@ function App() {
             <Route path="unlock-pin" element={<UnlockPin />} />
             <Route path="create-party" element={<CreateParty />} />
             <Route path="party" element={<Party />} />
-            <Route path="ranking" element={<Rang />} />
+            <Route path="ranking" element={<Ranking />} />
             <Route path="saving" element={<YourComponent />} />
             <Route path="profile" element={<Profile />} />
             <Route path="add-friend" element={<AddFriendModal />} />
