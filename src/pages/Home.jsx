@@ -28,16 +28,13 @@ export default function Home() {
 
     // ดึงข้อมูล user document เพื่อหา savingNumber
     const userDocRef = doc(db, "users", user.uid);
-    console.log(userDocRef.id);
 
     const unsubscribe = onSnapshot(userDocRef, (userDoc) => {
       if (userDoc.exists()) {
         const { savingNumber } = userDoc.data();
-        console.log(savingNumber);
         // ดึงข้อมูล saving document
         const savingDocRef = doc(db, "saving", savingNumber);
         onSnapshot(savingDocRef, (savingDoc) => {
-          console.log(savingDoc.data());
           if (savingDoc.exists()) {
             const data = savingDoc.data();
             setSavingData({

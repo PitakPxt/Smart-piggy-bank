@@ -2,7 +2,6 @@ import React from "react";
 import BtnBack from "../components/BtnBack";
 import InputLabel from "../components/InputLabel";
 import BtnYellow from "../components/BtnYellow";
-import Whawha from "../assets/images/whawha.jpg";
 import LogoDelete from "../assets/images/delete-Player.png";
 import IconPlus from "../assets/images/icon-plus.svg";
 import InvitePartyModal from "../components/modals/InvitePartyModal";

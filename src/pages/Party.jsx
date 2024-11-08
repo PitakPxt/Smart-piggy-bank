@@ -20,6 +20,8 @@ import Whawha from "../assets/images/whawha.jpg";
 import LogoDelete from "../assets/images/delete-Player.png";
 import BtnBack from "../components/BtnBack";
 import PartySucceedModal from "../components/modals/PartySucceedModal";
+import { useUserAuth } from "../context/AuthContext";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 function PlayerListItem({ rank, player, onDelete }) {
   const bgColors = {
@@ -66,26 +68,58 @@ function PlayerListItem({ rank, player, onDelete }) {
 }
 
 export default function Party() {
+  const { user, loading: userLoading } = useUserAuth();
   const navigate = useNavigate();
   const [partyData, setPartyData] = useState(null);
   const [playerData, setPlayerData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showPartySucceedModal, setShowPartySucceedModal] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
+  const [isPartyEnded, setIsPartyEnded] = useState(false);
+
+  const calculateTimeLeft = useCallback((createdAt, totalDays) => {
+    const endDate = new Date(createdAt);
+    endDate.setDate(endDate.getDate() + totalDays);
+    const currentDate = new Date();
+    const timeDiff = endDate - currentDate;
+
+    setIsPartyEnded(timeDiff <= 0);
+
+    if (timeDiff <= 0) {
+      return { days: 0, hours: 0, minutes: 0 };
+    }
+
+    return {
+      days: Math.floor(timeDiff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+      minutes: Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60)),
+    };
+  }, []);
 
   const fetchPartyData = async () => {
     try {
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        console.error("ไม่พบผู้ใช้ที่ล็อกอิน");
+      if (!user) {
+        console.log("ไม่พบผู้ใช้ที่ล็อกอิน");
         return;
       }
 
       // ดึงข้อมูล user และ party
-      const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+      const userDoc = await getDoc(doc(db, "users", user.uid));
       const partyId = userDoc.data().party;
       const partyDoc = await getDoc(doc(db, "party", partyId));
       const party = partyDoc.data();
-      setPartyData(party);
+
+      const createdAt = party.createdAt.toDate();
+      const totalDays = parseInt(party.days);
+
+      // คำนวณเวลาที่เหลือครั้งแรก
+      const initialTimeLeft = calculateTimeLeft(createdAt, totalDays);
+
+      setTimeLeft(initialTimeLeft);
+      setPartyData({
+        ...party,
+        ...initialTimeLeft,
+      });
 
       // เก็บข้อมูล members
       const memberPromises = party.members.map(async (memberId) => {
@@ -155,23 +189,44 @@ export default function Party() {
   };
 
   useEffect(() => {
+    if (!user) return;
     let unsubscribeSnapshots = [];
     fetchPartyData();
     return () => {
       unsubscribeSnapshots.forEach((unsubscribe) => unsubscribe());
     };
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    if (!partyData) return;
+
+    const timer = setInterval(() => {
+      const newTimeLeft = calculateTimeLeft(
+        partyData.createdAt.toDate(),
+        parseInt(partyData.days)
+      );
+
+      const endDate = new Date(partyData.createdAt);
+      endDate.setDate(endDate.getDate() + parseInt(partyData.days));
+      const isPartyEnded = new Date() > endDate;
+
+      console.log(endDate);
+
+      setTimeLeft(newTimeLeft);
+    }, 60000); // อัพเดททุก 1 นาที
+
+    return () => clearInterval(timer);
+  }, [partyData, calculateTimeLeft]);
 
   const handleDeletePlayer = async (playerId) => {
     try {
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
+      if (!user) {
         console.error("ไม่พบผู้ใช้ที่ล็อกอิน");
         return;
       }
 
       // อัพเดทข้อมูลในคอลเลคชัน party โดยลบ memberId ออก
-      const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+      const userDoc = await getDoc(doc(db, "users", user.uid));
       const partyId = userDoc.data().partyId;
 
       const partyRef = doc(db, "party", partyId);
@@ -195,6 +250,13 @@ export default function Party() {
     }
   };
 
+  useEffect(() => {
+    if (isPartyEnded) {
+      window.history.pushState({}, "", "/home");
+      handleEndParty();
+    }
+  }, [isPartyEnded]);
+
   const handleEndParty = useCallback(async () => {
     try {
       // เลือก 3 อันดับแรกจาก playerData
@@ -215,8 +277,17 @@ export default function Party() {
     setShowPartySucceedModal(false);
   }, []);
 
-  if (loading) {
-    return <div>กำลังโหลด...</div>;
+  if (loading || userLoading) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <DotLottieReact
+          className="w-[200px]"
+          src="/lottie/loading.lottie"
+          loop
+          autoplay
+        />
+      </div>
+    );
   }
 
   if (!partyData) {
@@ -225,18 +296,22 @@ export default function Party() {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      <div className="w-[768px] h-[814px] flex flex-col justify-start items-center bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg gap-[18px] pt-[42px] relative">
+      <div
+        className="w-[768px] h-[814px] flex flex-col justify-start items-center bg-neutral-white-100 rounded-3xl overflow-hidden
+      drop-shadow-lg gap-[18px] pt-[24px] relative"
+      >
         <Link to="/home">
           <BtnBack />
         </Link>
-        <div className="text-center items-center mt-[28px]">
-          <h2 className="text-h2-bold">ปาร์ตี้ : {partyData?.partyName}</h2>
-          <div className="flex gap-[28px]">
-            <h3 className="text-h3-bold">
+        <div className="text-center items-center">
+          <div className="flex flex-col">
+            <h2 className="text-h2-bold">
               เป้าหมาย : {partyData?.target || 0} บาท
-            </h3>
-            <h3 className="text-h3-bold">
-              ระยะเวลาที่เหลือ {partyData?.days || 0} วัน
+            </h2>
+            <h2 className="text-h2-bold">ปาร์ตี้ : {partyData?.partyName}</h2>
+            <h3 className="text-h3">
+              ระยะเวลาที่เหลือ {timeLeft.days || 0} วัน {timeLeft.hours || 0}{" "}
+              ชั่วโมง {timeLeft.minutes || 0} นาที
             </h3>
           </div>
         </div>
