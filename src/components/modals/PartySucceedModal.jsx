@@ -2,7 +2,14 @@ import React from "react";
 import LogoSucceed from "@images/logo-PartySucc.svg";
 import BtnYellow from "@components/BtnYellow";
 
-export default function PartySucceedModal() {
+export default function PartySucceedModal({
+  setShowPartySucceedModal,
+  onEndParty,
+}) {
+  const handleCancel = () => {
+    setShowPartySucceedModal(false);
+  };
+
   return (
     <>
       <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px]">
@@ -13,8 +20,16 @@ export default function PartySucceedModal() {
               คุณต้องการสิ้นสุดปาร์ตี้นี้ใช่หรือไม่
             </h2>
             <div className="flex justify-center gap-[80px] text-center">
-              <BtnYellow className="w-[176px]  bg-primary-200" text="ยกเลิก" />
-              <BtnYellow className="w-[176px]" text="สิ้นสุดปาร์ตี้" />
+              <BtnYellow
+                className="w-[176px] bg-primary-200"
+                text="ยกเลิก"
+                onClick={handleCancel}
+              />
+              <BtnYellow
+                className="w-[176px]"
+                text="สิ้นสุดปาร์ตี้"
+                onClick={onEndParty}
+              />
             </div>
           </div>
         </div>
