@@ -93,7 +93,7 @@ export default function FriendPartyModal() {
 }
 
 ////////////////////////////////////////////////////////////
-//เพื่อนที่เรามี
+//ื่อนที่เรามี
 ////////////////////////////////////////////////////////////
 
 const FriendItem = ({ name, src, phone, userPhone }) => {
@@ -264,7 +264,7 @@ const FriendRequestItem = ({ name, src }) => {
       const myFriendSnapshot = await getDoc(myFriendDoc);
 
       if (myFriendSnapshot.exists()) {
-        // อัพเดท friendsRequest โดยลบเบอร์ที่เราปฏิเสธออก
+        // อัพเดท friendsRequest โยลบเบอร์ที่เราปฏิเสธออก
         await updateDoc(myFriendDoc, {
           friendsRequest: friendRequests
             .filter((request) => request.phone !== requestPhone)
@@ -339,38 +339,32 @@ const PartyRequestItem = () => {
           if (friendData.exists()) {
             const requests = friendData.data().partyRequest || [];
 
-            // ดึงข้อมูลผู้ใช้และข้อมูลปาร์ตี้สำหรับแต่ละ request
-            const requestsWithData = await Promise.all(
-              requests.map(async (request) => {
-                // ถ้า request เป็น object ที่มี phone และ partyId
-                const requestPhone =
-                  typeof request === "object" ? request.phone : request;
-                const partyId =
-                  typeof request === "object" ? request.partyId : null;
-
+            // ดึงข้อมูลผู้ใช้สำหรับแต่ละ request
+            const requestsWithUserData = await Promise.all(
+              requests.map(async (requestId) => {
+                // ดึงข้อมูลผู้ใช้จาก users collection
                 const usersRef = collection(db, "users");
-                const q = query(usersRef, where("phone", "==", requestPhone));
+                const q = query(usersRef, where("party", "==", requestId));
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
                   const requestUserData = querySnapshot.docs[0].data();
                   return {
-                    phone: requestPhone,
+                    partyId: requestId,
+                    phone: requestUserData.phone,
                     name: requestUserData.name,
                     profileImage: requestUserData.profileImageURL || ImgFriend,
-                    partyId: partyId, // เพิ่ม partyId
                   };
                 }
-                return {
-                  phone: requestPhone,
-                  name: requestPhone,
-                  profileImage: ImgFriend,
-                  partyId: partyId,
-                };
+                return null;
               })
             );
 
-            setPartyRequests(requestsWithData);
+            // กรอง null ออกและเซ็ต state
+            const validRequests = requestsWithUserData.filter(
+              (req) => req !== null
+            );
+            setPartyRequests(validRequests);
           }
         }
       } catch (error) {
@@ -384,43 +378,46 @@ const PartyRequestItem = () => {
 
   const handleAcceptPartyRequest = async (requestPhone, partyId) => {
     try {
-      // ดึงข้อมูล user ที่ถูกเชิญ (ตัวเรา)
-      const userDoc = doc(db, "users", user.uid);
-      const userData = await getDoc(userDoc);
+      console.log("Accepting request from:", requestPhone);
+      console.log("For party:", partyId);
 
-      if (userData.exists()) {
-        const userId = user.uid;
-
-        // อัพเดทข้อมูล party ในเอกสารของผู้ใช้
-        await updateDoc(userDoc, {
-          party: "pitak", // เพิ่มชื่อปาร์ตี้ในข้อมูลผู้ใช้
-        });
-
-        // ดึงข้อมูล party และอัพเดท members
-        const partyDoc = doc(db, "party", "pitak");
-        const partyData = await getDoc(partyDoc);
-
-        if (partyData.exists()) {
-          const currentMembers = partyData.data().members || [];
-          await updateDoc(partyDoc, {
-            members: [...currentMembers, userId],
-          });
-        }
-
-        // อัพเดทข้อมูลคำขอปาร์ตี้
-        const myFriendDoc = doc(db, "friends", userPhone);
-        await updateDoc(myFriendDoc, {
-          partyRequest: partyRequests
-            .filter((request) => request.phone !== requestPhone)
-            .map((request) => request.phone),
-        });
-
-        setPartyRequests((prevRequests) =>
-          prevRequests.filter((request) => request.phone !== requestPhone)
-        );
-
-        toast.success("ยอมรับคำเชิญเข้าปาร์ตี้สำเร็จ");
+      if (!partyId) {
+        toast.error("ไม่พบข้อมูล Party ID");
+        return;
       }
+
+      const userId = user.uid;
+
+      // อัพเดทข้อมูล party ในเอกสารของผู้ใช้
+      await updateDoc(doc(db, "users", userId), {
+        party: partyId,
+      });
+
+      // อัพเดท members ในปาร์ตี้
+      const partyRef = doc(db, "party", partyId);
+      await updateDoc(partyRef, {
+        members: arrayUnion(userId),
+      });
+
+      // ลบคำเชิญออกจาก partyRequest
+      const myFriendDoc = doc(db, "friends", userPhone);
+      const currentRequests = partyRequests
+        .filter((req) => req.phone !== requestPhone)
+        .map((req) => ({
+          senderPhone: req.phone,
+          partyId: req.partyId,
+        }));
+
+      await updateDoc(myFriendDoc, {
+        partyRequest: currentRequests,
+      });
+
+      // อัพเดท state
+      setPartyRequests((prev) =>
+        prev.filter((req) => req.phone !== requestPhone)
+      );
+
+      toast.success("ยอมรับคำเชิญเข้าปาร์ตี้สำเร็จ");
     } catch (error) {
       console.error("Error accepting party request:", error);
       toast.error("ไม่สามารถยอมรับคำเชิญเข้าปาร์ตี้ได้");
@@ -464,9 +461,10 @@ const PartyRequestItem = () => {
             <img
               className="px-[18px] py-[8px] bg-success-400 rounded-xl cursor-pointer"
               src={AcceptIcon}
-              onClick={() =>
-                handleAcceptPartyRequest(request.phone, request.partyId)
-              }
+              onClick={() => {
+                console.log("Accepting request for:", request);
+                handleAcceptPartyRequest(request.phone, request.partyId);
+              }}
             />
             <img
               className="px-[18px] py-[8px] bg-error-400 rounded-xl cursor-pointer"

@@ -76,6 +76,7 @@ export default function Party() {
   const [showPartySucceedModal, setShowPartySucceedModal] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
   const [isPartyEnded, setIsPartyEnded] = useState(false);
+  const [isPartyCreator, setIsPartyCreator] = useState(false);
 
   const calculateTimeLeft = useCallback((createdAt, totalDays) => {
     const endDate = new Date(createdAt);
@@ -108,6 +109,13 @@ export default function Party() {
       const partyId = userDoc.data().party;
       const partyDoc = await getDoc(doc(db, "party", partyId));
       const party = partyDoc.data();
+
+      // เพิ่ม console.log เพื่อดูค่า
+      console.log("Current user name:", userDoc.data().name);
+      console.log("Party creator name:", party.createdBy);
+
+      // เช็คว่าผู้ใช้ปัจจุบันเป็นผู้สร้างปาร์ตี้หรือไม่โดยเทียบจากชื่อ
+      setIsPartyCreator(userDoc.data().name === party.createdBy);
 
       const createdAt = party.createdAt.toDate();
       const totalDays = parseInt(party.days);
@@ -251,14 +259,55 @@ export default function Party() {
   };
 
   useEffect(() => {
-    if (isPartyEnded) {
-      window.history.pushState({}, "", "/home");
-      handleEndParty();
-    }
-  }, [isPartyEnded]);
+    const updatePartyStatus = async () => {
+      if (isPartyEnded && user) {
+        try {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          const partyId = userDoc.data().party;
+
+          if (partyId) {
+            const partyRef = doc(db, "party", partyId);
+            await updateDoc(partyRef, {
+              status: "end",
+            });
+            console.log("อัพเดทสถานะปาร์ตี้เป็น end สำเร็จ");
+
+            // ส่งไปหน้า ranking พร้อมข้อมูลที่จำเป็น
+            const topPlayers = playerData.slice(0, 3).map((player) => ({
+              name: player.name,
+              amount: player.amount,
+              avatar: player.avatar,
+            }));
+
+            navigate("/ranking", {
+              state: {
+                topPlayers,
+                partyId,
+                members: playerData.map((player) => player.id),
+              },
+            });
+          }
+        } catch (error) {
+          console.error("เกิดข้อผิดพลาดในการอัพเดทสถานะปาร์ตี้:", error);
+        }
+      }
+    };
+
+    updatePartyStatus();
+  }, [isPartyEnded, user, playerData, navigate]);
 
   const handleEndParty = useCallback(async () => {
     try {
+      // ดึงข้อมูล party ID จาก user
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const partyId = userDoc.data().party;
+
+      // อัพเดทสถานะปาร์ตี้เป็น "end"
+      const partyRef = doc(db, "party", partyId);
+      await updateDoc(partyRef, {
+        status: "end",
+      });
+
       // เลือก 3 อันดับแรกจาก playerData
       const topPlayers = playerData.slice(0, 3).map((player) => ({
         name: player.name,
@@ -267,11 +316,17 @@ export default function Party() {
       }));
 
       setShowPartySucceedModal(false);
-      navigate("/ranking", { state: { topPlayers } });
+      navigate("/ranking", {
+        state: {
+          topPlayers,
+          partyId,
+          members: playerData.map((player) => player.id),
+        },
+      });
     } catch (error) {
       console.error("Error ending party:", error);
     }
-  }, [navigate, playerData]);
+  }, [navigate, playerData, user]);
 
   const handleCancelParty = useCallback(() => {
     setShowPartySucceedModal(false);
@@ -281,7 +336,10 @@ export default function Party() {
     return (
       <div className="w-full h-full flex justify-center items-center">
         <DotLottieReact
-          className="w-[200px]"
+          renderConfig={{
+            autoResize: true,
+          }}
+          className="w-[420px]"
           src="/lottie/loading.lottie"
           loop
           autoplay
@@ -291,7 +349,25 @@ export default function Party() {
   }
 
   if (!partyData) {
-    return <div>ไม่พบข้อมูลปาร์ตี้</div>;
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <div
+          className="flex flex-col gap-[24px] justify-center items-center bg-neutral-white-100 
+        rounded-3xl drop-shadow-lg p-[24px]"
+        >
+          <DotLottieReact
+            renderConfig={{
+              autoResize: true,
+            }}
+            className="w-[820px]"
+            src="/lottie/loading.lottie"
+            loop
+            autoplay
+          />
+          <h2 className="text-h2-bold">ไม่พบข้อมูลปาร์ตี้</h2>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -327,13 +403,15 @@ export default function Party() {
             ))}
           </ul>
         </div>
-        <div
-          className="px-[32px] py-[12px] absolute bottom-[24px] bg-transparent border-2 border-error-300 text-error-300 text-h3-bold 
-          rounded-xl drop-shadow-lg hover:border-error-200 hover:bg-error-200 hover:text-neutral-white-100 cursor-pointer"
-          onClick={() => setShowPartySucceedModal(true)}
-        >
-          สิ้นสุดปาร์ตี้
-        </div>
+        {isPartyCreator && (
+          <div
+            className="px-[32px] py-[12px] absolute bottom-[24px] bg-transparent border-2 border-error-300 text-error-300 text-h3-bold 
+            rounded-xl drop-shadow-lg hover:border-error-200 hover:bg-error-200 hover:text-neutral-white-100 cursor-pointer"
+            onClick={() => setShowPartySucceedModal(true)}
+          >
+            สิ้นสุดปาร์ตี้
+          </div>
+        )}
       </div>
       {showPartySucceedModal && (
         <PartySucceedModal

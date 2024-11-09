@@ -60,6 +60,7 @@ export default function CreateParty() {
         days: days,
         createdAt: new Date(),
         createdBy: name,
+        status: "proress",
       });
 
       const userRef = doc(db, "users", user.uid);

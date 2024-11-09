@@ -1,8 +1,9 @@
-import React from "react";
-import Whawha from "../assets/images/whawha.jpg";
+import React, { useEffect, useState } from "react";
 import LogoRang from "../assets/images/rang-number-1.png";
 import BtnYellow from "../components/BtnYellow";
 import { useLocation, useNavigate } from "react-router-dom";
+import { deleteDoc, doc, updateDoc, getDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
   const isFirstPlace = rank === 1;
@@ -37,7 +38,7 @@ const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
         <h1 className="text-[128px] font-bold">{rank}</h1>
         {isFirstPlace && (
           <img
-            className="size-[148px]"
+            className="size-[148px] drop-shadow-mddrop-shadow-lg"
             src={LogoRang}
             alt="First place badge"
           />
@@ -49,8 +50,53 @@ const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
 
 export default function Ranking() {
   const location = useLocation();
-  const topPlayers = location.state?.topPlayers || [];
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const topPlayers = location.state?.topPlayers || [];
+
+  const cleanupPartyData = async () => {
+    try {
+      // ดึงข้อมูล party ที่มี status เป็น "end"
+      const partyRef = doc(db, "party", "pitak");
+      const partyDoc = await getDoc(partyRef);
+
+      if (!partyDoc.exists()) {
+        console.error("ไม่พบข้อมูลปาร์ตี้");
+        return;
+      }
+
+      const partyData = partyDoc.data();
+
+      // ตรวจสอบว่า status เป็น "end" หรือไม่
+      if (partyData.status !== "end") {
+        console.log("ปาร์ตี้ยังไม่สิ้นสุด");
+        return;
+      }
+
+      // อัพเดทข้อมูลผู้ใช้
+      const members = partyData.members || [];
+      for (const memberId of members) {
+        const userRef = doc(db, "users", memberId);
+        await updateDoc(userRef, {
+          party: null,
+        });
+        console.log(`อัพเดทผู้ใช้ ${memberId} สำเร็จ`);
+      }
+
+      // ลบข้อมูลปาร์ตี้
+      await deleteDoc(partyRef);
+      console.log("ลบปาร์ตี้สำเร็จ");
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาด:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    cleanupPartyData();
+  }, []);
+
   const orderedRankData = [
     {
       ...topPlayers[1],
@@ -68,6 +114,10 @@ export default function Ranking() {
       bgColor: "bg-[#9BD0F2]",
     },
   ].filter(Boolean);
+
+  if (isLoading) {
+    return <div>กำลังโหลด...</div>;
+  }
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
