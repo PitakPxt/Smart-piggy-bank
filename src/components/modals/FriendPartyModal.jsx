@@ -10,14 +10,58 @@ import { db } from "../../lib/firebase";
 import { doc, getDoc, updateDoc, arrayUnion, setDoc } from "firebase/firestore";
 import { collection, getDocs, query, where, addDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
+import DeleteFriendModal from "@components/modals/DeleteFriendModal";
 
 export default function FriendPartyModal() {
   const [activeTab, setActiveTab] = useState("friends");
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
+  const [showDeleteFriendModal, setShowDeleteFriendModal] = useState(false);
+  const [selectedFriend, setSelectedFriend] = useState(null);
   const [phone, setPhone] = useState("");
 
   const handleAddFriendClick = () => {
     setShowAddFriendModal(true);
+  };
+
+  const handleDeleteFriend = async (friendPhone, userPhone) => {
+    try {
+      // อัพเดทข้อมูลของผู้ใช้ที่ลบเพื่อน
+      const myFriendDoc = doc(db, "friends", userPhone);
+      const myFriendData = await getDoc(myFriendDoc);
+
+      if (myFriendData.exists()) {
+        const currentFriendships = myFriendData.data().friendships || [];
+        const updatedFriendships = currentFriendships.filter(
+          (phone) => phone !== friendPhone
+        );
+
+        await updateDoc(myFriendDoc, {
+          friendships: updatedFriendships,
+        });
+
+        // อัพเดทข้อมูลของเพื่อนที่ถูกลบ
+        const theirFriendDoc = doc(db, "friends", friendPhone);
+        const theirFriendData = await getDoc(theirFriendDoc);
+
+        if (theirFriendData.exists()) {
+          const theirFriendships = theirFriendData.data().friendships || [];
+          const updatedTheirFriendships = theirFriendships.filter(
+            (phone) => phone !== userPhone
+          );
+
+          await updateDoc(theirFriendDoc, {
+            friendships: updatedTheirFriendships,
+          });
+        }
+
+        toast.success("ลบเพื่อนสำเร็จ");
+        // รีเฟรชรายการเพื่อน
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error deleting friend:", error);
+      toast.error("ไม่สามารถลบเพื่อนได้");
+    }
   };
 
   return (
@@ -61,7 +105,10 @@ export default function FriendPartyModal() {
                 className="w-[274px] text-h3-bold text-black text-center mb-5"
                 text="เพิ่มเพื่อน!"
               />
-              <FriendList />
+              <FriendList
+                setSelectedFriend={setSelectedFriend}
+                setShowDeleteFriendModal={setShowDeleteFriendModal}
+              />
               <div className="w-full flex flex-col">
                 <h4 className="text-h4-bold text-neutral-black-800 mb-[14px]">
                   คำขอเป็นเพื่อน
@@ -88,6 +135,20 @@ export default function FriendPartyModal() {
       {showAddFriendModal && (
         <AddFriendModal onClose={() => setShowAddFriendModal(false)} />
       )}
+      {showDeleteFriendModal && (
+        <DeleteFriendModal
+          onClose={() => setShowDeleteFriendModal(false)}
+          onConfirm={() => {
+            if (selectedFriend) {
+              handleDeleteFriend(
+                selectedFriend.phone,
+                selectedFriend.userPhone
+              );
+            }
+            setShowDeleteFriendModal(false);
+          }}
+        />
+      )}
     </>
   );
 }
@@ -96,38 +157,17 @@ export default function FriendPartyModal() {
 //ือนที่เรามี
 ////////////////////////////////////////////////////////////
 
-const FriendItem = ({ name, src, phone, userPhone }) => {
-  const handleDeleteFriend = async () => {
-    try {
-      // ลบเพื่อนออกจากรายการของเรา
-      const myFriendDoc = doc(db, "friends", userPhone);
-      const myFriendData = await getDoc(myFriendDoc);
-
-      if (myFriendData.exists()) {
-        const currentFriendships = myFriendData.data().friendships || [];
-        await updateDoc(myFriendDoc, {
-          friendships: currentFriendships.filter((friend) => friend !== phone),
-        });
-      }
-
-      // ลบเราออกจากรายการเพื่อนของเขา
-      const theirFriendDoc = doc(db, "friends", phone);
-      const theirFriendData = await getDoc(theirFriendDoc);
-
-      if (theirFriendData.exists()) {
-        const theirFriendships = theirFriendData.data().friendships || [];
-        await updateDoc(theirFriendDoc, {
-          friendships: theirFriendships.filter(
-            (friend) => friend !== userPhone
-          ),
-        });
-      }
-
-      toast.success("ลบเพื่อนสำเร็จ");
-    } catch (error) {
-      console.error("Error deleting friend:", error);
-      toast.error("ไม่สามารถลบเพื่อนได้");
-    }
+const FriendItem = ({
+  name,
+  src,
+  phone,
+  userPhone,
+  setSelectedFriend,
+  setShowDeleteFriendModal,
+}) => {
+  const handleDeleteClick = () => {
+    setSelectedFriend({ phone, userPhone });
+    setShowDeleteFriendModal(true);
   };
 
   return (
@@ -137,7 +177,7 @@ const FriendItem = ({ name, src, phone, userPhone }) => {
         src={DeleteIcon}
         alt="ลบเพื่อน"
         className="cursor-pointer"
-        onClick={handleDeleteFriend}
+        onClick={handleDeleteClick}
       />
     </div>
   );
@@ -324,7 +364,7 @@ const PartyRequestItem = () => {
   useEffect(() => {
     const fetchPartyRequests = async () => {
       try {
-        // ดึงเบอร์โทรของผู้ใช้ที่ล็อกอิน
+        // ดึงเบอร์โทรของผู้ใช้ที่็อกอิน
         const userDoc = doc(db, "users", user.uid);
         const userData = await getDoc(userDoc);
 
@@ -339,7 +379,7 @@ const PartyRequestItem = () => {
           if (friendData.exists()) {
             const requests = friendData.data().partyRequest || [];
 
-            // ดึงข้อมูลผู้ใช้สำหรับแต่ละ request
+            // ดึงข้อมูลู้ใช้สำหรับแต่ละ request
             const requestsWithUserData = await Promise.all(
               requests.map(async (requestName) => {
                 // เปลี่ยนเป็นค้นหาจาก name แทน party
@@ -475,7 +515,7 @@ const PartyRequestItem = () => {
   );
 };
 
-const FriendList = () => {
+const FriendList = ({ setSelectedFriend, setShowDeleteFriendModal }) => {
   const { user } = useUserAuth();
   const [friends, setFriends] = useState([]);
   const [userPhone, setUserPhone] = useState("");
@@ -544,6 +584,8 @@ const FriendList = () => {
             src={friend.profileImage}
             phone={friend.phone}
             userPhone={userPhone}
+            setSelectedFriend={setSelectedFriend}
+            setShowDeleteFriendModal={setShowDeleteFriendModal}
           />
         ))}
         <span className="h-[1px] w-full bg-neutral-white-500 mb-[16px]"></span>
