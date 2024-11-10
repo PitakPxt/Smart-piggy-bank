@@ -3,6 +3,7 @@ import BtnBack from "../components/BtnBack";
 import BtnYellow from "../components/BtnYellow";
 import InputLabel from "../components/InputLabel";
 import DefaultProfile from "@images/default-Profile.svg";
+import InputPin from "../components/InputPin";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -101,25 +102,10 @@ export default function Regisret() {
             password: password,
             savingNumber: savingNumber,
             profileImageURL: imageURL,
+            pin: null,
           });
-          // await setDoc(
-          //   doc(db, "email-user", "email"),
-          //   {
-          //     email: arrayUnion(email),
-          //   },
-          //   { merge: true }
-          // );
-          // await setDoc(
-          //   doc(db, "phone-user", "phone"),
-          //   {
-          //     phone: arrayUnion(phone),
-          //   },
-          //   { merge: true }
-          // );
-
-          console.log("บันทึกข้อมูลผู้ใช้และรูปภาพสำเร็จ");
           setIsUploading(false);
-          navigate("/login");
+          navigate("/");
           logOut();
         }
       );
@@ -194,7 +180,7 @@ export default function Regisret() {
               </div>
               <div className="w-[502px] flex flex-col">
                 <InputLabel
-                  className={"w-full mb-[18px]"}
+                  className={"w-full mb-[8px]"}
                   text="ชื่อบัญชี"
                   placeHolder="กรอกชื่อ"
                   required={true}
@@ -204,7 +190,7 @@ export default function Regisret() {
                   autoComplete="off"
                 />
                 <InputLabel
-                  className={"w-full mb-[18px]"}
+                  className={"w-full mb-[8px]"}
                   text="เบอร์โทรศัพท์"
                   placeHolder="กรอกเบอร์โทรศัพท์"
                   required={true}
@@ -214,7 +200,7 @@ export default function Regisret() {
                   autoComplete="off"
                 />
                 <InputLabel
-                  className={"w-full mb-[18px]"}
+                  className={"w-full mb-[8px]"}
                   text="อีเมล์"
                   placeHolder="กรอกอีเมล์"
                   required={true}
@@ -224,7 +210,7 @@ export default function Regisret() {
                   autoComplete="off"
                 />
                 <InputLabel
-                  className={"w-full mb-[18px]"}
+                  className={"w-full mb-[8px]"}
                   text="รหัสผ่าน"
                   placeHolder="กรอกรหัสผ่าน"
                   required={true}
@@ -234,7 +220,7 @@ export default function Regisret() {
                   autoComplete="off"
                 />
                 <InputLabel
-                  className={"w-full"}
+                  className={"w-full mb-[8px]"}
                   text="หมายเลขกระปุกออมสิน"
                   placeHolder="กรอกหมายเลขกระปุกออมสิน"
                   required={true}

@@ -6,38 +6,35 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/AuthContext";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user } = useUserAuth();
   const { logIn } = useUserAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await logIn(email, password);
-      console.log(user);
-      navigate("/home");
-      toast.success("เข้าสู่ระบบสำเร็จ");
+      const userCredential = await logIn(email, password);
+      const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+      const userData = userDoc.data();
+
+      if (!userData.pin || userData.pin === null) {
+        navigate("/unlock-pin");
+        toast.info("กรุณาตั้งค่า PIN ก่อนเข้าใช้งาน");
+      } else {
+        navigate("/home");
+        toast.success("เข้าสู่ระบบสำเร็จ");
+      }
     } catch (error) {
-      console.log(error);
       toast.error("อีเมล์ หรือ รหัสผ่านไม่ถูกต้อง");
     }
   };
-
-  // const handleAddFriend = async (e) => {
-  //   e.preventDefault();
-  //   console.log(user.uid);
-  //   const userDoc = doc(db, "users", user.uid);
-  //   const userData = await getDoc(userDoc);
-  //   setPhone(userData.data().phone);
-
-  //   console.log(phone);
-  // };
 
   return (
     <>

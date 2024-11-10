@@ -1,5 +1,4 @@
-import React, { useState, useRef } from "react";
-import { cn } from "../lib/tailwindcss";
+import React, { useState, useRef, useEffect } from "react";
 
 export default function InputPin({
   textPin,
@@ -7,60 +6,68 @@ export default function InputPin({
   data: initialData,
   onChange,
 }) {
-  const [data, setData] = useState(initialData || "");
+  const [pin, setPin] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]);
 
-  const handleChange = (e, index) => {
-    const { value } = e.target;
-    if (/^\d*$/.test(value)) {
-      const newData = data.slice(0, index) + value + data.slice(index + 1);
-      setData(newData.slice(0, 6));
-      onChange(newData);
+  // สร้าง refs สำหรับแต่ละ input
+  useEffect(() => {
+    inputRefs.current = inputRefs.current.slice(0, 6);
+  }, []);
 
-      if (index < 5 && value) {
-        inputRefs.current[index + 1].focus();
-      }
+  const handleChange = (index, value) => {
+    // รับเฉพาะตัวเลข
+    if (!/^\d*$/.test(value)) return;
+
+    const newPin = [...pin];
+    newPin[index] = value;
+    setPin(newPin);
+
+    // ส่งค่า PIN กลับไปยัง parent component
+    const completedPin = newPin.join("");
+    onChange(completedPin);
+
+    // ถ้ามีการใส่ตัวเลข ให้ focus ไปช่องถัดไป
+    if (value !== "" && index < 5) {
+      inputRefs.current[index + 1].focus();
     }
   };
 
   const handleKeyDown = (index, e) => {
-    if (e.key === "Backspace") {
-      e.preventDefault();
-      const newData = data.slice(0, index) + data.slice(index + 1);
-      setData(newData);
-      onChange(newData);
-      if (index > 0) {
-        inputRefs.current[index - 1].focus();
-      }
+    // ถ้ากด Backspace และช่องว่างเปล่า ให้ย้อนกลับไปช่องก่อนหน้า
+    if (e.key === "Backspace" && !pin[index] && index > 0) {
+      const newPin = [...pin];
+      newPin[index - 1] = "";
+      setPin(newPin);
+      onChange(newPin.join(""));
+      inputRefs.current[index - 1].focus();
     }
   };
 
   return (
-    <>
-      <div>
-        <h2 className="text-h3-bold font-bold text-neutral-white-800 pb-[10px]">
-          {textPin}
-        </h2>
-        <div className={cn("flex justify-center gap-5 mb-2", className)}>
-          {[0, 1, 2, 3, 4, 5].map((index) => (
-            <input
-              key={index}
-              ref={(el) => (inputRefs.current[index] = el)}
-              type="text"
-              inputMode="numeric"
-              maxLength="1"
-              value={data[index] || ""}
-              className={`w-[72px] h-[102px] text-h2-bold text-center text-2xl rounded-md focus:outline-none ${
-                data[index]
-                  ? "border border-neutral-white-800 text-neutral-white-800"
-                  : "border border-neutral-white-300 text-neutral-white-300"
-              }`}
-              onChange={(e) => handleChange(e, index)}
-              onKeyDown={(e) => handleKeyDown(index, e)}
-            />
-          ))}
-        </div>
+    <div>
+      <h2 className="text-h3-bold font-bold text-neutral-white-800 pb-[10px]">
+        {textPin}
+      </h2>
+      <div className={`flex justify-center gap-5 mb-2 ${className}`}>
+        {pin.map((digit, index) => (
+          <input
+            key={index}
+            ref={(ref) => (inputRefs.current[index] = ref)}
+            type="text"
+            inputMode="numeric"
+            maxLength="1"
+            value={digit}
+            className={`w-[72px] h-[102px] text-h2-bold text-center text-2xl rounded-md focus:outline-none ${
+              digit
+                ? "border border-neutral-white-800 text-neutral-white-800"
+                : "border border-neutral-white-300 text-neutral-white-300"
+            }`}
+            onChange={(e) => handleChange(index, e.target.value)}
+            onKeyDown={(e) => handleKeyDown(index, e)}
+            autoFocus={index === 0}
+          />
+        ))}
       </div>
-    </>
+    </div>
   );
 }
