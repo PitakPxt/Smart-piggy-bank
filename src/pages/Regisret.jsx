@@ -123,7 +123,7 @@ export default function Regisret() {
           onSubmit={handleSubmit}
           className="w-[1104px] h-[786px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg"
         >
-          <Link to="/login">
+          <Link to="/">
             <BtnBack />
           </Link>
           <div className="size-full flex flex-col justify-center items-center">

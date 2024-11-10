@@ -71,16 +71,22 @@ export default function UnlockPin() {
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
-        <div className="w-[856px] h-[828px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
+        <div className="w-[756px] h-[742px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
           <div className="w-full h-full flex flex-col justify-center items-center ">
             <div onClick={handleBack} className="cursor-pointer">
               <BtnBack />
             </div>
             <div className="flex flex-col justify-center text-center gap-2 mb-[38px]">
-              <div className="flex flex-col gap-[18px]">
-                <img src={LogoPicUnlockPin} alt="" className="" />
+              <div className="flex flex-col gap-[18px] items-center">
+                <img
+                  src={LogoPicUnlockPin}
+                  alt=""
+                  className="size-[202px] object-cover"
+                />
                 <h2 className="text-h3 font-bold text-neutral-white-800 text-center">
-                  ปลดล็อคกระปุก
+                  {userPin === null
+                    ? "กำหนด PIN สำหรับปลดล็อคกระปุก"
+                    : "ปลดล็อคกระปุก"}
                 </h2>
               </div>
               <h2 className="text-h2-bold text-neutral-white-800 text-center">

@@ -8,12 +8,38 @@ import { cn } from "../lib/tailwindcss";
 import { Link } from "react-router-dom";
 
 import React, { useEffect, useRef, useState } from "react";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const { user, logOut } = useUserAuth();
   const [showFriendPartyModal, setShowFriendPartyModal] = useState(false);
   const modalRef = useRef(null);
+  const [userPin, setUserPin] = useState(null);
+  const [showNavItems, setShowNavItems] = useState(false);
+
+  useEffect(() => {
+    const fetchAndWatchUserPin = async () => {
+      if (user?.uid) {
+        const userDocRef = doc(db, "users", user.uid);
+        const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const pin = docSnap.data().pin;
+            setUserPin(pin);
+            setShowNavItems(pin !== null);
+          }
+        });
+
+        return () => unsubscribe();
+      } else {
+        setUserPin(null);
+        setShowNavItems(false);
+      }
+    };
+
+    fetchAndWatchUserPin();
+  }, [user]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -57,8 +83,8 @@ export default function Navbar() {
           <h1 className="text-h3-bold">Smart Piggy Bank</h1>
         </Link>
 
-        <div className="flex gap-5 text-h3-bold ">
-          {user ? (
+        <div className="flex gap-5 text-h3-bold">
+          {user && showNavItems && (
             <>
               <NavbarItem text="ปลดล็อค" to="/unlock-pin" />
               <NavbarItem text="สร้างปาร์ตี้" to="/create-party" />
@@ -74,11 +100,9 @@ export default function Navbar() {
                 </div>
               </div>
               <NavbarItem text="โปรไฟล์" to="/profile" />
-              <a className="px-4 py-2" style={{ display: "none" }}>
-                <img src={HamburgerMenu} alt="" className="size-[34px]" />
-              </a>
             </>
-          ) : (
+          )}
+          {!user && (
             <>
               <BtnYellow
                 className="px-7"
