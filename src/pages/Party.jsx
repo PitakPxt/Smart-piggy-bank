@@ -359,12 +359,12 @@ export default function Party() {
             renderConfig={{
               autoResize: true,
             }}
-            className="w-[820px]"
-            src="/lottie/loading.lottie"
+            className="w-[480px] "
+            src="/lottie/pig.lottie"
             loop
             autoplay
           />
-          <h2 className="text-h2-bold">ไม่พบข้อมูลปาร์ตี้</h2>
+          <h2 className="text-h2-bold p-2">ไม่พบข้อมูลปาร์ตี้</h2>
         </div>
       </div>
     );

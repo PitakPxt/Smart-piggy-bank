@@ -93,7 +93,7 @@ export default function FriendPartyModal() {
 }
 
 ////////////////////////////////////////////////////////////
-//ื่อนที่เรามี
+//ือนที่เรามี
 ////////////////////////////////////////////////////////////
 
 const FriendItem = ({ name, src, phone, userPhone }) => {
@@ -341,16 +341,16 @@ const PartyRequestItem = () => {
 
             // ดึงข้อมูลผู้ใช้สำหรับแต่ละ request
             const requestsWithUserData = await Promise.all(
-              requests.map(async (requestId) => {
-                // ดึงข้อมูลผู้ใช้จาก users collection
+              requests.map(async (requestName) => {
+                // เปลี่ยนเป็นค้นหาจาก name แทน party
                 const usersRef = collection(db, "users");
-                const q = query(usersRef, where("party", "==", requestId));
+                const q = query(usersRef, where("name", "==", requestName));
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
                   const requestUserData = querySnapshot.docs[0].data();
                   return {
-                    partyId: requestId,
+                    partyId: requestUserData.party, // เก็บ party ID จากข้อมูลผู้ใช้
                     phone: requestUserData.phone,
                     name: requestUserData.name,
                     profileImage: requestUserData.profileImageURL || ImgFriend,
@@ -378,9 +378,6 @@ const PartyRequestItem = () => {
 
   const handleAcceptPartyRequest = async (requestPhone, partyId) => {
     try {
-      console.log("Accepting request from:", requestPhone);
-      console.log("For party:", partyId);
-
       if (!partyId) {
         toast.error("ไม่พบข้อมูล Party ID");
         return;
@@ -399,23 +396,23 @@ const PartyRequestItem = () => {
         members: arrayUnion(userId),
       });
 
-      // ลบคำเชิญออกจาก partyRequest
+      // แก้ไขส่วนนี้: ลบเฉพาะ partyId ที่เกี่ยวข้องออกจาก partyRequest
       const myFriendDoc = doc(db, "friends", userPhone);
-      const currentRequests = partyRequests
-        .filter((req) => req.phone !== requestPhone)
-        .map((req) => ({
-          senderPhone: req.phone,
-          partyId: req.partyId,
-        }));
+      const myFriendData = await getDoc(myFriendDoc);
 
-      await updateDoc(myFriendDoc, {
-        partyRequest: currentRequests,
-      });
+      if (myFriendData.exists()) {
+        const currentPartyRequests = myFriendData.data().partyRequest || [];
+        const updatedPartyRequests = currentPartyRequests.filter(
+          (request) => request !== partyId
+        );
+
+        await updateDoc(myFriendDoc, {
+          partyRequest: updatedPartyRequests,
+        });
+      }
 
       // อัพเดท state
-      setPartyRequests((prev) =>
-        prev.filter((req) => req.phone !== requestPhone)
-      );
+      setPartyRequests((prev) => prev.filter((req) => req.partyId !== partyId));
 
       toast.success("ยอมรับคำเชิญเข้าปาร์ตี้สำเร็จ");
     } catch (error) {
