@@ -178,9 +178,9 @@ export default function Party() {
 
         // จัดเรียงใหม่ตามลำดับการแสดงผล (1, 2, 3)
         const orderedWinners = [
-          sortedMembers[0], // อันดับ 1 (whawha - 3000฿)
-          sortedMembers[1], // อันดับ 2 (folk - 444฿)
-          sortedMembers[2], // อันดับ 3 (pitak - 90฿)
+          sortedMembers[0],
+          sortedMembers[1],
+          sortedMembers[2],
         ].filter(Boolean);
 
         // อัพเดท winners ใน party document
@@ -261,12 +261,6 @@ export default function Party() {
                   amount: player.amount,
                   avatar: player.avatar,
                   rank: index + 1,
-                  bgColor:
-                    index === 0
-                      ? "bg-primary-500"
-                      : index === 1
-                      ? "bg-[#F36B39]"
-                      : "bg-[#9BD0F2]",
                 }));
 
               // จัดเรียงใหม่ตามลำดับการแสดงผล (2, 1, 3)
