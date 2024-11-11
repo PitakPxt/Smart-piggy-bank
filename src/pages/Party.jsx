@@ -66,6 +66,7 @@ function PlayerListItem({
           <h2 className="text-h2-bold w-[180px] truncate">{player.name}</h2>
         </div>
       </div>
+
       <div className="flex items-center mr-[48px] gap-[24px]">
         <div className="w-[120px] flex justify-end">
           <h2 className="text-h2-bold">{player.amount} ฿</h2>
