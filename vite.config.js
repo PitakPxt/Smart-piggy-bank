@@ -14,4 +14,5 @@ export default defineConfig({
       "@modals": path.resolve(__dirname, "./src/components/modals"),
     },
   },
+  assetsInclude: ["**/*.lottie"],
 });

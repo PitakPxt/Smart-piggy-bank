@@ -61,10 +61,13 @@ export default function Profile() {
                 src={userData?.profileImageURL || DefaultProfile}
                 alt="โปรไฟล์"
               />
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2">
                 <h1 className="text-h1-bold">{userData?.name || "Name"}</h1>
-                <h2 className="text-h2">{userData?.phone || "099XXXXXXX"}</h2>
-                <h2 className="text-h2">
+                <h2 className="text-h3-bold">
+                  รหัสกระปุก : {userData?.savingNumber || "00XXX"}
+                </h2>
+                <h2 className="text-h3">{userData?.phone || "099XXXXXXX"}</h2>
+                <h2 className="text-h3">
                   {userData?.email || "xxxxxx@gmail.com"}
                 </h2>
               </div>

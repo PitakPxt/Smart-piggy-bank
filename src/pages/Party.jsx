@@ -12,24 +12,36 @@ import {
   updateDoc,
   onSnapshot,
 } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
 import LogoNumber1 from "../assets/images/number-1.png";
 import LogoNumber2 from "../assets/images/number-2.png";
 import LogoNumber3 from "../assets/images/number-3.png";
-import Whawha from "../assets/images/whawha.jpg";
 import LogoDelete from "../assets/images/delete-Player.png";
+import NotFoundModal from "../components/modals/NotFoundModal";
+import LogoLoading from "/lottie/loading.lottie";
+import LogoPig from "/lottie/pig.lottie";
 import BtnBack from "../components/BtnBack";
 import PartySucceedModal from "../components/modals/PartySucceedModal";
+import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/AuthContext";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import DeleteUserPartyModal from "../components/modals/DeleteUserPartyModal";
 
-function PlayerListItem({ rank, player, onDelete }) {
+function PlayerListItem({
+  rank,
+  player,
+  onDelete,
+  isCreator,
+  currentUserId,
+  creatorName,
+}) {
   const bgColors = {
     1: "bg-primary-500",
     2: "bg-primary-400",
     3: "bg-primary-300",
     default: "bg-primary-200",
   };
+
+  const canDelete =
+    isCreator && player.id !== currentUserId && player.name !== creatorName;
 
   return (
     <li
@@ -54,14 +66,20 @@ function PlayerListItem({ rank, player, onDelete }) {
           <h2 className="text-h2-bold w-[180px] truncate">{player.name}</h2>
         </div>
       </div>
-      <div className="flex items-center gap-[24px] mr-[48px]">
-        <h2 className="text-h2-bold text-right">{player.amount} ฿</h2>
-        <img
-          className="size-[32px] cursor-pointer"
-          src={LogoDelete}
-          alt="Delete"
-          onClick={() => onDelete(player.id)}
-        />
+      <div className="flex items-center mr-[48px] gap-[24px]">
+        <div className="w-[120px] flex justify-end">
+          <h2 className="text-h2-bold">{player.amount} ฿</h2>
+        </div>
+        <div className="w-[32px]">
+          {canDelete && (
+            <img
+              className="size-[32px] cursor-pointer"
+              src={LogoDelete}
+              alt="Delete"
+              onClick={() => onDelete(player)}
+            />
+          )}
+        </div>
       </div>
     </li>
   );
@@ -77,6 +95,8 @@ export default function Party() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
   const [isPartyEnded, setIsPartyEnded] = useState(false);
   const [isPartyCreator, setIsPartyCreator] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   const calculateTimeLeft = useCallback((createdAt, totalDays) => {
     const endDate = new Date(createdAt);
@@ -120,7 +140,7 @@ export default function Party() {
       const createdAt = party.createdAt.toDate();
       const totalDays = parseInt(party.days);
 
-      // คำนวณเวลาที่เหลือครั้งแรก
+      // คำนวณเวลาที่เหลือคั้งแรก
       const initialTimeLeft = calculateTimeLeft(createdAt, totalDays);
 
       setTimeLeft(initialTimeLeft);
@@ -226,36 +246,69 @@ export default function Party() {
     return () => clearInterval(timer);
   }, [partyData, calculateTimeLeft]);
 
-  const handleDeletePlayer = async (playerId) => {
+  const handleDeleteClick = (player) => {
+    setSelectedPlayer(player);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
     try {
-      if (!user) {
-        console.error("ไม่พบผู้ใช้ที่ล็อกอิน");
-        return;
-      }
+      if (!selectedPlayer) return;
 
-      // อัพเดทข้อมูลในคอลเลคชัน party โดยลบ memberId ออก
+      // อัพเดท party document โดยลบ member
       const userDoc = await getDoc(doc(db, "users", user.uid));
-      const partyId = userDoc.data().partyId;
-
+      const partyId = userDoc.data().party;
       const partyRef = doc(db, "party", partyId);
       const partyDoc = await getDoc(partyRef);
-      const currentMembers = partyDoc.data().members;
 
-      // ลบ memberId ออกจากอาร์เรย์
-      const updatedMembers = currentMembers.filter((id) => id !== playerId);
+      const updatedMembers = partyDoc
+        .data()
+        .members.filter((id) => id !== selectedPlayer.id);
 
-      // อัพเดทข้อมูลใน Firestore
       await updateDoc(partyRef, {
         members: updatedMembers,
       });
 
-      // อัพเดท state เพื่อแสดงผลใหม่
-      setPlayerData((players) =>
-        players.filter((player) => player.id !== playerId)
-      );
+      // อัพเดท user document ของคนที่ถูกลบ
+      const memberRef = doc(db, "users", selectedPlayer.id);
+      await updateDoc(memberRef, {
+        party: null,
+      });
+
+      // อัพเดท playerData และจัดเรียงใหม่
+      const updatedPlayerData = playerData
+        .filter((player) => player.id !== selectedPlayer.id)
+        .sort((a, b) => b.amount - a.amount)
+        .map((player, index) => ({
+          ...player,
+          rankImage: getRankImage(index + 1), // function สำหรับเลือกรูป rank ตามอันดับ
+        }));
+
+      setPlayerData(updatedPlayerData);
+      setShowDeleteModal(false);
+      setSelectedPlayer(null);
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการลบสมาชิก:", error);
     }
+  };
+
+  // เพิ่มฟังก์ชันสำหรับเลือกรูป rank
+  const getRankImage = (rank) => {
+    switch (rank) {
+      case 1:
+        return LogoNumber1;
+      case 2:
+        return LogoNumber2;
+      case 3:
+        return LogoNumber3;
+      default:
+        return null;
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+    setSelectedPlayer(null);
   };
 
   useEffect(() => {
@@ -272,7 +325,6 @@ export default function Party() {
             });
             console.log("อัพเดทสถานะปาร์ตี้เป็น end สำเร็จ");
 
-            // ส่งไปหน้า ranking พร้อมข้อมูลที่จำเป็น
             const topPlayers = playerData.slice(0, 3).map((player) => ({
               name: player.name,
               amount: player.amount,
@@ -334,39 +386,23 @@ export default function Party() {
 
   if (loading || userLoading) {
     return (
-      <div className="w-full h-full flex justify-center items-center">
-        <DotLottieReact
-          renderConfig={{
-            autoResize: true,
-          }}
-          className="w-[420px]"
-          src="/lottie/loading.lottie"
-          loop
-          autoplay
-        />
-      </div>
+      <NotFoundModal
+        src={LogoLoading}
+        text="กำลังโหลดข้อมูล..."
+        className="h-[220px]"
+        showBackButton={false}
+      />
     );
   }
 
   if (!partyData) {
     return (
-      <div className="w-full h-full flex justify-center items-center">
-        <div
-          className="flex flex-col gap-[24px] justify-center items-center bg-neutral-white-100 
-        rounded-3xl drop-shadow-lg p-[24px]"
-        >
-          <DotLottieReact
-            renderConfig={{
-              autoResize: true,
-            }}
-            className="w-[480px] "
-            src="/lottie/pig.lottie"
-            loop
-            autoplay
-          />
-          <h2 className="text-h2-bold p-2">ไม่พบข้อมูลปาร์ตี้</h2>
-        </div>
-      </div>
+      <NotFoundModal
+        src={LogoPig}
+        text="ไม่พบข้อมูลปาร์ตี้"
+        className="w-[480px]"
+        to="/home"
+      />
     );
   }
 
@@ -398,7 +434,10 @@ export default function Party() {
                 key={player.id}
                 rank={index + 1}
                 player={player}
-                onDelete={handleDeletePlayer}
+                onDelete={handleDeleteClick}
+                isCreator={isPartyCreator}
+                currentUserId={user.uid}
+                creatorName={partyData?.createdBy}
               />
             ))}
           </ul>
@@ -419,6 +458,12 @@ export default function Party() {
           setShowPartySucceedModal={setShowPartySucceedModal}
           onEndParty={handleEndParty}
           onCancel={handleCancelParty}
+        />
+      )}
+      {showDeleteModal && (
+        <DeleteUserPartyModal
+          onClose={handleCancelDelete}
+          onConfirm={handleConfirmDelete}
         />
       )}
     </div>
