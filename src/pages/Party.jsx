@@ -127,29 +127,88 @@ export default function Party() {
       // ดึงข้อมูล user และ party
       const userDoc = await getDoc(doc(db, "users", user.uid));
       const partyId = userDoc.data().party;
-      const partyDoc = await getDoc(doc(db, "party", partyId));
+      const partyRef = doc(db, "party", partyId);
+      const partyDoc = await getDoc(partyRef);
       const party = partyDoc.data();
 
-      // เพิ่ม console.log เพื่อดูค่า
-      console.log("Current user name:", userDoc.data().name);
-      console.log("Party creator name:", party.createdBy);
+      // ถ้า status เป็น end ให้ redirect ไปหน้า ranking ทันที
+      if (party.status === "end") {
+        // ถ้ามี winners อยู่แล้วให้นำทางไปหน้า ranking เลย
+        if (party.winners) {
+          navigate("/ranking", {
+            state: {
+              partyId,
+            },
+          });
+          return;
+        }
 
-      // เช็คว่าผู้ใช้ปัจจุบันเป็นผู้สร้างปาร์ตี้หรือไม่โดยเทียบจากชื่อ
+        // ถ้ายังไม่มี winners ให้สรุปผล
+        const memberData = await Promise.all(
+          party.members.map(async (memberId) => {
+            const memberDoc = await getDoc(doc(db, "users", memberId));
+            const memberInfo = memberDoc.data();
+            const savingDoc = await getDoc(
+              doc(db, "saving", memberInfo.savingNumber)
+            );
+            const amount = savingDoc.exists() ? savingDoc.data().total : 0;
+
+            return {
+              name: memberInfo.name,
+              amount: amount,
+              avatar: memberInfo.profileImageURL,
+            };
+          })
+        );
+
+        // เรียงลำดับตามจำนวนเงินและเลือก 3 อันดับแรก
+        const sortedMembers = memberData
+          .sort((a, b) => b.amount - a.amount)
+          .slice(0, 3)
+          .map((player, index) => ({
+            ...player,
+            rank: index + 1,
+            bgColor:
+              index === 0
+                ? "bg-primary-500"
+                : index === 1
+                ? "bg-[#F36B39]"
+                : "bg-[#9BD0F2]",
+          }));
+
+        // จัดเรียงใหม่ตามลำดับการแสดงผล (1, 2, 3)
+        const orderedWinners = [
+          sortedMembers[0], // อันดับ 1 (whawha - 3000฿)
+          sortedMembers[1], // อันดับ 2 (folk - 444฿)
+          sortedMembers[2], // อันดับ 3 (pitak - 90฿)
+        ].filter(Boolean);
+
+        // อัพเดท winners ใน party document
+        await updateDoc(doc(db, "party", partyId), {
+          winners: orderedWinners,
+        });
+
+        // นำทางไปหน้า ranking
+        navigate("/ranking", {
+          state: {
+            partyId,
+          },
+        });
+        return;
+      }
+
+      // ตั้ง state สำหรับข้อมูลปาร์ตี้ (ถ้า status ไม่ใช่ end)
       setIsPartyCreator(userDoc.data().name === party.createdBy);
-
       const createdAt = party.createdAt.toDate();
       const totalDays = parseInt(party.days);
-
-      // คำนวณเวลาที่เหลือคั้งแรก
       const initialTimeLeft = calculateTimeLeft(createdAt, totalDays);
-
       setTimeLeft(initialTimeLeft);
       setPartyData({
         ...party,
         ...initialTimeLeft,
       });
 
-      // เก็บข้อมูล members
+      // เก็บข้อมูล members และติดตามการเปลี่ยนแปลง
       const memberPromises = party.members.map(async (memberId) => {
         const memberDoc = await getDoc(doc(db, "users", memberId));
         if (!memberDoc.exists()) return null;
@@ -162,32 +221,95 @@ export default function Party() {
         const initialAmount = savingDoc.exists() ? savingDoc.data().total : 0;
 
         // ติดตามการเปลี่ยนแปลงของ saving
-        const unsubscribe = onSnapshot(
-          doc(db, "saving", memberData.savingNumber),
-          (doc) => {
-            if (doc.exists()) {
-              const newAmount = doc.data().total || 0;
-              setPlayerData((currentPlayers) => {
-                const updatedPlayers = currentPlayers.map((player) => {
-                  if (player.savingNumber === memberData.savingNumber) {
-                    return { ...player, amount: newAmount };
-                  }
-                  return player;
-                });
+        onSnapshot(doc(db, "saving", memberData.savingNumber), async (doc) => {
+          if (doc.exists()) {
+            const newAmount = doc.data().total || 0;
 
-                return updatedPlayers
-                  .sort((a, b) => b.amount - a.amount)
-                  .map((player, index) => ({
-                    ...player,
-                    rankImage:
-                      index < 3
-                        ? [LogoNumber1, LogoNumber2, LogoNumber3][index]
-                        : null,
-                  }));
+            // ตรวจสอบว่าถึงเป้าหมายหรือไม่
+            if (newAmount >= party.target) {
+              // อัพเดท status อย่างเดียว
+              await updateDoc(partyRef, {
+                status: "end",
+              });
+
+              // เตรียมข้อมูลผู้เล่นทั้งหมดใหม่
+              const allPlayers = await Promise.all(
+                party.members.map(async (memberId) => {
+                  const memberDoc = await getDoc(doc(db, "users", memberId));
+                  const memberData = memberDoc.data();
+                  const savingDoc = await getDoc(
+                    doc(db, "saving", memberData.savingNumber)
+                  );
+                  const amount = savingDoc.exists()
+                    ? savingDoc.data().total
+                    : 0;
+
+                  return {
+                    name: memberData.name,
+                    amount: amount,
+                    avatar: memberData.profileImageURL,
+                  };
+                })
+              );
+
+              // จัดเรียงและเตรียมข้อมูล 3 อันดับแรก
+              const topThree = allPlayers
+                .sort((a, b) => b.amount - a.amount)
+                .slice(0, 3)
+                .map((player, index) => ({
+                  name: player.name,
+                  amount: player.amount,
+                  avatar: player.avatar,
+                  rank: index + 1,
+                  bgColor:
+                    index === 0
+                      ? "bg-primary-500"
+                      : index === 1
+                      ? "bg-[#F36B39]"
+                      : "bg-[#9BD0F2]",
+                }));
+
+              // จัดเรียงใหม่ตามลำดับการแสดงผล (2, 1, 3)
+              const orderedPlayers = [
+                topThree[1], // อันดับ 2
+                topThree[0], // อันดับ 1
+                topThree[2], // อันดับ 3
+              ].filter(Boolean);
+
+              console.log("Sending to ranking:", orderedPlayers); // เพิ่ม log เพื่อตรวจสอบ
+
+              // นำทางไปหน้า ranking
+              navigate("/ranking", {
+                state: {
+                  topPlayers: orderedPlayers,
+                  partyId: partyId,
+                  members: party.members,
+                },
+                replace: true, // เพิ่ม replace: true เพื่อป้องกันการกลับมาหน้า party
               });
             }
+
+            // อัพเดทข้อมูลผู้เล่น
+            setPlayerData((currentPlayers) => {
+              const updatedPlayers = currentPlayers.map((player) => {
+                if (player.savingNumber === memberData.savingNumber) {
+                  return { ...player, amount: newAmount };
+                }
+                return player;
+              });
+
+              return updatedPlayers
+                .sort((a, b) => b.amount - a.amount)
+                .map((player, index) => ({
+                  ...player,
+                  rankImage:
+                    index < 3
+                      ? [LogoNumber1, LogoNumber2, LogoNumber3][index]
+                      : null,
+                }));
+            });
           }
-        );
+        });
 
         return {
           id: memberId,
@@ -350,15 +472,8 @@ export default function Party() {
 
   const handleEndParty = useCallback(async () => {
     try {
-      // ดึงข้อมูล party ID จาก user
       const userDoc = await getDoc(doc(db, "users", user.uid));
       const partyId = userDoc.data().party;
-
-      // อัพเดทสถานะปาร์ตี้เป็น "end"
-      const partyRef = doc(db, "party", partyId);
-      await updateDoc(partyRef, {
-        status: "end",
-      });
 
       // เลือก 3 อันดับแรกจาก playerData
       const topPlayers = playerData.slice(0, 3).map((player) => ({
@@ -367,12 +482,17 @@ export default function Party() {
         avatar: player.avatar,
       }));
 
+      // อัพเดทสถานะปาร์ตี้และบันทึกผู้ชนะ
+      const partyRef = doc(db, "party", partyId);
+      await updateDoc(partyRef, {
+        status: "end",
+        winners: topPlayers,
+      });
+
       setShowPartySucceedModal(false);
       navigate("/ranking", {
         state: {
-          topPlayers,
           partyId,
-          members: playerData.map((player) => player.id),
         },
       });
     } catch (error) {
@@ -410,7 +530,7 @@ export default function Party() {
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div
         className="w-[768px] h-[814px] flex flex-col justify-start items-center bg-neutral-white-100 rounded-3xl overflow-hidden
-      drop-shadow-lg gap-[18px] pt-[24px] relative"
+      drop-shadow-lg gap-[8px] pt-[24px] relative"
       >
         <Link to="/home">
           <BtnBack />

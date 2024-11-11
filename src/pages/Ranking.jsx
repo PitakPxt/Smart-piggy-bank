@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import LogoRang from "../assets/images/rang-number-1.png";
 import BtnYellow from "../components/BtnYellow";
+import LogoLoading from "/lottie/loading.lottie";
+import NotFoundModal from "../components/modals/NotFoundModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import { deleteDoc, doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
+import { useUserAuth } from "../context/AuthContext";
 
 const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
   const isFirstPlace = rank === 1;
@@ -49,74 +52,107 @@ const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
 };
 
 export default function Ranking() {
+  const { user } = useUserAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const topPlayers = location.state?.topPlayers || [];
+  const [winners, setWinners] = useState([]);
+  const partyId = location.state?.partyId;
 
-  const cleanupPartyData = async () => {
+  const handleBackToHome = async () => {
     try {
-      // ดึงข้อมูล party ที่มี status เป็น "end"
-      const partyRef = doc(db, "party", "pitak");
+      if (!partyId || !user?.uid) return;
+
+      // ดึงข้อมูล party เพื่อตรวจสอบจำนวน members
+      const partyRef = doc(db, "party", partyId);
       const partyDoc = await getDoc(partyRef);
 
-      if (!partyDoc.exists()) {
-        console.error("ไม่พบข้อมูลปาร์ตี้");
-        return;
-      }
+      if (partyDoc.exists()) {
+        const partyData = partyDoc.data();
+        const updatedMembers = partyData.members.filter(
+          (memberId) => memberId !== user.uid
+        );
 
-      const partyData = partyDoc.data();
-
-      // ตรวจสอบว่า status เป็น "end" หรือไม่
-      if (partyData.status !== "end") {
-        console.log("ปาร์ตี้ยังไม่สิ้นสุด");
-        return;
+        // ถ้าเป็นคนสุดท้ายให้ลบ party document
+        if (updatedMembers.length === 0) {
+          await deleteDoc(partyRef);
+        } else {
+          // ถ้ายังมีคนอื่นอยู่ให้อัพเดท members array
+          await updateDoc(partyRef, {
+            members: updatedMembers,
+          });
+        }
       }
 
       // อัพเดทข้อมูลผู้ใช้
-      const members = partyData.members || [];
-      for (const memberId of members) {
-        const userRef = doc(db, "users", memberId);
-        await updateDoc(userRef, {
-          party: null,
-        });
-        console.log(`อัพเดทผู้ใช้ ${memberId} สำเร็จ`);
-      }
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, {
+        party: null,
+      });
 
-      // ลบข้อมูลปาร์ตี้
-      await deleteDoc(partyRef);
-      console.log("ลบปาร์ตี้สำเร็จ");
+      navigate("/home");
     } catch (error) {
-      console.error("เกิดข้อผิดพลาด:", error);
-    } finally {
-      setIsLoading(false);
+      console.error("เกิดข้อผิดพลาดในการออกจากปาร์ตี้:", error);
     }
   };
 
   useEffect(() => {
-    cleanupPartyData();
-  }, []);
+    const fetchWinners = async () => {
+      try {
+        if (!partyId) {
+          console.error("ไม่พบ partyId");
+          return;
+        }
+
+        const partyRef = doc(db, "party", partyId);
+        const partyDoc = await getDoc(partyRef);
+
+        if (!partyDoc.exists()) {
+          console.error("ไม่พบข้อมูลปาร์ตี้");
+          return;
+        }
+
+        const partyData = partyDoc.data();
+        if (partyData.winners) {
+          setWinners(partyData.winners);
+        }
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาด:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWinners();
+  }, [partyId]);
 
   const orderedRankData = [
     {
-      ...topPlayers[1],
+      ...winners[1],
       rank: 2,
       bgColor: "bg-[#F36B39]",
     },
     {
-      ...topPlayers[0],
+      ...winners[0],
       rank: 1,
       bgColor: "bg-primary-500",
     },
     {
-      ...topPlayers[2],
+      ...winners[2],
       rank: 3,
       bgColor: "bg-[#9BD0F2]",
     },
   ].filter(Boolean);
 
   if (isLoading) {
-    return <div>กำลังโหลด...</div>;
+    return (
+      <NotFoundModal
+        src={LogoLoading}
+        text="กำลังโหลดข้อมูล..."
+        className="h-[220px]"
+        showBackButton={false}
+      />
+    );
   }
 
   return (
@@ -134,7 +170,7 @@ export default function Ranking() {
               <BtnYellow
                 className="px-[36px]"
                 text="กลับไปหน้าหลัก"
-                onClick={() => navigate("/home")}
+                onClick={handleBackToHome}
               />
             </div>
           </div>
