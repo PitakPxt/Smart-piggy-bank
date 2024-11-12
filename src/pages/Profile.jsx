@@ -17,7 +17,6 @@ export default function Profile() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  // ดึงข้อมูลผู้ใช้จาก Firebase
   useEffect(() => {
     if (user?.uid) {
       const userDoc = doc(db, "users", user.uid);
