@@ -8,11 +8,11 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { db, storage } from "../../lib/firebase";
-import SquarePen from "../../assets/images/square-pen.svg";
+import SquarePen from "@images/square-pen.svg";
 import InputLabel from "../InputLabel";
 import BtnYellow from "../BtnYellow";
-import DefaultProfile from "../../assets/images/default-Profile.svg";
-import Bin from "../../assets/images/Bin.svg";
+import DefaultProfile from "@images/default-Profile.svg";
+import Bin from "@images/Bin.svg";
 import BtnClose from "../BtnClose";
 import NotFoundModal from "../../components/modals/NotFoundModal";
 import LogoLoading from "/lottie/loading.lottie";
