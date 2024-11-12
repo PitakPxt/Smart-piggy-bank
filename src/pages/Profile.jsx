@@ -1,36 +1,40 @@
 import React, { useState, useEffect } from "react";
 import BtnBack from "../components/BtnBack";
-import Whawha from "../assets/images/whawha.jpg";
-import EditProfile from "../assets/images/edit-porfile.png";
+import EditProfile from "../assets/images/edit-porfile.svg";
 import BtnYellow from "../components/BtnYellow";
 import DefaultProfile from "@images/default-Profile.svg";
 import { useUserAuth } from "../context/AuthContext";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useNavigate, Link } from "react-router-dom";
 import LogoutModal from "../components/modals/LogoutMadal";
+import ChangeProfileModal from "../components/modals/ChangeProfileModal";
 
 export default function Profile() {
   const navigate = useNavigate();
   const { user, logOut } = useUserAuth();
   const [userData, setUserData] = useState(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (user?.uid) {
-        const userDoc = doc(db, "users", user.uid);
-        try {
-          const docSnap = await getDoc(userDoc);
+    if (user?.uid) {
+      const userDoc = doc(db, "users", user.uid);
+      const unsubscribe = onSnapshot(
+        userDoc,
+        (docSnap) => {
           if (docSnap.exists()) {
             setUserData(docSnap.data());
           }
-        } catch (error) {
+        },
+        (error) => {
           console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
         }
-      }
-    };
-    fetchUserData();
+      );
+
+      // Cleanup subscription on unmount
+      return () => unsubscribe();
+    }
   }, [user]);
 
   const handleLogoutClick = () => {
@@ -50,6 +54,13 @@ export default function Profile() {
     }
   };
 
+  const updateUserDataState = (newData) => {
+    setUserData((prev) => ({
+      ...prev,
+      ...newData,
+    }));
+  };
+
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
@@ -60,7 +71,10 @@ export default function Profile() {
           <Link to="/home">
             <BtnBack />
           </Link>
-          <div className="absolute top-[42px] right-[42px]">
+          <div
+            className="absolute top-[42px] right-[42px] cursor-pointer"
+            onClick={() => setShowModal(true)}
+          >
             <img src={EditProfile} alt="edit-profile" />
           </div>
           <div className="flex flex-col items-center justify-center text-center">
@@ -95,6 +109,12 @@ export default function Profile() {
         <LogoutModal
           onCancel={handleCloseModal}
           onConfirm={handleConfirmLogout}
+        />
+      )}
+      {showModal && (
+        <ChangeProfileModal
+          onClose={() => setShowModal(false)}
+          onUpdate={updateUserDataState} // ส่ง function ไปยัง Modal
         />
       )}
     </>

@@ -7,6 +7,7 @@ import { useState } from "react";
 export default function inputLabel({
   text,
   placeHolder,
+  name,
   className,
   required = false,
   isInline = false,
@@ -32,13 +33,14 @@ export default function inputLabel({
         >
           <input
             className="w-full"
+            name={name}
             type={eye ? "password" : "text"}
             required={required}
             placeholder={placeHolder}
             value={value}
             onChange={onChange}
             autoComplete={autoComplete}
-          ></input>
+          />
           {isEye && (
             <img
               className="size-[24px] absolute right-0 bottom-3.5 mr-3 cursor-pointer"
