@@ -84,9 +84,9 @@ export default function Login() {
                       />
                       <div className="w-full flex justify-end">
                         <Link to="/forget">
-                          <h4 className="text-h4 w-fit cursor-pointer">
+                          <span className="text-h4 cursor-pointer">
                             ลืมรหัสผ่าน?
-                          </h4>
+                          </span>
                         </Link>
                       </div>
                     </div>

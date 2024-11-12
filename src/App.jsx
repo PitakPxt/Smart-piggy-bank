@@ -8,7 +8,9 @@ import CreateParty from "@pages/CreateParty";
 import Profile from "@pages/Profile";
 import Otp from "@pages/Otp";
 import Forget from "@pages/Forget";
+import ForgetPin from "@pages/ForgetPin";
 import Regisret from "@pages/Regisret";
+import ChangePin from "@pages/ChangePin";
 import ChangePassLog from "@pages/ChangePassLog";
 import Party from "@pages/Party";
 import Ranking from "@pages/Ranking";
@@ -29,6 +31,8 @@ function App() {
             <Route path="register" element={<Regisret />} />
             <Route path="unlock-pin" element={<UnlockPin />} />
             <Route path="unlock-success" element={<UnlockSuccess />} />
+            <Route path="change-pin" element={<ChangePin />} />
+            <Route path="forget-pin" element={<ForgetPin />} />
             <Route path="create-party" element={<CreateParty />} />
             <Route path="party" element={<Party />} />
             <Route path="ranking" element={<Ranking />} />
@@ -39,6 +43,7 @@ function App() {
             <Route path="otp" element={<Otp />} />
             <Route path="home" element={<Home />} />
             <Route path="forget" element={<Forget />} />
+            <Route path="unlockpin" element={<UnlockPin />} />
           </Route>
         </Routes>
       </Router>

@@ -8,11 +8,13 @@ import { useUserAuth } from "../context/AuthContext";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useNavigate, Link } from "react-router-dom";
+import LogoutModal from "../components/modals/LogoutMadal";
 
 export default function Profile() {
   const navigate = useNavigate();
   const { user, logOut } = useUserAuth();
   const [userData, setUserData] = useState(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -31,9 +33,17 @@ export default function Profile() {
     fetchUserData();
   }, [user]);
 
-  const handleLogout = async () => {
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowLogoutModal(false);
+  };
+
+  const handleConfirmLogout = async () => {
     try {
-      logOut();
+      await logOut();
       navigate("/");
     } catch (error) {
       console.log(error);
@@ -75,11 +85,18 @@ export default function Profile() {
             <BtnYellow
               className={"px-[192px]"}
               text="ออกจากระบบ"
-              onClick={handleLogout}
+              onClick={handleLogoutClick}
             />
           </div>
         </div>
       </div>
+
+      {showLogoutModal && (
+        <LogoutModal
+          onCancel={handleCloseModal}
+          onConfirm={handleConfirmLogout}
+        />
+      )}
     </>
   );
 }

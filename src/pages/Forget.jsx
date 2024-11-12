@@ -2,7 +2,7 @@ import React from "react";
 import BtnBack from "../components/BtnBack";
 import BtnYellow from "../components/BtnYellow";
 import InputLabel from "../components/InputLabel";
-import LogoUnlockPinSucces from "../assets/images/logo-pic-forget.png";
+import LogoUnlockPinSucces from "../assets/images/logo-pic-forget.svg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +34,7 @@ export default function Forget() {
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
-        <div className="w-[856px] h-[742px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
+        <div className="w-[756px] h-[742px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
           <Link to="/">
             <BtnBack />
           </Link>

@@ -2,7 +2,7 @@ import React from "react";
 import Logo from "@components/Logo";
 import BtnYellow from "@components/BtnYellow";
 
-export default function LogoutModal() {
+export default function LogoutModal({ onCancel, onConfirm }) {
   return (
     <>
       <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px]">
@@ -16,8 +16,13 @@ export default function LogoutModal() {
               <BtnYellow
                 className="w-[192px] py-3 bg-primary-200"
                 text="ยกเลิก"
+                onClick={onCancel}
               />
-              <BtnYellow className="w-[192px] py-3" text="ออกจากระบบ" />
+              <BtnYellow
+                className="w-[192px] py-3"
+                text="ออกจากระบบ"
+                onClick={onConfirm}
+              />
             </div>
           </div>
         </div>

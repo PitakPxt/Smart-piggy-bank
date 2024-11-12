@@ -109,6 +109,10 @@ export default function UnlockPin() {
     }
   };
 
+  const handleForgetPassword = () => {
+    navigate("/forget-pin");
+  };
+
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
@@ -138,11 +142,12 @@ export default function UnlockPin() {
               <InputPin textPin="กรุณากรอก PIN :" onChange={handlePinChange} />
               {userPin !== null && (
                 <div className="absolute bottom-[-28px] right-0">
-                  <Link to="">
-                    <span className="text-h4 text-neutral-white-500 cursor-pointer ">
-                      ลืมรหัสผ่าน?
-                    </span>
-                  </Link>
+                  <span
+                    className="text-h4 text-neutral-white-500 cursor-pointer"
+                    onClick={handleForgetPassword}
+                  >
+                    ลืมรหัสผ่าน?
+                  </span>
                 </div>
               )}
             </div>
@@ -154,16 +159,6 @@ export default function UnlockPin() {
           </div>
         </div>
       </div>
-      <form onSubmit={handlePinSubmit}>
-        <input
-          type="password"
-          value={pin}
-          onChange={(e) => setPin(e.target.value)}
-          placeholder="กรอกรหัส PIN"
-          maxLength={6}
-        />
-        <button type="submit">ยืนยัน</button>
-      </form>
     </>
   );
 }
