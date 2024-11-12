@@ -9,6 +9,8 @@ import { db } from "../lib/firebase";
 import { useUserAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useContext } from "react";
+import { getDatabase, ref, update } from "firebase/database";
 
 export default function UnlockPin() {
   const { user } = useUserAuth();
@@ -16,17 +18,20 @@ export default function UnlockPin() {
   const location = useLocation();
   const [userPin, setUserPin] = useState(null);
   const [newPin, setNewPin] = useState("");
+  const [pin, setPin] = useState("");
 
   const isFromLogin = location.state?.fromLogin || false;
 
   useEffect(() => {
     const checkPin = async () => {
+      if (!user) return;
+
       const userDoc = await getDoc(doc(db, "users", user.uid));
       const userData = userDoc.data();
       setUserPin(userData.pin);
     };
     checkPin();
-  }, [user.uid]);
+  }, [user]);
 
   const handlePinChange = (pin) => {
     setNewPin(pin);
@@ -49,13 +54,26 @@ export default function UnlockPin() {
       } else {
         // กรณีปลดล็อคกระปุก
         if (newPin === userPin) {
-          navigate("/home");
+          // ดึงข้อมูล savingNumber จาก Firestore
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          const userData = userDoc.data();
+          const savingNumber = userData.savingNumber;
+
+          // อัพเดท status ใน Realtime Database
+          const rtdb = getDatabase();
+          const savingRef = ref(rtdb, `saving/${savingNumber}`);
+          await update(savingRef, {
+            status: true,
+          });
+
           toast.success("ปลดล็อคกระปุกสำเร็จ");
+          navigate("/unlock-success");
         } else {
           toast.error("PIN ไม่ถูกต้อง");
         }
       }
     } catch (error) {
+      console.error("Error:", error);
       toast.error("เกิดข้อผิดพลาด กรุณาลองใหม่");
     }
   };
@@ -65,6 +83,29 @@ export default function UnlockPin() {
       navigate("/");
     } else {
       navigate("/home");
+    }
+  };
+
+  const handlePinSubmit = async (e) => {
+    e.preventDefault();
+
+    if (user?.pin && pin) {
+      if (pin === user.pin) {
+        try {
+          const db = getDatabase();
+          const savingRef = ref(db, `saving/${user.savingNumber}`);
+          await update(savingRef, {
+            status: true,
+          });
+
+          navigate("/unlock-success");
+        } catch (error) {
+          console.error("Error updating status:", error);
+          alert("เกิดข้อผิดพลาดในการอัพเดทสถานะ");
+        }
+      } else {
+        alert("รหัส PIN ไม่ถูกต้อง");
+      }
     }
   };
 
@@ -93,24 +134,36 @@ export default function UnlockPin() {
                 Smart Piggy Bank
               </h2>
             </div>
-            <div className="mb-[52px]">
-              {/* <h2 className="text-h3-bold font-bold text-neutral-white-800 pb-[10px]">
-                กรุณากรอก PIN :
-              </h2> */}
-              <InputPin
-                textPin="กรุณากรอก PIN :"
-                className="your-class-name"
-                onChange={handlePinChange}
-              />
+            <div className="flex flex-col relative mb-[52px] gap-2">
+              <InputPin textPin="กรุณากรอก PIN :" onChange={handlePinChange} />
+              {userPin !== null && (
+                <div className="absolute bottom-[-28px] right-0">
+                  <Link to="">
+                    <span className="text-h4 text-neutral-white-500 cursor-pointer ">
+                      ลืมรหัสผ่าน?
+                    </span>
+                  </Link>
+                </div>
+              )}
             </div>
             <BtnYellow
-              className={"px-[136px]"}
+              className={"px-[136px] mt-6"}
               text={userPin === null ? "ยืนยัน PIN" : "ปลดล็อคกระปุก"}
               onClick={handleSubmit}
             />
           </div>
         </div>
       </div>
+      <form onSubmit={handlePinSubmit}>
+        <input
+          type="password"
+          value={pin}
+          onChange={(e) => setPin(e.target.value)}
+          placeholder="กรอกรหัส PIN"
+          maxLength={6}
+        />
+        <button type="submit">ยืนยัน</button>
+      </form>
     </>
   );
 }

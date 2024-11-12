@@ -12,6 +12,7 @@ import Regisret from "@pages/Regisret";
 import ChangePassLog from "@pages/ChangePassLog";
 import Party from "@pages/Party";
 import Ranking from "@pages/Ranking";
+import UnlockSuccess from "@pages/UnlockSuccess";
 
 import AddFriendModal from "@components/modals/AddFriendModal";
 import YourComponent from "@pages/YourComponent";
@@ -27,6 +28,7 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="register" element={<Regisret />} />
             <Route path="unlock-pin" element={<UnlockPin />} />
+            <Route path="unlock-success" element={<UnlockSuccess />} />
             <Route path="create-party" element={<CreateParty />} />
             <Route path="party" element={<Party />} />
             <Route path="ranking" element={<Ranking />} />
