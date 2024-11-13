@@ -3,31 +3,41 @@ import BtnBack from "../components/BtnBack";
 import BtnYellow from "../components/BtnYellow";
 import InputLabel from "../components/InputLabel";
 import LogoUnlockPinSucces from "../assets/images/logo-pic-forget.svg";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { db } from "../lib/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
 
 export default function Forget() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const fetchEmail = async (e) => {
     e.preventDefault();
 
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("email", "==", email));
-    const querySnapshot = await getDocs(q);
+    try {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast.error("กรุณากรอกอีเมลให้ถูกต้อง");
+        return;
+      }
 
-    if (querySnapshot.empty) {
-      toast.error("ยังไม่ได้ลงทะเบียน Email");
-    } else {
-      const userId = querySnapshot.docs[0].id;
-      toast.success("อีเมล์ถูกต้อง");
-      navigate("/changepasslog", { state: { userId, email } });
+      const auth = getAuth();
+      const actionCodeSettings = {
+        url: `${window.location.origin}/changepasslog`,
+        handleCodeInApp: true,
+      };
+
+      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      window.localStorage.setItem("emailForSignIn", email);
+      toast.success("กรุณาตรวจสอบลิงก์ยืนยันในอีเมลของคุณ");
+    } catch (error) {
+      console.error("Firebase error:", error);
+      toast.error(`เกิดข้อผิดพลาด: ${error.message}`);
     }
   };
 
@@ -57,7 +67,7 @@ export default function Forget() {
                 value={email}
                 isEye={false}
                 onChange={(e) => setEmail(e.target.value)}
-                autoComplete="on"
+                autoComplete="email"
               />
               <BtnYellow type="submit" className={"px-[164px]"} text="ยืนยัน" />
             </form>

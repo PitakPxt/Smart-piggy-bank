@@ -11,6 +11,8 @@ import {
   getAuth,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
 } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -18,10 +20,41 @@ import "react-toastify/dist/ReactToastify.css";
 export default function ChangePassLog() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userId, email } = location.state;
+  const userId = location?.state?.userId;
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const auth = getAuth();
+
+  useEffect(() => {
+    if (!userId) {
+      navigate("/");
+      return;
+    }
+
+    // ตรวจสอบว่าเป็นการเข้าถึงจาก email link หรือไม่
+    if (isSignInWithEmailLink(auth, window.location.href)) {
+      // รับอีเมลจาก localStorage
+      let email = window.localStorage.getItem("emailForSignIn");
+      if (!email) {
+        // ถ้าไม่มีอีเมลใน localStorage ให้ถามผู้ใช้
+        email = window.prompt("กรุณากรอกอีเมลของคุณเพื่อยืนยันตัวตน");
+      }
+
+      // ทำการ sign in
+      signInWithEmailLink(auth, email, window.location.href)
+        .then((result) => {
+          // ลบอีเมลออกจาก localStorage
+          window.localStorage.removeItem("emailForSignIn");
+          // ดำเนินการต่อ...
+          console.log("เข้าสู่ระบบสำเร็จ", result.user);
+        })
+        .catch((error) => {
+          console.error("เกิดข้อผิดพลาด:", error);
+          navigate("/");
+        });
+    }
+  }, [auth, navigate]);
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
