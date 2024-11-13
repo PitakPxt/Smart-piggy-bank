@@ -234,7 +234,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
                 value={formData.name}
                 onChange={handleInputChange}
                 text="ชื่อ :"
-                placeHolder="Sugar"
+                placeHolder=""
                 isInline={true}
                 isEye={false}
               />
@@ -243,7 +243,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
                 value={formData.savingNumber}
                 onChange={handleInputChange}
                 text="รหัสกระปุก :"
-                placeHolder="00001"
+                placeHolder=""
                 isInline={true}
                 isEye={false}
               />
@@ -252,7 +252,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
                 value={formData.phone}
                 onChange={handleInputChange}
                 text="เบอร์โทรศัพท์ :"
-                placeHolder="0991451914"
+                placeHolder=""
                 isInline={true}
                 isEye={false}
               />

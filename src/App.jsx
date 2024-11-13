@@ -9,7 +9,7 @@ import Profile from "@pages/Profile";
 import Otp from "@pages/Otp";
 import Forget from "@pages/Forget";
 import ForgetPin from "@pages/ForgetPin";
-import Regisret from "@pages/Regisret";
+import Register from "@pages/Register";
 import ChangePin from "@pages/ChangePin";
 import ChangePassLog from "@pages/ChangePassLog";
 import Party from "@pages/Party";
@@ -28,7 +28,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Login />} />
-            <Route path="register" element={<Regisret />} />
+            <Route path="register" element={<Register />} />
             <Route path="unlock-pin" element={<UnlockPin />} />
             <Route path="unlock-success" element={<UnlockSuccess />} />
             <Route path="change-pin" element={<ChangePin />} />
