@@ -39,7 +39,7 @@ function App() {
             <Route path="saving" element={<YourComponent />} />
             <Route path="profile" element={<Profile />} />
             <Route path="add-friend" element={<AddFriendModal />} />
-            <Route path="changepasslog" element={<ChangePassLog />} />
+            <Route path="reset-password" element={<ChangePassLog />} />
             <Route path="otp" element={<Otp />} />
             <Route path="home" element={<Home />} />
             <Route path="forget" element={<Forget />} />

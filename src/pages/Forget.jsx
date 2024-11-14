@@ -28,7 +28,7 @@ export default function Forget() {
 
       const auth = getAuth();
       const actionCodeSettings = {
-        url: `${window.location.origin}/changepasslog`,
+        url: `${window.location.origin}/reset-password`,
         handleCodeInApp: true,
       };
 
@@ -63,6 +63,7 @@ export default function Forget() {
               <InputLabel
                 className={"mb-[42px] w-full"}
                 text="อีเมล์"
+                name="email"
                 placeHolder="กรอกอีเมล์"
                 value={email}
                 isEye={false}

@@ -21,17 +21,11 @@ export default function ChangePassLog() {
   const navigate = useNavigate();
   const location = useLocation();
   const userId = location?.state?.userId;
-  const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const auth = getAuth();
 
   useEffect(() => {
-    if (!userId) {
-      navigate("/");
-      return;
-    }
-
     // ตรวจสอบว่าเป็นการเข้าถึงจาก email link หรือไม่
     if (isSignInWithEmailLink(auth, window.location.href)) {
       // รับอีเมลจาก localStorage
@@ -59,42 +53,28 @@ export default function ChangePassLog() {
   const handleChangePassword = async (e) => {
     e.preventDefault();
     const user = getAuth().currentUser;
-    const usersRef = collection(db, "users");
-    const q = query(
-      usersRef,
-      where("password", "==", oldPassword),
-      where("email", "==", email)
-    );
-    const querySnapshot = await getDocs(q);
 
-    if (querySnapshot.empty) {
-      toast.error("รหัสผ่านเดิมไม่ถูกต้อง");
+    if (newPassword !== confirmNewPassword) {
+      toast.error("รหัสผ่านใหม่ และ ยืนยันรหัสผ่านใหม่ไม่ตรงกัน");
       return;
-    } else {
-      if (newPassword !== confirmNewPassword) {
-        toast.error("รหัสผ่านใหม่ และ ยืนยันรหัสผ่านใหม่ไม่ตรงกัน");
-        return;
-      } else {
-        if (user) {
-          const credential = EmailAuthProvider.credential(email, oldPassword);
-          console.log(credential);
-          try {
-            await reauthenticateWithCredential(user, credential);
-            await updatePassword(user, newPassword);
-            await updateDoc(doc(db, "users", userId), {
-              password: newPassword,
-            });
-            toast.success("เปลี่ยนรหัสผ่านสำเร็จ");
-            navigate("/login");
-          } catch (error) {
-            toast.error("การยืนยันตัวตนล้มเหลว: " + error.message);
-          }
-        } else {
-          toast.error("ผู้ใช้ไม่ได้เข้าสู่ระบบ");
-        }
+    }
+
+    if (user) {
+      try {
+        await updatePassword(user, newPassword);
+        await updateDoc(doc(db, "users", userId), {
+          password: newPassword,
+        });
+        toast.success("เปลี่ยนรหัสผ่านสำเร็จ");
+        navigate("/login");
+      } catch (error) {
+        toast.error("การเปลี่ยนรหัสผ่านล้มเหลว: " + error.message);
       }
+    } else {
+      toast.error("ผู้ใช้ไม่ได้เข้าสู่ระบบ");
     }
   };
+
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
@@ -108,15 +88,6 @@ export default function ChangePassLog() {
               <Logo />
             </div>
             <div className="flex flex-col w-full gap-[18px] mb-[52px]">
-              <InputLabel
-                text={"รหัสผ่านเดิม"}
-                placeHolder={"กรอกรหัสผ่านเดิม"}
-                required={true}
-                isEye={true}
-                autoComplete="off"
-                value={oldPassword}
-                onChange={(e) => setOldPassword(e.target.value)}
-              />
               <InputLabel
                 text={"รหัสผ่านใหม่"}
                 placeHolder={"กรอกรหัสผ่านใหม่"}

@@ -4,7 +4,7 @@ import IconEye from "@images/icon-Eye.svg";
 import { cn } from "../lib/tailwindcss";
 import { useState } from "react";
 
-export default function inputLabel({
+export default function InputLabel({
   text,
   placeHolder,
   name,
