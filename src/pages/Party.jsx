@@ -220,7 +220,7 @@ export default function Party() {
         );
         const initialAmount = savingDoc.exists() ? savingDoc.data().total : 0;
 
-        // ติดตามการเปลี่ยนแปลงของ saving
+        // ติดตามก��รเปลี่ยนแปลงของ saving
         onSnapshot(doc(db, "saving", memberData.savingNumber), async (doc) => {
           if (doc.exists()) {
             const newAmount = doc.data().total || 0;
@@ -507,9 +507,7 @@ export default function Party() {
         showBackButton={false}
       />
     );
-  }
-
-  if (!partyData) {
+  } else if (!partyData) {
     return (
       <NotFoundModal
         src={LogoPig}

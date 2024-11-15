@@ -2,7 +2,7 @@ import LogoImage from "@images/logo-pic.svg";
 import HamburgerMenu from "@images/hamburger-menu.svg";
 import FriendPartyModal from "@modals/FriendPartyModal";
 import BtnYellow from "../components/BtnYellow";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useUserAuth } from "../context/AuthContext";
 import { cn } from "../lib/tailwindcss";
 import { Link } from "react-router-dom";
@@ -118,9 +118,23 @@ export default function Navbar() {
 }
 
 const NavbarItem = ({ text, className, to }) => {
+  const location = useLocation();
+  const isActive = location.pathname === to;
+
   return (
-    <Link className={cn("px-4 py-2 ", className)} to={to}>
-      <span className="text-secondary-300">{text}</span>
+    <Link
+      className={cn(
+        "px-4 py-2",
+        isActive && "border-b-4 border-primary-500",
+        className
+      )}
+      to={to}
+    >
+      <span
+        className={cn("text-secondary-300", isActive && "text-primary-500")}
+      >
+        {text}
+      </span>
     </Link>
   );
 };

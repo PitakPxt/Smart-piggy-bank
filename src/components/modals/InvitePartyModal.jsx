@@ -24,6 +24,7 @@ export default function InvitePartyModal({ onClose, onInviteFriend }) {
   const { user } = useUserAuth();
   const [phone, setPhone] = useState("");
   const [friends, setFriends] = useState([]);
+  const [selectedFriends, setSelectedFriends] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,9 +51,15 @@ export default function InvitePartyModal({ onClose, onInviteFriend }) {
   };
 
   const handleInvitedFriend = (friendData) => {
-    // ส่งข้อมูลเพื่อนไปที่ CreateParty
+    if (selectedFriends.length >= 4) {
+      toast.error("สามารถเลือกเพื่อนได้สูงสุด 4 คนเท่านั้น");
+      return;
+    }
+
+    setSelectedFriends((prev) => [...prev, friendData]);
+
     onInviteFriend(friendData);
-    // ลบเพื่อนออกจากรายการ
+
     setFriends((prev) => prev.filter((phone) => phone !== friendData.phone));
   };
 
@@ -63,9 +70,9 @@ export default function InvitePartyModal({ onClose, onInviteFriend }) {
           <BtnClose onClick={onClose} />
           <div className="flex flex-col h-full">
             <h3 className="text-h3-bold text-neutral-black-800 mb-[30px]">
-              เชิญเพื่อนเข้าปาร์ตี้
+              เชิญเพื่อนเข้าปาร์ตี้ ({selectedFriends.length}/4)
             </h3>
-            <div className="flex-1 overflow-y-auto pr-2">
+            <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pr-2">
               <div className="flex flex-col items-center gap-[18px]">
                 {friends.map((friendPhone) => (
                   <InviteItem
@@ -73,6 +80,7 @@ export default function InvitePartyModal({ onClose, onInviteFriend }) {
                     phone={friendPhone}
                     currentUserPhone={phone}
                     onInvited={handleInvitedFriend}
+                    disabled={selectedFriends.length >= 4}
                   />
                 ))}
               </div>
@@ -84,7 +92,7 @@ export default function InvitePartyModal({ onClose, onInviteFriend }) {
   );
 }
 
-const InviteItem = ({ phone, currentUserPhone, onInvited }) => {
+const InviteItem = ({ phone, currentUserPhone, onInvited, disabled }) => {
   const [friendData, setFriendData] = useState({
     name: "",
     profileImageURL: "",
@@ -121,13 +129,12 @@ const InviteItem = ({ phone, currentUserPhone, onInvited }) => {
   }, [phone, currentUserPhone]);
 
   const handleInvite = async () => {
-    try {
-      // const friendRef = doc(db, "friends", phone);
-      // await updateDoc(friendRef, {
-      //   partyRequest: arrayUnion(currentUserPhone),
-      // });
+    if (disabled) {
+      toast.error("สามารถเลือกเพื่อนได���สูงสุด 4 คนเท่านั้น");
+      return;
+    }
 
-      // ส่งข้อมูลเพื่อนกลับไปที่ InvitePartyModal
+    try {
       onInvited({
         phone: phone,
         name: friendData.name,
@@ -154,8 +161,13 @@ const InviteItem = ({ phone, currentUserPhone, onInvited }) => {
         </h4>
       </div>
       <button
-        className="bg-success-400 px-[34px] py-[4px] rounded-xl"
+        className={`px-[34px] py-[4px] rounded-xl ${
+          disabled
+            ? "bg-neutral-white-400 cursor-not-allowed"
+            : "bg-success-400 cursor-pointer"
+        }`}
         onClick={handleInvite}
+        disabled={disabled}
       >
         <h4 className="text-h4-bold text-neutral-white-100">เชิญ</h4>
       </button>
