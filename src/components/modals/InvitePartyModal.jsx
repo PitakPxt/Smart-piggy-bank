@@ -20,11 +20,14 @@ import { db } from "../../lib/firebase";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function InvitePartyModal({ onClose, onInviteFriend }) {
+export default function InvitePartyModal({
+  onClose,
+  onInviteFriend,
+  selectedFriends,
+}) {
   const { user } = useUserAuth();
   const [phone, setPhone] = useState("");
   const [friends, setFriends] = useState([]);
-  const [selectedFriends, setSelectedFriends] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,10 +59,7 @@ export default function InvitePartyModal({ onClose, onInviteFriend }) {
       return;
     }
 
-    setSelectedFriends((prev) => [...prev, friendData]);
-
     onInviteFriend(friendData);
-
     setFriends((prev) => prev.filter((phone) => phone !== friendData.phone));
   };
 
@@ -74,13 +74,14 @@ export default function InvitePartyModal({ onClose, onInviteFriend }) {
             </h3>
             <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pr-2">
               <div className="flex flex-col items-center gap-[18px]">
-                {friends.map((friendPhone) => (
+                {friends.map((friendPhone, index) => (
                   <InviteItem
-                    key={friendPhone}
+                    key={`${friendPhone}-${index}`}
                     phone={friendPhone}
                     currentUserPhone={phone}
                     onInvited={handleInvitedFriend}
                     disabled={selectedFriends.length >= 4}
+                    selectedFriends={selectedFriends}
                   />
                 ))}
               </div>
@@ -92,7 +93,13 @@ export default function InvitePartyModal({ onClose, onInviteFriend }) {
   );
 }
 
-const InviteItem = ({ phone, currentUserPhone, onInvited, disabled }) => {
+const InviteItem = ({
+  phone,
+  currentUserPhone,
+  onInvited,
+  disabled,
+  selectedFriends,
+}) => {
   const [friendData, setFriendData] = useState({
     name: "",
     profileImageURL: "",
@@ -102,14 +109,18 @@ const InviteItem = ({ phone, currentUserPhone, onInvited, disabled }) => {
 
   useEffect(() => {
     const getFriendData = async () => {
+      const isAlreadyInvited = selectedFriends.some(
+        (friend) => friend.phone === phone
+      );
+      if (isAlreadyInvited) {
+        return;
+      }
+
       const usersRef = collection(db, "users");
       const friendRef = doc(db, "friends", phone);
 
-      // ดึงข้อมูล user
       const q = query(usersRef, where("phone", "==", phone));
       const querySnapshot = await getDocs(q);
-
-      // ดึงข้อมูล partyRequest
       const friendDoc = await getDoc(friendRef);
 
       querySnapshot.forEach((doc) => {
@@ -119,18 +130,21 @@ const InviteItem = ({ phone, currentUserPhone, onInvited, disabled }) => {
           partyRequest: friendDoc.data()?.partyRequest || [],
         });
 
-        // เช็คว่าเคยเชิญไปแล้วหรือยัง
         if (friendDoc.data()?.partyRequest?.includes(currentUserPhone)) {
           setIsInvited(true);
         }
       });
     };
     getFriendData();
-  }, [phone, currentUserPhone]);
+  }, [phone, currentUserPhone, selectedFriends]);
+
+  if (selectedFriends.some((friend) => friend.phone === phone)) {
+    return null;
+  }
 
   const handleInvite = async () => {
     if (disabled) {
-      toast.error("สามารถเลือกเพื่อนได���สูงสุด 4 คนเท่านั้น");
+      toast.error("สามารถเลือกเพื่อนไดสูงสุด 4 คนเท่านั้น");
       return;
     }
 

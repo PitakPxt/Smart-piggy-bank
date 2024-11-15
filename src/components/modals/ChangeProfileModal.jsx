@@ -129,6 +129,12 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
         await uploadBytes(imageRef, newImage);
         const imageUrl = await getDownloadURL(imageRef);
         updateData.profileImageURL = imageUrl;
+      } else if (userData.profileImageURL !== DefaultProfile && !newImage) {
+        if (!userData.profileImageURL.includes("default")) {
+          const oldImageRef = ref(storage, userData.profileImageURL);
+          await deleteObject(oldImageRef);
+        }
+        updateData.profileImageURL = DefaultProfile;
       }
 
       Object.keys(updateData).forEach((key) => {
@@ -152,25 +158,11 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
   const handleRemoveImage = async () => {
     try {
       setIsLoading(true);
-      const userRef = doc(db, "users", auth.currentUser.uid);
-      const updateData = {
-        profileImageURL: DefaultProfile,
-      };
-
-      if (
-        userData.profileImageURL &&
-        !userData.profileImageURL.includes("default")
-      ) {
-        const imageRef = ref(storage, userData.profileImageURL);
-        await deleteObject(imageRef);
-      }
-
-      await updateDoc(userRef, updateData);
-      onUpdate(updateData);
       setUserData({
         ...userData,
         profileImageURL: DefaultProfile,
       });
+      setNewImage(null);
     } catch (error) {
       console.error("Error removing image:", error);
     } finally {

@@ -174,6 +174,7 @@ export default function CreateParty() {
               <InvitePartyModal
                 onClose={() => setShowInvitePartyModal(false)}
                 onInviteFriend={handleInviteFriend}
+                selectedFriends={invitedFriends}
               />
             )}
           </div>
