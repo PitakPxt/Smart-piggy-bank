@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Logo from "../components/Logo";
 import InputLabel from "../components/InputLabel";
 import BtnYellow from "../components/BtnYellow";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { updateDoc } from "firebase/firestore";
 import { collection, getDocs, query, where, doc } from "firebase/firestore";
 import { updatePassword } from "firebase/auth";
@@ -19,59 +19,76 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function ChangePassLog() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const userId = location?.state?.userId;
+  const [searchParams] = useSearchParams();
+  const [userId, setUserId] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const auth = getAuth();
 
   useEffect(() => {
-    // ตรวจสอบว่าเป็นการเข้าถึงจาก email link หรือไม่
+    // ดึง userId จาก URL parameters
+    const userIdFromUrl = searchParams.get("userId");
+
+    if (!userIdFromUrl) {
+      toast.error("ไม่พบข้อมูลผู้ใช้");
+      navigate("/forget");
+      return;
+    }
+
+    setUserId(userIdFromUrl);
+
     if (isSignInWithEmailLink(auth, window.location.href)) {
-      // รับอีเมลจาก localStorage
       let email = window.localStorage.getItem("emailForSignIn");
+
       if (!email) {
-        // ถ้าไม่มีอีเมลใน localStorage ให้ถามผู้ใช้
-        email = window.prompt("กรุณากรอกอีเมลของคุณเพื่อยืนยันตัวตน");
+        toast.error("ไม่พบข้อมูลอีเมล กรุณาทำรายการใหม่");
+        navigate("/forget");
+        return;
       }
 
-      // ทำการ sign in
       signInWithEmailLink(auth, email, window.location.href)
-        .then((result) => {
-          // ลบอีเมลออกจาก localStorage
+        .then(() => {
           window.localStorage.removeItem("emailForSignIn");
-          // ดำเนินการต่อ...
-          console.log("เข้าสู่ระบบสำเร็จ", result.user);
+          window.localStorage.removeItem("resetUserId");
         })
         .catch((error) => {
           console.error("เกิดข้อผิดพลาด:", error);
-          navigate("/");
+          toast.error("การยืนยันตัวตนล้มเหลว");
+          navigate("/forget");
         });
     }
-  }, [auth, navigate]);
+  }, [searchParams, navigate]);
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
-    const user = getAuth().currentUser;
+
+    if (!userId) {
+      toast.error("ไม่พบข้อมูลผู้ใช้");
+      return;
+    }
 
     if (newPassword !== confirmNewPassword) {
       toast.error("รหัสผ่านใหม่ และ ยืนยันรหัสผ่านใหม่ไม่ตรงกัน");
       return;
     }
 
-    if (user) {
-      try {
-        await updatePassword(user, newPassword);
-        await updateDoc(doc(db, "users", userId), {
-          password: newPassword,
-        });
-        toast.success("เปลี่ยนรหัสผ่านสำเร็จ");
-        navigate("/login");
-      } catch (error) {
-        toast.error("การเปลี่ยนรหัสผ่านล้มเหลว: " + error.message);
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        toast.error("ไม่พบข้อมูลผู้ใช้ที่เข้าสู่ระบบ");
+        return;
       }
-    } else {
-      toast.error("ผู้ใช้ไม่ได้เข้าสู่ระบบ");
+
+      await updatePassword(user, newPassword);
+      await updateDoc(doc(db, "users", userId), {
+        password: newPassword,
+      });
+
+      toast.success("เปลี่ยนรหัสผ่านสำเร็จ");
+      navigate("/");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("การเปลี่ยนรหัสผ่านล้มเหลว กรุณาลองใหม่อีกครั้ง");
     }
   };
 

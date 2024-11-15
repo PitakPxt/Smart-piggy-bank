@@ -67,7 +67,7 @@ export default function FriendPartyModal() {
   return (
     <>
       <div
-        className="z-[99] absolute button-0 -left-1/2 -translate-x-1/2 w-[374px] h-[614px] bg-neutral-white-100 rounded-3xl 
+        className="z-[99] absolute button-0 -left-1/2 -translate-x-1/2 w-[374px] h-auto bg-neutral-white-100 rounded-3xl 
       overflow-hidden drop-shadow-lg "
       >
         <div className="size-auto px-6 py-[18px] flex flex-col items-center justify-center ">
@@ -326,29 +326,31 @@ const FriendRequestItem = ({ name, src }) => {
 
   return (
     <div className="w-full flex flex-col gap-4">
-      {friendRequests.map((request, index) => (
-        <div
-          key={index}
-          className="flex items-center gap-3 rounded-full justify-between"
-        >
-          <UserItem
-            name={request.name}
-            src={request.profileImage || ImgFriend}
-          />
-          <div className="flex gap-2">
-            <img
-              className="px-[18px] py-[8px] bg-success-400 rounded-xl cursor-pointer"
-              src={AcceptIcon}
-              onClick={() => handleAcceptFriendRequest(request.phone)}
+      <div className="max-h-[175px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pr-2">
+        {friendRequests.map((request, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-3 rounded-full justify-between mb-4"
+          >
+            <UserItem
+              name={request.name}
+              src={request.profileImage || ImgFriend}
             />
-            <img
-              className="px-[18px] py-[8px] bg-error-400 rounded-xl cursor-pointer"
-              src={RefuseIcon}
-              onClick={() => handleRefuseFriendRequest(request.phone)}
-            />
+            <div className="flex gap-2">
+              <img
+                className="px-[18px] py-[8px] bg-success-400 rounded-xl cursor-pointer"
+                src={AcceptIcon}
+                onClick={() => handleAcceptFriendRequest(request.phone)}
+              />
+              <img
+                className="px-[18px] py-[8px] bg-error-400 rounded-xl cursor-pointer"
+                src={RefuseIcon}
+                onClick={() => handleRefuseFriendRequest(request.phone)}
+              />
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
@@ -484,33 +486,35 @@ const PartyRequestItem = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4">
-      {partyRequests.map((request, index) => (
-        <div
-          key={index}
-          className="flex items-center gap-3 rounded-full justify-between"
-        >
-          <UserItem
-            name={request.name}
-            src={request.profileImage || ImgFriend}
-          />
-          <div className="flex gap-2">
-            <img
-              className="px-[18px] py-[8px] bg-success-400 rounded-xl cursor-pointer"
-              src={AcceptIcon}
-              onClick={() => {
-                console.log("Accepting request for:", request);
-                handleAcceptPartyRequest(request.phone, request.partyId);
-              }}
+    <div className="w-full flex flex-col">
+      <div className="max-h-[250px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pr-2">
+        {partyRequests.map((request, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-3 rounded-full justify-between mb-4"
+          >
+            <UserItem
+              name={request.name}
+              src={request.profileImage || ImgFriend}
             />
-            <img
-              className="px-[18px] py-[8px] bg-error-400 rounded-xl cursor-pointer"
-              src={RefuseIcon}
-              onClick={() => handleRefusePartyRequest(request.phone)}
-            />
+            <div className="flex gap-2">
+              <img
+                className="px-[18px] py-[8px] bg-success-400 rounded-xl cursor-pointer"
+                src={AcceptIcon}
+                onClick={() => {
+                  console.log("Accepting request for:", request);
+                  handleAcceptPartyRequest(request.phone, request.partyId);
+                }}
+              />
+              <img
+                className="px-[18px] py-[8px] bg-error-400 rounded-xl cursor-pointer"
+                src={RefuseIcon}
+                onClick={() => handleRefusePartyRequest(request.phone)}
+              />
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
@@ -576,7 +580,7 @@ const FriendList = ({ setSelectedFriend, setShowDeleteFriendModal }) => {
   return (
     <div className="w-full flex flex-col">
       <h4 className="text-h4-bold text-neutral-black-800 mb-[14px]">เพื่อน</h4>
-      <div className="w-full flex flex-col gap-4">
+      <div className="w-full flex flex-col gap-4 max-h-[175px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pr-2 mb-4">
         {friends.map((friend, index) => (
           <FriendItem
             key={index}
@@ -588,8 +592,8 @@ const FriendList = ({ setSelectedFriend, setShowDeleteFriendModal }) => {
             setShowDeleteFriendModal={setShowDeleteFriendModal}
           />
         ))}
-        <span className="h-[1px] w-full bg-neutral-white-500 mb-[16px]"></span>
       </div>
+      <span className="h-[1px] w-full bg-neutral-white-500 mb-[16px]"></span>
     </div>
   );
 };

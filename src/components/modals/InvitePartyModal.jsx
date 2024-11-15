@@ -61,19 +61,21 @@ export default function InvitePartyModal({ onClose, onInviteFriend }) {
       <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px]">
         <div className="w-[426px] h-[332px] px-[52px] py-[40px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
           <BtnClose onClick={onClose} />
-          <div className="flex flex-col">
+          <div className="flex flex-col h-full">
             <h3 className="text-h3-bold text-neutral-black-800 mb-[30px]">
               เชิญเพื่อนเข้าปาร์ตี้
             </h3>
-            <div className="flex flex-col items-center gap-[18px] justify-between">
-              {friends.map((friendPhone) => (
-                <InviteItem
-                  key={friendPhone}
-                  phone={friendPhone}
-                  currentUserPhone={phone}
-                  onInvited={handleInvitedFriend}
-                />
-              ))}
+            <div className="flex-1 overflow-y-auto pr-2">
+              <div className="flex flex-col items-center gap-[18px]">
+                {friends.map((friendPhone) => (
+                  <InviteItem
+                    key={friendPhone}
+                    phone={friendPhone}
+                    currentUserPhone={phone}
+                    onInvited={handleInvitedFriend}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>

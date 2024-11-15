@@ -26,14 +26,25 @@ export default function Forget() {
         return;
       }
 
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        toast.error("ไม่พบอีเมลนี้ในระบบ");
+        return;
+      }
+
+      const userId = querySnapshot.docs[0].id;
       const auth = getAuth();
       const actionCodeSettings = {
-        url: `${window.location.origin}/reset-password`,
+        url: `${window.location.origin}/reset-password?userId=${userId}`,
         handleCodeInApp: true,
       };
 
       await sendSignInLinkToEmail(auth, email, actionCodeSettings);
       window.localStorage.setItem("emailForSignIn", email);
+      window.localStorage.setItem("resetUserId", userId);
       toast.success("กรุณาตรวจสอบลิงก์ยืนยันในอีเมลของคุณ");
     } catch (error) {
       console.error("Firebase error:", error);
