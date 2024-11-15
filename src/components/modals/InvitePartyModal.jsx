@@ -104,8 +104,8 @@ const InviteItem = ({
     name: "",
     profileImageURL: "",
     partyRequest: [],
+    party: null,
   });
-  const [isInvited, setIsInvited] = useState(false);
 
   useEffect(() => {
     const getFriendData = async () => {
@@ -128,11 +128,8 @@ const InviteItem = ({
           name: doc.data().name || "ไม่ระบุชื่อ",
           profileImageURL: doc.data().profileImageURL || ImgFriend,
           partyRequest: friendDoc.data()?.partyRequest || [],
+          party: doc.data().party || null,
         });
-
-        if (friendDoc.data()?.partyRequest?.includes(currentUserPhone)) {
-          setIsInvited(true);
-        }
       });
     };
     getFriendData();
@@ -144,7 +141,12 @@ const InviteItem = ({
 
   const handleInvite = async () => {
     if (disabled) {
-      toast.error("สามารถเลือกเพื่อนไดสูงสุด 4 คนเท่านั้น");
+      toast.error("สามารถเลือกเพื่อนได้สูงสุด 4 คนเท่านั้น");
+      return;
+    }
+
+    if (friendData.party) {
+      toast.error("เพื่อนคนนี้มีปาร์ตี้อยู่แล้ว");
       return;
     }
 
@@ -153,10 +155,7 @@ const InviteItem = ({
         phone: phone,
         name: friendData.name,
         profileImageURL: friendData.profileImageURL,
-        phone,
       });
-
-      setIsInvited(true);
     } catch (error) {
       console.error("Error sending party invite:", error);
     }
@@ -176,12 +175,12 @@ const InviteItem = ({
       </div>
       <button
         className={`px-[34px] py-[4px] rounded-xl ${
-          disabled
+          disabled || friendData.party
             ? "bg-neutral-white-400 cursor-not-allowed"
             : "bg-success-400 cursor-pointer"
         }`}
         onClick={handleInvite}
-        disabled={disabled}
+        disabled={disabled || friendData.party}
       >
         <h4 className="text-h4-bold text-neutral-white-100">เชิญ</h4>
       </button>
