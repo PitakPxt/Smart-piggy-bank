@@ -10,17 +10,14 @@ import { useNavigate } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
-  updateProfile,
 } from "firebase/auth";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore";
 import { auth, db, storage } from "../lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { arrayUnion } from "firebase/firestore";
 import { useUserAuth } from "../context/AuthContext";
 import NotFoundModal from "../components/modals/NotFoundModal";
 import LogoLoading from "/lottie/loading.lottie";
+import { toast } from "react-toastify";
 
 export default function Register() {
   const { logOut } = useUserAuth();
@@ -71,13 +68,42 @@ export default function Register() {
     fileInput.click();
   };
 
+  const formatPhoneNumber = (value) => {
+    const number = value.replace(/[^\d]/g, "");
+
+    if (number.length <= 3) return number;
+    if (number.length <= 6) return `${number.slice(0, 3)}-${number.slice(3)}`;
+    return `${number.slice(0, 3)}-${number.slice(3, 6)}-${number.slice(6, 10)}`;
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) {
-      alert("กรุณาเลือกรูปโปรไฟล์");
+      toast.error("กรุณาเลือกรูปโปรไฟล์");
       return;
     }
     setIsUploading(true);
+
+    const numberOnly = phone.replace(/[^\d]/g, "");
+    if (numberOnly.length !== 10) {
+      toast.error("กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก");
+      return;
+    }
+
+    if (savingNumber.length !== 5) {
+      toast.error("กรุณากรอกหมายเลขกระปุกให้ครบ 5 หลัก");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      toast.error("กรุณากรอกอีเมลให้ถูกต้อง เช่น example@gmail.com");
+      return;
+    }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -113,7 +139,6 @@ export default function Register() {
               },
               async () => {
                 const imageURL = await getDownloadURL(uploadTask.snapshot.ref);
-                console.log(user);
                 await setDoc(doc(db, "users", user.uid), {
                   name: name,
                   phone: phone,
@@ -124,15 +149,9 @@ export default function Register() {
                   pin: null,
                 });
 
-                await updateProfile(user.uid, {
-                  emailVerified: false,
-                });
-
                 setIsUploading(false);
-
                 navigate("/");
                 logOut();
-                console.log(user);
               }
             );
           } catch (error) {
@@ -222,7 +241,7 @@ export default function Register() {
                   <InputLabel
                     className={"w-full mb-[8px]"}
                     text="ชื่อบัญชี"
-                    placeHolder="กรอกชื่อ"
+                    placeHolder="กรอกชื่อผู้ใช้งาน"
                     required={true}
                     value={name}
                     isEye={false}
@@ -236,18 +255,29 @@ export default function Register() {
                     required={true}
                     value={phone}
                     isEye={false}
-                    onChange={(e) => setPhone(e.target.value)}
-                    autoComplete="off"
+                    onChange={(e) => {
+                      const formattedNumber = formatPhoneNumber(e.target.value);
+                      if (formattedNumber.length <= 12) {
+                        setPhone(formattedNumber);
+                      }
+                    }}
+                    type="tel"
+                    pattern="[0-9]*"
+                    maxLength={12}
+                    autoComplete="tel"
                   />
                   <InputLabel
                     className={"w-full mb-[8px]"}
-                    text="อีเมล์"
-                    placeHolder="กรอกอีเมล์"
+                    text="อีเมล"
+                    placeHolder="กรอกอีเมล"
+                    isEye={false}
                     required={true}
                     value={email}
-                    isEye={false}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoComplete="off"
+                    onChange={(e) => {
+                      setEmail(e.target.value.trim());
+                    }}
+                    type="email"
+                    autoComplete="email"
                   />
                   <InputLabel
                     className={"w-full mb-[8px]"}
@@ -262,11 +292,19 @@ export default function Register() {
                   <InputLabel
                     className={"w-full mb-[8px]"}
                     text="หมายเลขกระปุกออมสิน"
-                    placeHolder="กรอกหมายเลขกระปุกออมสิน"
+                    placeHolder="กรอกหมายเลขกระปุกออมสิน 5 หลัก"
                     required={true}
                     value={savingNumber}
                     isEye={false}
-                    onChange={(e) => setSavingNumber(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value
+                        .replace(/[^0-9]/g, "")
+                        .slice(0, 5);
+                      setSavingNumber(value);
+                    }}
+                    type="text"
+                    pattern="[0-9]*"
+                    maxLength={5}
                     autoComplete="off"
                   />
                 </div>
