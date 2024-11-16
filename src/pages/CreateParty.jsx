@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { arrayUnion, updateDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+
 export default function CreateParty() {
   const [nameParty, setNameParty] = useState("");
   const [target, setTarget] = useState("");
@@ -24,6 +25,8 @@ export default function CreateParty() {
   const [userPhone, setUserPhone] = useState("");
   const { user } = useUserAuth();
   const navigate = useNavigate();
+  const [hasParty, setHasParty] = useState(false);
+
   useEffect(() => {
     if (!user) return;
 
@@ -35,8 +38,14 @@ export default function CreateParty() {
         if (userData.exists()) {
           const userName = userData.data().name;
           const userPhone = userData.data().phone;
+          const userParty = userData.data().party;
           setName(userName);
           setUserPhone(userPhone);
+
+          if (userParty) {
+            setHasParty(true);
+            navigate("/party");
+          }
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -101,7 +110,7 @@ export default function CreateParty() {
       <div className="w-full h-full flex flex-col justify-center items-center">
         <div
           className="w-[756px] h-[740px] flex flex-col justify-center items-center
-          bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg"
+            bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg"
         >
           <Link to="/home">
             <BtnBack />

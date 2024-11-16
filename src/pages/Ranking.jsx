@@ -30,7 +30,7 @@ const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
       </div>
       <div
         className={`flex ${
-          isFirstPlace ? "flex-col items-center" : ""
+          isFirstPlace ? "flex-col items-center " : ""
         } justify-center items-end ${bgColor}`}
         style={{
           height: getHeight(),
@@ -126,23 +126,50 @@ export default function Ranking() {
     fetchWinners();
   }, [partyId]);
 
-  const orderedRankData = [
-    {
-      ...winners[1],
-      rank: 2,
-      bgColor: "bg-[#F36B39]",
-    },
-    {
-      ...winners[0],
-      rank: 1,
-      bgColor: "bg-primary-500",
-    },
-    {
-      ...winners[2],
-      rank: 3,
-      bgColor: "bg-[#9BD0F2]",
-    },
-  ].filter(Boolean);
+  const orderedRankData = () => {
+    const validWinners = winners.filter(Boolean);
+    let rankData = new Array(3);
+
+    if (validWinners.length === 1) {
+      // ถ้ามีคนเดียว ให้แสดงตรงกลาง (อันดับ 1)
+      rankData[1] = {
+        ...winners[0],
+        rank: 1,
+        bgColor: "bg-primary-500",
+      };
+    } else if (validWinners.length === 2) {
+      // อันดับ 1 ตรงกลาง, อันดับ 2 ซ้าย
+      rankData[0] = {
+        ...winners[1],
+        rank: 2,
+        bgColor: "bg-[#F36B39]",
+      };
+      rankData[1] = {
+        ...winners[0],
+        rank: 1,
+        bgColor: "bg-primary-500",
+      };
+    } else if (validWinners.length >= 3) {
+      // อันดับ 1 ตรงกลาง, อันดับ 2 ซ้าย, อันดับ 3 ขวา
+      rankData[0] = {
+        ...winners[1],
+        rank: 2,
+        bgColor: "bg-[#F36B39]",
+      };
+      rankData[1] = {
+        ...winners[0],
+        rank: 1,
+        bgColor: "bg-primary-500",
+      };
+      rankData[2] = {
+        ...winners[2],
+        rank: 3,
+        bgColor: "bg-[#9BD0F2]",
+      };
+    }
+
+    return rankData;
+  };
 
   if (isLoading) {
     return (
@@ -161,10 +188,18 @@ export default function Ranking() {
         <div className="w-[620px] h-[714px] flex flex-col justify-center items-center text-center">
           <div className="flex flex-col size-full">
             <h2 className="text-h2-bold mb-[28px]">การจัดอันดับ</h2>
-            <div className="grid grid-cols-3 gap-6 h-full mb-[34px]">
-              {orderedRankData.map((player) => (
-                <RankCard key={player.rank} {...player} />
-              ))}
+            <div className="grid grid-cols-3 gap-6 h-full mb-[34px] justify-center items-end">
+              {orderedRankData().map(
+                (player, index) =>
+                  player && (
+                    <div
+                      key={index}
+                      className={winners.length === 1 ? "col-start-2" : ""}
+                    >
+                      <RankCard {...player} />
+                    </div>
+                  )
+              )}
             </div>
             <div className="w-full">
               <BtnYellow
