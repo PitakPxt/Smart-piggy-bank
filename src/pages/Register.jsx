@@ -19,6 +19,7 @@ import {
   query,
   where,
   getDocs,
+  getDoc,
 } from "firebase/firestore";
 import { auth, db, storage } from "../lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -94,6 +95,30 @@ export default function Register() {
 
     // แปลงเบอร์โทรให้เหลือแค่ตัวเลข
     const numberOnly = phone.replace(/[^\d]/g, "");
+
+    // ตรวจสอบว่าเบอร์โทรและหมายเลขกระปุกตรงกับที่มีในระบบหรือไม่
+    try {
+      const collectionRef = collection(db, "collection");
+      const docRef = doc(collectionRef, numberOnly);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        // ถ้าเจอ document ที่มี id ตรงกับเบอร์โทร ให้เช็คว่า savingNumber ตรงกันไหม
+        if (docSnap.data().savingNumber !== savingNumber) {
+          toast.error(
+            "หมายเลขกระปุกออมสินไม่ตรงกับเบอร์โทรศัพท์ที่ลงทะเบียนไว้"
+          );
+          return;
+        }
+      } else {
+        toast.error("ไม่พบข้อมูลการลงทะเบียนกระปุกออมสินของเบอร์โทรศัพท์นี้");
+        return;
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดในการตรวจสอบข้อมูล:", error);
+      toast.error("เกิดข้อผิดพลาดในการตรวจสอบข้อมูล กรุณาลองใหม่");
+      return;
+    }
 
     // ตรวจสอบชื่อบัญชีก่อน
     try {
