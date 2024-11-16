@@ -18,7 +18,6 @@ import NotFoundModal from "../../components/modals/NotFoundModal";
 import LogoLoading from "/lottie/loading.lottie";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { toast } from "react-toastify";
-import { off } from "firebase/database";
 
 export default function ChangeProfileModal({ onClose, onUpdate }) {
   const [userData, setUserData] = useState(null);

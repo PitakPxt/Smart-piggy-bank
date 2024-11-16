@@ -8,14 +8,14 @@
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url("public/fonts/FC-Iconic-Regular.otf") format("opentype");
+    src: url("public/fonts/FC-Iconic-Regular.otf") format("truetype");
   }
   @font-face {
     font-family: "FC Iconic";
     font-style: normal;
     font-weight: 700;
     font-display: swap;
-    src: url("public/fonts/FC-Iconic-Bold.otf") format("opentype");
+    src: url("public/fonts/FC-Iconic-Bold.otf") format("truetype");
   }
 }
 
