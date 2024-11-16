@@ -12,7 +12,7 @@ import SquarePen from "@images/square-pen.svg";
 import InputLabel from "../InputLabel";
 import BtnYellow from "../BtnYellow";
 import DefaultProfile from "@images/default-Profile.svg";
-import Bin from "@images/bin.svg";
+import LogoBin from "../../assets/images/bin.svg";
 import BtnClose from "../BtnClose";
 import NotFoundModal from "../../components/modals/NotFoundModal";
 import LogoLoading from "/lottie/loading.lottie";
@@ -215,7 +215,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
                 className="flex gap-[10px] items-center px-6 py-2 bg-primary-500 rounded-xl"
                 onClick={handleRemoveImage}
               >
-                <img src={Bin} alt="" />
+                <img src={LogoBin} alt="" />
                 <h4 className="text-h4-bold text-neutral-black-800">นำออก</h4>
               </button>
             </div>
