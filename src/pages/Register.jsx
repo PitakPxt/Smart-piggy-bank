@@ -10,8 +10,16 @@ import { useNavigate } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  fetchSignInMethodsForEmail,
 } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { auth, db, storage } from "../lib/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useUserAuth } from "../context/AuthContext";
@@ -83,17 +91,63 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // แปลงเบอร์โทรให้เหลือแค่ตัวเลข
+    const numberOnly = phone.replace(/[^\d]/g, "");
+
+    // ตรวจสอบชื่อบัญชีก่อน
+    try {
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("name", "==", name));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        toast.error("ชื่อบัญชีนี้ถูกใช้งานแล้ว กรุณาใช้ชื่อบัญชีอื่น");
+        return;
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดในการตรวจสอบชื่อบัญชี:", error);
+      toast.error("เกิดข้อผิดพลาดในการตรวจสอบชื่อบัญชี กรุณาลองใหม่");
+      return;
+    }
+
+    // ตรวจสอบเบอร์โทรศัพท์
+    try {
+      const usersRef = collection(db, "users");
+      const phoneQuery = query(usersRef, where("phone", "==", numberOnly));
+      const phoneSnapshot = await getDocs(phoneQuery);
+
+      if (!phoneSnapshot.empty) {
+        toast.error("เบอร์โทรศัพท์นี้ถูกใช้งานแล้ว กรุณาใช้เบอร์โทรศัพท์อื่น");
+        return;
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดในการตรวจสอบเบอร์โทรศัพท์:", error);
+      toast.error("เกิดข้อผิดพลาดในการตรวจสอบเบอร์โทรศัพท์ กรุณาลองใหม่");
+      return;
+    }
+
+    // ตรวจสอบอีเมล
+    try {
+      const usersRef = collection(db, "users");
+      const emailQuery = query(usersRef, where("email", "==", email));
+      const emailSnapshot = await getDocs(emailQuery);
+
+      if (!emailSnapshot.empty) {
+        toast.error("อีเมลนี้ถูกใช้งานแล้ว กรุณาใช้อีเมลอื่น");
+        return;
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดในการตรวจสอบอีเมล:", error);
+      toast.error("เกิดข้อผิดพลาดในการตรวจสอบอีเมล กรุณาลองใหม่");
+      return;
+    }
+
     if (!file) {
       toast.error("กรุณาเลือกรูปโปรไฟล์");
       return;
     }
     setIsUploading(true);
-
-    const numberOnly = phone.replace(/[^\d]/g, "");
-    if (numberOnly.length !== 10) {
-      toast.error("กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก");
-      return;
-    }
 
     if (savingNumber.length !== 5) {
       toast.error("กรุณากรอกหมายเลขกระปุกให้ครบ 5 หลัก");
@@ -141,7 +195,7 @@ export default function Register() {
                 const imageURL = await getDownloadURL(uploadTask.snapshot.ref);
                 await setDoc(doc(db, "users", user.uid), {
                   name: name,
-                  phone: phone,
+                  phone: numberOnly,
                   email: email,
                   password: password,
                   savingNumber: savingNumber,
