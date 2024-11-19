@@ -2,7 +2,16 @@ import InputLabel from "@components/InputLabel";
 import BtnYellow from "@components/BtnYellow";
 import BtnClose from "@components/BtnClose";
 import React, { useState, useEffect } from "react";
-import { setDoc, doc, getDoc, arrayUnion } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  getDoc,
+  arrayUnion,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { useUserAuth } from "../../context/AuthContext";
 import { db } from "../../lib/firebase";
 import { toast } from "react-toastify";
@@ -24,10 +33,64 @@ export default function AddFriendModal({ onClose }) {
     fetchUserPhone();
   }, [user.uid]);
 
+  const formatPhoneNumber = (value) => {
+    if (!value) return value;
+    const phoneNumber = value.replace(/[^\d]/g, "");
+    const phoneNumberLength = phoneNumber.length;
+    if (phoneNumberLength < 4) return phoneNumber;
+    if (phoneNumberLength < 7) {
+      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+    }
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(
+      3,
+      6
+    )}-${phoneNumber.slice(6, 10)}`;
+  };
+
   const handleAddFriend = async (e) => {
     e.preventDefault();
+
+    const formattedPhone = addPhone.replace(/-/g, "");
+
+    const phonePattern = /^[0-9]{10}$/;
+    if (!phonePattern.test(formattedPhone)) {
+      toast.error("กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง");
+      return;
+    }
+
+    if (formattedPhone === phone) {
+      toast.error("ไม่สามารถเพิ่มเบอร์โทรศัพท์ของตัวเองได้");
+      return;
+    }
+
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("phone", "==", formattedPhone));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      toast.error("ไม่พบเบอร์โทรศัพท์นี้ในระบบ");
+      return;
+    }
+
+    const friendDoc = doc(db, "friends", formattedPhone);
+    const friendData = await getDoc(friendDoc);
+
+    if (friendData.exists()) {
+      const { friendships, friendsRequest } = friendData.data();
+
+      if (friendships.includes(phone)) {
+        toast.error("คุณมีเพื่อนคนนี้อยู่แล้ว");
+        return;
+      }
+
+      if (friendsRequest && friendsRequest.includes(phone)) {
+        toast.error("คุณได้ส่งคำขอเป็นเพื่อนไปแล้ว");
+        return;
+      }
+    }
+
     await setDoc(
-      doc(db, "friends", addPhone),
+      friendDoc,
       {
         friendsRequest: arrayUnion(phone),
       },
@@ -50,7 +113,7 @@ export default function AddFriendModal({ onClose }) {
             </div>
             <div className="flex justify-center">
               <InputLabel
-                onChange={(e) => setAddPhone(e.target.value)}
+                onChange={(e) => setAddPhone(formatPhoneNumber(e.target.value))}
                 value={addPhone}
                 isEye={false}
                 className="w-[512px]"
