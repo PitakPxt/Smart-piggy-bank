@@ -76,15 +76,27 @@ export default function AddFriendModal({ onClose }) {
     const friendData = await getDoc(friendDoc);
 
     if (friendData.exists()) {
-      const { friendships, friendsRequest } = friendData.data();
+      const { friendships = [], friendsRequest = [] } = friendData.data();
 
       if (friendships.includes(phone)) {
         toast.error("คุณมีเพื่อนคนนี้อยู่แล้ว");
         return;
       }
 
-      if (friendsRequest && friendsRequest.includes(phone)) {
+      if (friendsRequest.includes(phone)) {
         toast.error("คุณได้ส่งคำขอเป็นเพื่อนไปแล้ว");
+        return;
+      }
+    }
+
+    const userFriendDoc = doc(db, "friends", phone);
+    const userFriendData = await getDoc(userFriendDoc);
+
+    if (userFriendData.exists()) {
+      const { friendsRequest = [] } = userFriendData.data();
+
+      if (friendsRequest.includes(formattedPhone)) {
+        toast.error("คุณมีคำขอเป็นเพื่อนจากเบอร์นี้แล้ว");
         return;
       }
     }
