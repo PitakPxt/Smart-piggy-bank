@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { db, auth } from "../lib/firebase";
 import {
@@ -98,18 +98,20 @@ export default function Party() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
+  const timer = useRef(null);
+
   const calculateTimeLeft = useCallback((createdAt, totalDays) => {
     const endDate = new Date(createdAt);
     endDate.setDate(endDate.getDate() + totalDays);
     const currentDate = new Date();
     const timeDiff = endDate - currentDate;
 
-    setIsPartyEnded(timeDiff <= 0);
-
     if (timeDiff <= 0) {
+      setIsPartyEnded(true);
       return { days: 0, hours: 0, minutes: 0 };
     }
 
+    setIsPartyEnded(false);
     return {
       days: Math.floor(timeDiff / (1000 * 60 * 60 * 24)),
       hours: Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
@@ -208,6 +210,11 @@ export default function Party() {
         ...initialTimeLeft,
       });
 
+      timer.current = setInterval(() => {
+        const newTimeLeft = calculateTimeLeft(createdAt, totalDays);
+        setTimeLeft(newTimeLeft);
+      }, 60000);
+
       // เก็บข้อมูล members และติดตามการเปลี่ยนแปลง
       const memberPromises = party.members.map(async (memberId) => {
         const memberDoc = await getDoc(doc(db, "users", memberId));
@@ -220,7 +227,7 @@ export default function Party() {
         );
         const initialAmount = savingDoc.exists() ? savingDoc.data().total : 0;
 
-        // ติดตามการเปลี่ยนแปลงของ saving
+        // ติดตามการเปลี่ยนแปลงเอง saving
         onSnapshot(doc(db, "saving", memberData.savingNumber), async (doc) => {
           if (doc.exists()) {
             const newAmount = doc.data().total || 0;
@@ -342,25 +349,8 @@ export default function Party() {
   }, [user]);
 
   useEffect(() => {
-    if (!partyData) return;
-
-    const timer = setInterval(() => {
-      const newTimeLeft = calculateTimeLeft(
-        partyData.createdAt.toDate(),
-        parseInt(partyData.days)
-      );
-
-      const endDate = new Date(partyData.createdAt);
-      endDate.setDate(endDate.getDate() + parseInt(partyData.days));
-      const isPartyEnded = new Date() > endDate;
-
-      console.log(endDate);
-
-      setTimeLeft(newTimeLeft);
-    }, 60000); // อัพเดททุก 1 นาที
-
-    return () => clearInterval(timer);
-  }, [partyData, calculateTimeLeft]);
+    return () => clearInterval(timer.current);
+  }, [timer.current]);
 
   const handleDeleteClick = (player) => {
     setSelectedPlayer(player);
@@ -427,43 +417,6 @@ export default function Party() {
     setSelectedPlayer(null);
   };
 
-  useEffect(() => {
-    const updatePartyStatus = async () => {
-      if (isPartyEnded && user) {
-        try {
-          const userDoc = await getDoc(doc(db, "users", user.uid));
-          const partyId = userDoc.data().party;
-
-          if (partyId) {
-            const partyRef = doc(db, "party", partyId);
-            await updateDoc(partyRef, {
-              status: "end",
-            });
-            console.log("อัพเดทสถานะปาร์ตี้เป็น end สำเร็จ");
-
-            const topPlayers = playerData.slice(0, 3).map((player) => ({
-              name: player.name,
-              amount: player.amount,
-              avatar: player.avatar,
-            }));
-
-            navigate("/ranking", {
-              state: {
-                topPlayers,
-                partyId,
-                members: playerData.map((player) => player.id),
-              },
-            });
-          }
-        } catch (error) {
-          console.error("เกิดข้อผิดพลาดในการอัพเดทสถานะปาร์ตี้:", error);
-        }
-      }
-    };
-
-    updatePartyStatus();
-  }, [isPartyEnded, user, playerData, navigate]);
-
   const handleEndParty = useCallback(async () => {
     try {
       const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -492,7 +445,7 @@ export default function Party() {
     } catch (error) {
       console.error("Error ending party:", error);
     }
-  }, [navigate, playerData, user]);
+  }, [navigate, playerData, user, isPartyEnded]);
 
   const handleCancelParty = useCallback(() => {
     setShowPartySucceedModal(false);

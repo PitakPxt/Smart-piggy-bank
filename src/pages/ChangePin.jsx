@@ -46,7 +46,7 @@ export default function ChangePin() {
       });
 
       toast.success("เปลี่ยน PIN สำเร็จ");
-      navigate("/"); // กลับไปหน้าแรกหลังจากเปลี่ยน PIN สำเร็จ
+      navigate("/unlock-pin");
     } catch (error) {
       console.error("Error:", error);
       toast.error("เกิดข้อผิดพลาด กรุณาลองใหม่");
