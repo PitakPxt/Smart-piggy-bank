@@ -90,7 +90,14 @@ export default function Profile() {
                 <h2 className="text-h3-bold">
                   รหัสกระปุก : {userData?.savingNumber || "00XXX"}
                 </h2>
-                <h2 className="text-h3">{userData?.phone || "099XXXXXXX"}</h2>
+                <h2 className="text-h3">
+                  {userData?.phone
+                    ? userData.phone.replace(
+                        /(\d{3})(\d{3})(\d{4})/,
+                        "$1-$2-$3"
+                      )
+                    : "099-XXX-XXXX"}
+                </h2>
                 <h2 className="text-h3">
                   {userData?.email || "xxxxxx@gmail.com"}
                 </h2>

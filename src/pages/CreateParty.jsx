@@ -137,7 +137,12 @@ export default function CreateParty() {
                 isEye={false}
                 autoComplete="off"
                 value={target}
-                onChange={(e) => setTarget(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setTarget(value);
+                  }
+                }}
               />
               <InputLabel
                 className={"w-full"}
@@ -147,7 +152,12 @@ export default function CreateParty() {
                 isEye={false}
                 autoComplete="off"
                 value={days}
-                onChange={(e) => setDays(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setDays(value);
+                  }
+                }}
               />
               <div>
                 <h3 className="text-h3-bold mb-[10px]">เชิญเพื่อน : </h3>

@@ -34,10 +34,19 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
       try {
         const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
         const data = userDoc.data();
+
+        // ฟอร์แมตเบอร์โทรศัพท์ตั้งแต่ดึงข้อมูล
+        const formattedPhone = data.phone
+          ? data.phone
+              .replace(/\D/g, "")
+              .replace(/^(\d{3})(\d{3})(\d{4}).*/, "$1-$2-$3")
+              .slice(0, 12)
+          : "";
+
         setUserData(data);
         setFormData({
           name: data.name || "",
-          phone: data.phone || "",
+          phone: formattedPhone,
           savingNumber: data.savingNumber || "",
         });
       } catch (error) {
@@ -52,10 +61,35 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+
+    if (name === "savingNumber") {
+      if (!/^\d*$/.test(value) || value.length > 5) {
+        return;
+      }
+    }
+
+    if (name === "phone") {
+      // เก็บเฉพาะตัวเลข
+      const numbersOnly = value.replace(/\D/g, "");
+
+      // ตรวจสอบความยาวไม่เกิน 10 หลัก
+      if (numbersOnly.length <= 10) {
+        // ฟอร์แมตเบอร์โทร
+        const formattedPhone = numbersOnly
+          .replace(/(\d{3})(?=\d)/, "$1-")
+          .replace(/(\d{3})(?=\d)/, "$1-");
+
+        setFormData({
+          ...formData,
+          [name]: formattedPhone,
+        });
+      }
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const handleImageChange = (e) => {
@@ -71,6 +105,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
       const querySnapshot = await getDocs(q);
 
       let duplicateFields = [];
+      const phoneToCheck = data.phone.replace(/-/g, "");
 
       querySnapshot.docs.forEach((doc) => {
         const userData = doc.data();
@@ -78,7 +113,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
           if (userData.savingNumber === data.savingNumber) {
             duplicateFields.push("รหัสกระปุก");
           }
-          if (userData.phone === data.phone) {
+          if (userData.phone?.replace(/-/g, "") === phoneToCheck) {
             duplicateFields.push("เบอร์โทรศัพท์");
           }
           if (userData.name === data.name) {
@@ -101,7 +136,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
       // ตรวจสอบข้อมูลซ้ำ
       const duplicateFields = await checkDuplicateData(formData);
       if (duplicateFields.length > 0) {
-        toast.error(`ข้อมูลซ้ำ: ${duplicateFields.join(", ")}`);
+        toast.error(`ข้อมูลซ้ำ : ${duplicateFields.join(", ")}`);
         return;
       }
 
@@ -109,7 +144,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
 
       const updateData = {
         name: formData.name,
-        phone: formData.phone,
+        phone: formData.phone.replace(/-/g, ""),
         savingNumber: formData.savingNumber,
       };
 
@@ -282,6 +317,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
                 placeHolder=""
                 isInline={true}
                 isEye={false}
+                maxLength={5}
               />
               <InputLabel
                 name="phone"
