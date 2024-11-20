@@ -10,12 +10,14 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
-
+import { useScreen } from "../hooks/useScreen";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { logIn } = useUserAuth();
   const navigate = useNavigate();
+
+  const { isMobile, isTablet, isDesktop } = useScreen();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,12 +41,26 @@ export default function Login() {
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
-        <div className="w-[1196px] h-[708px] bg-primary-100 rounded-3xl overflow-hidden drop-shadow-lg">
+        <div
+          className=" bg-primary-100 rounded-3xl overflow-hidden drop-shadow-lg
+          xl:w-[1196px] xl:h-[708px] 
+        lg:w-[940px] lg:h-[620px]
+        md:w-[692px] md:h-[892px] 
+        sm:w-[344px] sm:h-[564px]"
+        >
           <div
             className="w-full h-full bg-no-repeat bg-contain bg-bottom content-center"
-            style={{ backgroundImage: `url(${BgImage})` }}
+            style={{
+              backgroundImage: `url(${!isMobile ? Logo : BgImage})`,
+            }}
           >
-            <div className="w-[1036px] h-[524px] flex mx-auto overflow-hidden rounded-3xl">
+            <div
+              className="flex mx-auto overflow-hidden rounded-3xl
+             xl:w-[1036px] xl:h-[524px] 
+         lg:w-[900px] lg:h-[550px]
+        md:w-[692px] md:h-[892px] 
+        sm:w-[344px] sm:h-[564px]"
+            >
               <div className="w-[518px] h-full">
                 <div className="flex flex-col items-center text-center">
                   <Logo />
