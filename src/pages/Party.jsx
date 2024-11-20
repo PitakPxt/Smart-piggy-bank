@@ -92,7 +92,12 @@ export default function Party() {
   const [playerData, setPlayerData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showPartySucceedModal, setShowPartySucceedModal] = useState(false);
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
   const [isPartyEnded, setIsPartyEnded] = useState(false);
   const [isPartyCreator, setIsPartyCreator] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -109,7 +114,7 @@ export default function Party() {
     if (timeDiff <= 0) {
       setIsPartyEnded(true);
       handleEndParty();
-      return { days: 0, hours: 0, minutes: 0 };
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
     }
 
     setIsPartyEnded(false);
@@ -117,6 +122,7 @@ export default function Party() {
       days: Math.floor(timeDiff / (1000 * 60 * 60 * 24)),
       hours: Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
       minutes: Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60)),
+      seconds: Math.floor((timeDiff % (1000 * 60)) / 1000),
     };
   }, []);
 
@@ -473,6 +479,71 @@ export default function Party() {
     setShowPartySucceedModal(false);
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchAndSetupRealtimeTimer = async () => {
+      try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const partyId = userDoc.data().party;
+        const partyRef = doc(db, "party", partyId);
+
+        // ติดตามการเปลี่ยนแปลงของ party document แบบ realtime
+        const unsubscribe = onSnapshot(partyRef, (partyDoc) => {
+          const party = partyDoc.data();
+
+          const updateTimer = () => {
+            const endDate = new Date(party.createdAt.toDate());
+            endDate.setDate(endDate.getDate() + parseInt(party.days));
+            const now = new Date();
+            const timeDiff = endDate - now;
+
+            if (timeDiff <= 0) {
+              setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+              setIsPartyEnded(true);
+              handleEndParty();
+              return;
+            }
+
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor(
+              (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+            );
+            const minutes = Math.floor(
+              (timeDiff % (1000 * 60 * 60)) / (1000 * 60)
+            );
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+            setTimeLeft({ days, hours, minutes, seconds });
+          };
+
+          // อัพเดทครั้งแรกทันที
+          updateTimer();
+
+          // ตั้ง interval สำหรับอัพเดทเวลา
+          const timer = setInterval(updateTimer, 1000);
+
+          // เก็บ timer ไว้เพื่อ cleanup
+          return () => clearInterval(timer);
+        });
+
+        // คืนค่า function สำหรับ unsubscribe
+        return unsubscribe;
+      } catch (error) {
+        console.error("Error setting up realtime timer:", error);
+      }
+    };
+
+    const cleanup = fetchAndSetupRealtimeTimer();
+
+    // Cleanup เมื่อ component unmount
+    return () => {
+      if (cleanup) {
+        cleanup.then((unsubscribe) => unsubscribe?.());
+      }
+    };
+  }, [user, handleEndParty]);
+
   if (loading || userLoading) {
     return (
       <NotFoundModal
@@ -511,8 +582,8 @@ export default function Party() {
             </h2>
             <h2 className="text-h2-bold">ปาร์ตี้ : {partyData?.partyName}</h2>
             <h3 className="text-h3">
-              ระยะเวลาที่เหลือ {timeLeft.days || 0} วัน {timeLeft.hours || 0}{" "}
-              ชั่วโมง {timeLeft.minutes || 0} นาที
+              เวลาที่เหลือ {timeLeft.days} วัน {timeLeft.hours} ชั่วโมง{" "}
+              {timeLeft.minutes} นาที {timeLeft.seconds} วินาที
             </h3>
           </div>
         </div>
