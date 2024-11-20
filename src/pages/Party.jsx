@@ -481,7 +481,7 @@ export default function Party() {
 
   useEffect(() => {
     if (!user) return;
-
+    // ฟังก์ชันสำหรับติดตามการเปลี่ยนแปลงของ party document แบบ realtime
     const fetchAndSetupRealtimeTimer = async () => {
       try {
         const userDoc = await getDoc(doc(db, "users", user.uid));
