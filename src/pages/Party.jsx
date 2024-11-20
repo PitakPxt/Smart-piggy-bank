@@ -102,8 +102,8 @@ export default function Party() {
   const [isPartyCreator, setIsPartyCreator] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-
-  const timer = useRef(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const timerRef = useRef(null);
 
   const calculateTimeLeft = useCallback((createdAt, totalDays) => {
     const endDate = new Date(createdAt);
@@ -201,15 +201,10 @@ export default function Party() {
       const totalDays = parseInt(party.days);
       const initialTimeLeft = calculateTimeLeft(createdAt, totalDays);
       setTimeLeft(initialTimeLeft);
+
       setPartyData({
         ...party,
-        ...initialTimeLeft,
       });
-
-      timer.current = setInterval(() => {
-        const newTimeLeft = calculateTimeLeft(createdAt, totalDays);
-        setTimeLeft(newTimeLeft);
-      }, 60000);
 
       // เก็บข้อมูล members และติดตามการเปลี่ยนแปลง
       const memberPromises = party.members.map(async (memberId) => {
@@ -345,8 +340,22 @@ export default function Party() {
   }, [user]);
 
   useEffect(() => {
-    return () => clearInterval(timer.current);
-  }, [timer.current]);
+    if (!partyData) return;
+
+    timerRef.current = setInterval(() => {
+      const createdAt = partyData.createdAt.toDate();
+      const totalDays = parseInt(partyData.days);
+      // console.log(createdAt, totalDays);
+      const newTimeLeft = calculateTimeLeft(createdAt, totalDays);
+      setTimeLeft(newTimeLeft);
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [partyData]);
 
   const handleDeleteClick = (player) => {
     setSelectedPlayer(player);
@@ -414,6 +423,7 @@ export default function Party() {
   };
 
   const handleEndParty = useCallback(async () => {
+    if (!user) return;
     try {
       const userDoc = await getDoc(doc(db, "users", user.uid));
       const partyId = userDoc.data().party;
@@ -473,76 +483,49 @@ export default function Party() {
     } catch (error) {
       console.error("Error ending party:", error);
     }
-  }, [navigate, user]);
+  }, [navigate, user, isPartyEnded]);
 
   const handleCancelParty = useCallback(() => {
     setShowPartySucceedModal(false);
   }, []);
 
-  useEffect(() => {
-    if (!user) return;
-    // ฟังก์ชันสำหรับติดตามการเปลี่ยนแปลงของ party document แบบ realtime
-    const fetchAndSetupRealtimeTimer = async () => {
-      try {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        const partyId = userDoc.data().party;
-        const partyRef = doc(db, "party", partyId);
+  // useEffect(() => {
+  //   if (!partyData?.createdAt) return;
 
-        // ติดตามการเปลี่ยนแปลงของ party document แบบ realtime
-        const unsubscribe = onSnapshot(partyRef, (partyDoc) => {
-          const party = partyDoc.data();
+  //   // อัพเดทเวลาปัจจุบันทุกวินาที
+  //   timerRef.current = setInterval(() => {
+  //     setCurrentTime(new Date());
+  //   }, 1000);
 
-          const updateTimer = () => {
-            const endDate = new Date(party.createdAt.toDate());
-            endDate.setDate(endDate.getDate() + parseInt(party.days));
-            const now = new Date();
-            const timeDiff = endDate - now;
+  //   return () => {
+  //     if (timerRef.current) {
+  //       clearInterval(timerRef.current);
+  //     }
+  //   };
+  // }, []);
 
-            if (timeDiff <= 0) {
-              setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-              setIsPartyEnded(true);
-              handleEndParty();
-              return;
-            }
+  // useEffect(() => {
+  //   if (!partyData?.createdAt) return;
 
-            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor(
-              (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-            );
-            const minutes = Math.floor(
-              (timeDiff % (1000 * 60 * 60)) / (1000 * 60)
-            );
-            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+  //   const endDate = new Date(partyData.createdAt.toDate());
+  //   endDate.setDate(endDate.getDate() + parseInt(partyData.days));
+  //   const timeDiff = endDate - currentTime;
 
-            setTimeLeft({ days, hours, minutes, seconds });
-          };
+  //   if (timeDiff <= 0) {
+  //     setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  //     if (!partyData.status || partyData.status !== "end") {
+  //       handleEndParty();
+  //     }
+  //     return;
+  //   }
 
-          // อัพเดทครั้งแรกทันที
-          updateTimer();
-
-          // ตั้ง interval สำหรับอัพเดทเวลา
-          const timer = setInterval(updateTimer, 1000);
-
-          // เก็บ timer ไว้เพื่อ cleanup
-          return () => clearInterval(timer);
-        });
-
-        // คืนค่า function สำหรับ unsubscribe
-        return unsubscribe;
-      } catch (error) {
-        console.error("Error setting up realtime timer:", error);
-      }
-    };
-
-    const cleanup = fetchAndSetupRealtimeTimer();
-
-    // Cleanup เมื่อ component unmount
-    return () => {
-      if (cleanup) {
-        cleanup.then((unsubscribe) => unsubscribe?.());
-      }
-    };
-  }, [user, handleEndParty]);
+  //   setTimeLeft({
+  //     days: Math.floor(timeDiff / (1000 * 60 * 60 * 24)),
+  //     hours: Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+  //     minutes: Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60)),
+  //     seconds: Math.floor((timeDiff % (1000 * 60)) / 1000),
+  //   });
+  // }, [currentTime, partyData]);
 
   if (loading || userLoading) {
     return (
