@@ -1,5 +1,7 @@
 import Logo from "../components/Logo";
-import BgImage from "../assets/images/background.png";
+import BgImageDesktop from "../assets/images/background.png";
+import BgImageTablet from "../assets/images/background-tablet.png";
+import BgImageMobile from "../assets/images/background-mobile.png";
 import BtnYellow from "../components/BtnYellow";
 import InputLabel from "../components/InputLabel";
 import React, { useState } from "react";
@@ -44,25 +46,35 @@ export default function Login() {
         <div
           className=" bg-primary-100 rounded-3xl overflow-hidden drop-shadow-lg
           xl:w-[1196px] xl:h-[708px] 
-        lg:w-[940px] lg:h-[620px]
+        lg:w-[1040px] lg:h-[620px]
         md:w-[692px] md:h-[892px] 
         sm:w-[344px] sm:h-[564px]"
         >
           <div
             className="w-full h-full bg-no-repeat bg-contain bg-bottom content-center"
             style={{
-              backgroundImage: `url(${!isMobile ? Logo : BgImage})`,
+              backgroundImage: `url(${
+                !isMobile
+                  ? BgImageDesktop
+                  : isTablet
+                  ? BgImageTablet
+                  : BgImageMobile
+              })`,
             }}
           >
             <div
-              className="flex mx-auto overflow-hidden rounded-3xl
-             xl:w-[1036px] xl:h-[524px] 
-         lg:w-[900px] lg:h-[550px]
-        md:w-[692px] md:h-[892px] 
-        sm:w-[344px] sm:h-[564px]"
+              className="flex mx-auto overflow-hidden rounded-3xl gap-[40px]
+              xl:w-[1036px] xl:h-[524px] 
+              lg:w-[868px] lg:h-[568px]
+              md:w-[568px] md:h-[768px] 
+              sm:w-[300px] sm:h-[500px]
+              xl:flex-row xl:justify-start xl:items-start
+              lg:flex-row lg:justify-start lg:items-start 
+              md:flex-col md:justify-center md:items-center 
+              sm:flex-col sm:justify-center sm:items-center"
             >
-              <div className="w-[518px] h-full">
-                <div className="flex flex-col items-center text-center">
+              <div className="w-1/2 h-auto">
+                <div className="flex flex-col items-center text-center justify-start">
                   <Logo />
                   <p className="text-h3 mt-7">
                     ยินดีต้องรับสู่ Smart Piggy Bank <br />
@@ -72,13 +84,13 @@ export default function Login() {
               </div>
               <form
                 onSubmit={handleSubmit}
-                className="w-1/2 bg-neutral-white-100 flex items-center"
+                className="w-1/2 h-full flex justify-center items-center"
               >
-                <div className="flex flex-col items-center w-[380px] h-[420px]  mx-auto">
+                <div className="flex flex-col items-center justify-center px-[68px] h-full bg-neutral-white-100">
                   <h2 className="text-h2-bold text-center mb-[22px]">
                     เข้าสู่ระบบ
                   </h2>
-                  <div className="w-full mb-[38px]">
+                  <div className="w-[382px] mb-[38px]">
                     <div className="flex flex-col gap-2">
                       <InputLabel
                         text="อีเมล์"
