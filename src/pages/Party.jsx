@@ -108,6 +108,7 @@ export default function Party() {
 
     if (timeDiff <= 0) {
       setIsPartyEnded(true);
+      handleEndParty();
       return { days: 0, hours: 0, minutes: 0 };
     }
 
@@ -135,17 +136,7 @@ export default function Party() {
 
       // ถ้า status เป็น end ให้ redirect ไปหน้า ranking ทันที
       if (party.status === "end") {
-        // ถ้ามี winners อยู่แล้วให้นำทางไปหน้า ranking เลย
-        if (party.winners) {
-          navigate("/ranking", {
-            state: {
-              partyId,
-            },
-          });
-          return;
-        }
-
-        // ถ้ายังไม่มี winners ให้สรุปผล
+        // เตรียมข้อมูลผู้เล่นทั้งหมด
         const memberData = await Promise.all(
           party.members.map(async (memberId) => {
             const memberDoc = await getDoc(doc(db, "users", memberId));
@@ -163,38 +154,37 @@ export default function Party() {
           })
         );
 
-        // เรียงลำดับตามจำนวนเงินและเลือก 3 อันดับแรก
+        // เรียงลำดับและเตรียมข้อมูล winners
         const sortedMembers = memberData
           .sort((a, b) => b.amount - a.amount)
           .slice(0, 3)
           .map((player, index) => ({
             ...player,
             rank: index + 1,
-            bgColor:
-              index === 0
-                ? "bg-primary-500"
-                : index === 1
-                ? "bg-[#F36B39]"
-                : "bg-[#9BD0F2]",
           }));
 
-        // จัดเรียงใหม่ตามลำดับการแสดงผล (1, 2, 3)
+        // อัพเดท winners ใน party document ถ้ายังไม่มีข้อมูล
+        if (!party.winners || party.winners.length === 0) {
+          await updateDoc(doc(db, "party", partyId), {
+            winners: sortedMembers,
+          });
+        }
+
+        // จัดเรียงใหม่ตามลำดับการแสดงผล (2, 1, 3)
         const orderedWinners = [
-          sortedMembers[0],
-          sortedMembers[1],
-          sortedMembers[2],
+          sortedMembers[1], // อันดับ 2
+          sortedMembers[0], // อันดับ 1
+          sortedMembers[2], // อันดับ 3
         ].filter(Boolean);
 
-        // อัพเดท winners ใน party document
-        await updateDoc(doc(db, "party", partyId), {
-          winners: orderedWinners,
-        });
-
-        // นำทางไปหน้า ranking
+        // นำทางไปหน้า ranking พร้อมข้อมูลที่จัดเรียงแล้ว
         navigate("/ranking", {
           state: {
-            partyId,
+            topPlayers: orderedWinners,
+            partyId: partyId,
+            members: party.members,
           },
+          replace: true,
         });
         return;
       }
@@ -421,31 +411,63 @@ export default function Party() {
     try {
       const userDoc = await getDoc(doc(db, "users", user.uid));
       const partyId = userDoc.data().party;
+      const partyRef = doc(db, "party", partyId);
+      const partyDoc = await getDoc(partyRef);
+      const party = partyDoc.data();
 
-      // เลือก 3 อันดับแรกจาก playerData
-      const topPlayers = playerData.slice(0, 3).map((player) => ({
-        name: player.name,
-        amount: player.amount,
-        avatar: player.avatar,
-      }));
+      // เตรียมข้อมูลผู้เล่นทั้งหมด
+      const memberData = await Promise.all(
+        party.members.map(async (memberId) => {
+          const memberDoc = await getDoc(doc(db, "users", memberId));
+          const memberInfo = memberDoc.data();
+          const savingDoc = await getDoc(
+            doc(db, "saving", memberInfo.savingNumber)
+          );
+          const amount = savingDoc.exists() ? savingDoc.data().total : 0;
+
+          return {
+            name: memberInfo.name,
+            amount: amount,
+            avatar: memberInfo.profileImageURL,
+          };
+        })
+      );
+
+      // เรียงลำดับและเตรียมข้อมูล winners
+      const sortedMembers = memberData
+        .sort((a, b) => b.amount - a.amount)
+        .slice(0, 3)
+        .map((player, index) => ({
+          ...player,
+          rank: index + 1,
+        }));
 
       // อัพเดทสถานะปาร์ตี้และบันทึกผู้ชนะ
-      const partyRef = doc(db, "party", partyId);
       await updateDoc(partyRef, {
         status: "end",
-        winners: topPlayers,
+        winners: sortedMembers,
       });
 
-      setShowPartySucceedModal(false);
+      // จัดเรียงใหม่ตามลำดับการแสดงผล (2, 1, 3)
+      const orderedWinners = [
+        sortedMembers[1], // อันดับ 2
+        sortedMembers[0], // อันดับ 1
+        sortedMembers[2], // อันดับ 3
+      ].filter(Boolean);
+
+      // นำทางไปหน้า ranking พร้อมข้อมูลที่จัดเรียงแล้ว
       navigate("/ranking", {
         state: {
-          partyId,
+          topPlayers: orderedWinners,
+          partyId: partyId,
+          members: party.members,
         },
+        replace: true,
       });
     } catch (error) {
       console.error("Error ending party:", error);
     }
-  }, [navigate, playerData, user, isPartyEnded]);
+  }, [navigate, user]);
 
   const handleCancelParty = useCallback(() => {
     setShowPartySucceedModal(false);

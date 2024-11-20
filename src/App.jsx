@@ -15,6 +15,7 @@ import ChangePassLog from "@pages/ChangePassLog";
 import Party from "@pages/Party";
 import Ranking from "@pages/Ranking";
 import UnlockSuccess from "@pages/UnlockSuccess";
+import ProtectedRoute from "@components/ProtectedRoute";
 
 import AddFriendModal from "@components/modals/AddFriendModal";
 import YourComponent from "@pages/YourComponent";
@@ -28,6 +29,14 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Login />} />
+            <Route
+              path="home"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
             <Route path="register" element={<Register />} />
             <Route path="unlock-pin" element={<UnlockPin />} />
             <Route path="unlock-success" element={<UnlockSuccess />} />
@@ -37,11 +46,17 @@ function App() {
             <Route path="party" element={<Party />} />
             <Route path="ranking" element={<Ranking />} />
             <Route path="saving" element={<YourComponent />} />
-            <Route path="profile" element={<Profile />} />
+            <Route
+              path="profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
             <Route path="add-friend" element={<AddFriendModal />} />
             <Route path="reset-password" element={<ChangePassLog />} />
             <Route path="otp" element={<Otp />} />
-            <Route path="home" element={<Home />} />
             <Route path="forget" element={<Forget />} />
             <Route path="unlockpin" element={<UnlockPin />} />
           </Route>

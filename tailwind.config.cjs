@@ -7,6 +7,9 @@ export default {
       // padding: "6.75rem",
       // margin: "0 auto",
     },
+    // dropShadow: {
+    //   "main-shadow": "0 3px 4px rgba(0, 0, 0, 0.25)",
+    // },
     screens: {
       sm: "376px",
       md: "744px",

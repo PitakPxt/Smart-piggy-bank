@@ -502,7 +502,6 @@ const PartyRequestItem = () => {
                 className="px-[18px] py-[8px] bg-success-400 rounded-xl cursor-pointer"
                 src={AcceptIcon}
                 onClick={() => {
-                  console.log("Accepting request for:", request);
                   handleAcceptPartyRequest(request.phone, request.partyId);
                 }}
               />
