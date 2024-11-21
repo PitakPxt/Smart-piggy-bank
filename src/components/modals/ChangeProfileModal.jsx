@@ -109,7 +109,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
       if (docSnap.exists()) {
         if (docSnap.data().savingNumber !== data.savingNumber) {
           toast.error(
-            "หมายเลขกระปุกออมสินไม่ตรงกับเบอร์โทรศัพท์ที่ลงทะเบียนไว้"
+            "หมายเลขกระปุกออมสินไม่ตรงกับเบอร์โทรศัพท์ที่ลงทะเบียนไว"
           );
           return;
         }
@@ -120,8 +120,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
 
       return [];
     } catch (error) {
-      console.error("Error checking duplicate:", error);
-      return [];
+      return;
     }
   };
 
