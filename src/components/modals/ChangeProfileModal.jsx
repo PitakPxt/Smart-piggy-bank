@@ -72,7 +72,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
       // เก็บเฉพาะตัวเลข
       const numbersOnly = value.replace(/\D/g, "");
 
-      // ตรวจสอบความยาวไ���่เกิน 10 ห��ัก
+      // ตรวจสอบความยาว่เกิน 10 หัก
       if (numbersOnly.length <= 10) {
         // ฟอร์แมตเบอร์โทร
         const formattedPhone = numbersOnly
@@ -100,29 +100,25 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
 
   const checkDuplicateData = async (data) => {
     try {
-      const usersRef = collection(db, "users");
-      const q = query(usersRef);
-      const querySnapshot = await getDocs(q);
+      // ตรวจสอบในคอลเลคชัน collection ก่อน
+      const collectionRef = collection(db, "collection");
+      const docRef = doc(collectionRef, data.phone.replace(/-/g, "")); // ใช้เบอร์โทรเป็น id
+      const docSnap = await getDoc(docRef);
 
-      let duplicateFields = [];
-      const phoneToCheck = data.phone.replace(/-/g, "");
-
-      querySnapshot.docs.forEach((doc) => {
-        const userData = doc.data();
-        if (doc.id !== auth.currentUser.uid) {
-          if (userData.savingNumber === data.savingNumber) {
-            duplicateFields.push("รหัสกระปุก");
-          }
-          if (userData.phone?.replace(/-/g, "") === phoneToCheck) {
-            duplicateFields.push("เบอร์โทรศัพท์");
-          }
-          if (userData.name === data.name) {
-            duplicateFields.push("ชื่อ");
-          }
+      // ถ้าเจอเบอร์โทรในระบบ ต้องตรวจสอบว่า savingNumber ตรงกันไหม
+      if (docSnap.exists()) {
+        if (docSnap.data().savingNumber !== data.savingNumber) {
+          toast.error(
+            "หมายเลขกระปุกออมสินไม่ตรงกับเบอร์โทรศัพท์ที่ลงทะเบียนไว้"
+          );
+          return;
         }
-      });
+      } else {
+        toast.error("ไม่พบข้อมูลการลงทะเบียนกระปุกออมสินของเบอร์โทรศัพท์นี้");
+        return ["ไม่พบข้อมูลการลงทะเบียนกระปุกออมสินของเบอร์โทรศัพท์นี้"];
+      }
 
-      return duplicateFields;
+      return [];
     } catch (error) {
       console.error("Error checking duplicate:", error);
       return [];
@@ -136,7 +132,6 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
       // ตรวจสอบข้อมูลซ้ำ
       const duplicateFields = await checkDuplicateData(formData);
       if (duplicateFields.length > 0) {
-        toast.error(`ข้อมูลซ้ำ : ${duplicateFields.join(", ")}`);
         return;
       }
 
@@ -168,7 +163,6 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
       onClose();
     } catch (error) {
       console.error("Error updating profile:", error);
-      toast.error("เกิดข้อผิดพลาดในการอัพเดทข้อมูล");
     } finally {
       setIsLoading(false);
     }
