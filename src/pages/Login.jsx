@@ -48,7 +48,7 @@ export default function Login() {
           className=" bg-primary-100 rounded-3xl overflow-hidden drop-shadow-lg
           xl:w-[1196px] xl:h-[708px] 
         lg:w-[1040px] lg:h-[620px]
-        md:w-[692px] md:h-[892px] 
+        md:w-[692px] md:h-[772px] 
         sm:w-[344px] sm:h-[564px]"
         >
           <div
@@ -75,9 +75,9 @@ export default function Login() {
               md:flex-col md:justify-center md:items-center 
               sm:flex-col sm:justify-center sm:items-center"
             >
-              <div className="w-1/2 h-auto">
-                <div className="w-full flex flex-col items-center text-center justify-start">
-                  <div className="w-full flex xl:flex-row lg:flex-row md:flex-row sm:flex-col items-center gap-[6px]">
+              <div className="xl:w-1/2 lg:w-1/2 md:w-full sm:w-full h-auto">
+                <div className="w-full flex flex-col items-center text-center justify-start ">
+                  <div className="w-full flex xl:flex-row lg:flex-row md:flex-row sm:flex-col items-center justify-center gap-[6px]">
                     <img
                       src={LogoImage}
                       alt=""
@@ -97,11 +97,11 @@ export default function Login() {
                 onSubmit={handleSubmit}
                 className="w-1/2 h-full flex justify-center items-center"
               >
-                <div className="flex flex-col items-center justify-center md:px-[38px] lg:px-[40px] xl:px-[68px] h-full bg-neutral-white-100">
+                <div className="flex flex-col items-center justify-center xl:px-[68px] md:px-[68px] lg:px-[40px]  h-full bg-neutral-white-100">
                   <h2 className="text-center mb-[22px] xl:text-h2-bold lg:text-h2-bold md:text-h2-bold sm:text-h4-bold">
                     เข้าสู่ระบบ
                   </h2>
-                  <div className="sm:w-[252px] xl:w-[382px] mb-[38px]">
+                  <div className="sm:w-[252px] xl:w-[382px] md:w-[432px] mb-[38px]">
                     <div className="flex flex-col gap-2">
                       <InputLabel
                         text="อีเมล์"
@@ -140,7 +140,7 @@ export default function Login() {
                   <BtnYellow
                     type="submit"
                     className={
-                      "px-[112px] xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
+                      "xl:px-[112px] lg:px-[100px] md:px-[70px] sm:px-[80px] xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
                     }
                     text={"เข้าสู่ระบบ"}
                   />

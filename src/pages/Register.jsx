@@ -143,7 +143,7 @@ export default function Register() {
       const phoneSnapshot = await getDocs(phoneQuery);
 
       if (!phoneSnapshot.empty) {
-        toast.error("เบอร์โทรศัพท์นี้ถูกใช้งานแล้ว กรุณาใช้เบอร์โทรศัพท์อื่น");
+        toast.error("เบอร์โทรศัพท์นี้ถูกใช้งานแล้ว");
         return;
       }
     } catch (error) {
@@ -194,6 +194,7 @@ export default function Register() {
 
       await sendEmailVerification(user);
       setIsVerifying(true);
+      logOut();
 
       const checkVerification = setInterval(async () => {
         await user.reload();
