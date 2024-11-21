@@ -69,7 +69,7 @@ export default function Login() {
               xl:w-[1036px] xl:h-[524px] 
               lg:w-[900px] lg:h-[568px]
               md:w-[568px] md:h-[768px] 
-              sm:w-[300px] sm:h-[500px]
+              sm:w-[300px] sm:h-[650px]
               xl:flex-row xl:justify-start xl:items-start
               lg:flex-row lg:justify-start lg:items-start 
               md:flex-col md:justify-center md:items-center 
@@ -97,11 +97,15 @@ export default function Login() {
                 onSubmit={handleSubmit}
                 className="w-1/2 h-full flex justify-center items-center"
               >
-                <div className="flex flex-col items-center justify-center xl:px-[68px] md:px-[68px] lg:px-[40px]  h-full bg-neutral-white-100">
+                <div
+                  className="flex flex-col h-full items-center justify-center bg-neutral-white-100
+                xl:px-[68px] md:px-[68px] lg:px-[40px] sm:px-[24px]
+                xl:py-[68px] md:py-[68px] lg:py-[68px] sm:py-[42px]"
+                >
                   <h2 className="text-center mb-[22px] xl:text-h2-bold lg:text-h2-bold md:text-h2-bold sm:text-h4-bold">
                     เข้าสู่ระบบ
                   </h2>
-                  <div className="sm:w-[252px] xl:w-[382px] md:w-[432px] mb-[38px]">
+                  <div className=" xl:w-[382px] md:w-[432px] lg:w-[432px] sm:w-[252px] xl:mb-[34px] lg:mb-[34px] md:mb-[34px] sm:mb-[1px]">
                     <div className="flex flex-col gap-2">
                       <InputLabel
                         text="อีเมล์"
