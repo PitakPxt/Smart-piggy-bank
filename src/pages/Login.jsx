@@ -4,7 +4,8 @@ import BgImageTablet from "../assets/images/background-tablet.png";
 import BgImageMobile from "../assets/images/background-mobile.png";
 import BtnYellow from "../components/BtnYellow";
 import InputLabel from "../components/InputLabel";
-import React, { useState } from "react";
+import LogoImage from "../assets/images/logo-pic.svg";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/AuthContext";
@@ -63,9 +64,10 @@ export default function Login() {
             }}
           >
             <div
-              className="flex mx-auto overflow-hidden rounded-3xl gap-[40px]
+              className="flex mx-auto overflow-hidden rounded-3xl 
+              xl:gap-[40px] lg:gap-[32px] md:gap-[32px] sm:gap-[24px]
               xl:w-[1036px] xl:h-[524px] 
-              lg:w-[868px] lg:h-[568px]
+              lg:w-[900px] lg:h-[568px]
               md:w-[568px] md:h-[768px] 
               sm:w-[300px] sm:h-[500px]
               xl:flex-row xl:justify-start xl:items-start
@@ -74,10 +76,19 @@ export default function Login() {
               sm:flex-col sm:justify-center sm:items-center"
             >
               <div className="w-1/2 h-auto">
-                <div className="flex flex-col items-center text-center justify-start">
-                  <Logo />
-                  <p className="text-h3 mt-7">
-                    ยินดีต้องรับสู่ Smart Piggy Bank <br />
+                <div className="w-full flex flex-col items-center text-center justify-start">
+                  <div className="w-full flex xl:flex-row lg:flex-row md:flex-row sm:flex-col items-center gap-[6px]">
+                    <img
+                      src={LogoImage}
+                      alt=""
+                      className="xl:size-[88px] lg:size-[88px] md:size-[88px] sm:size-[78px] font-bold"
+                    />
+                    <h1 className="xl:text-[48px] lg:text-[48px] md:text-[48px] sm:text-h4-bold leading-[38px] font-bold">
+                      Smart Piggy Bank
+                    </h1>
+                  </div>
+                  <p className="xl:text-h3 lg:text-h4 md:text-h3 sm:text-h5 xl:mt-[32px] lg:mt-[24px] md:mt-[24px] sm:mt-[8px]">
+                    ยินดีต้องรับสู่ Smart Piggy Bank
                     โลกที่จะพาคุณไปสนุกกับการออมเงิน
                   </p>
                 </div>
@@ -86,11 +97,11 @@ export default function Login() {
                 onSubmit={handleSubmit}
                 className="w-1/2 h-full flex justify-center items-center"
               >
-                <div className="flex flex-col items-center justify-center px-[68px] h-full bg-neutral-white-100">
-                  <h2 className="text-h2-bold text-center mb-[22px]">
+                <div className="flex flex-col items-center justify-center md:px-[38px] lg:px-[40px] xl:px-[68px] h-full bg-neutral-white-100">
+                  <h2 className="text-center mb-[22px] xl:text-h2-bold lg:text-h2-bold md:text-h2-bold sm:text-h4-bold">
                     เข้าสู่ระบบ
                   </h2>
-                  <div className="w-[382px] mb-[38px]">
+                  <div className="sm:w-[252px] xl:w-[382px] mb-[38px]">
                     <div className="flex flex-col gap-2">
                       <InputLabel
                         text="อีเมล์"
@@ -99,6 +110,9 @@ export default function Login() {
                         isEye={false}
                         value={email}
                         autoComplete="on"
+                        textLabelClassName="xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
+                        inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
+                        inputBorderClassName="xl:py-[8px] lg:py-[4px] md:py-[4px] sm:py-[2px]"
                         onChange={(e) => setEmail(e.target.value)}
                       />
                       <InputLabel
@@ -108,11 +122,14 @@ export default function Login() {
                         isEye={true}
                         value={password}
                         autoComplete="on"
+                        textLabelClassName="xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
+                        inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
+                        inputBorderClassName="xl:py-[8px] lg:py-[4px] md:py-[4px] sm:py-[2px]"
                         onChange={(e) => setPassword(e.target.value)}
                       />
                       <div className="w-full flex justify-end">
                         <Link to="/forget">
-                          <span className="text-h4 cursor-pointer">
+                          <span className="text-h4 cursor-pointer xl:text-h4 lg:text-h4 md:text-h4 sm:text-h5">
                             ลืมรหัสผ่าน?
                           </span>
                         </Link>
@@ -122,7 +139,9 @@ export default function Login() {
 
                   <BtnYellow
                     type="submit"
-                    className={"px-[112px]"}
+                    className={
+                      "px-[112px] xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
+                    }
                     text={"เข้าสู่ระบบ"}
                   />
                 </div>
