@@ -264,7 +264,7 @@ export default function Register() {
             xl:w-[1104px] xl:h-[786px]
             lg:w-[980px] lg:h-[690px]
             md:w-[680px] md:h-[990px]
-            w-[344px] h[670px]
+            w-[344px] h-[670px]
             "
           >
             <Link to="/">
@@ -272,7 +272,7 @@ export default function Register() {
             </Link>
             <div className="size-full flex flex-col justify-center items-center">
               <div
-                className="w-full flex justify-center items-center xl:gap-[102px] lg:gap-[24px] gap-[18px] 
+                className="w-full flex justify-center items-center xl:gap-[102px] md:gap-[18px] sm:gap-[10px] 
               xl:mb-[48px] md:mb-[26px] lg:flex-row sm:flex-col flex-col"
               >
                 <div className="flex flex-col items-center justify-center text-center">
@@ -294,11 +294,11 @@ export default function Register() {
                   <button
                     onClick={handleUpload}
                     type="button"
-                    className="flex gap-[10px] items-center px-6 py-2 bg-primary-500 rounded-xl hover:duration-200 group 
-                    hover:ease-in-out hover:bg-secondary-600 hover:text-neutral-white-100"
+                    className="flex gap-[10px] items-center md:px-6 md:py-2 sm:px-[18px] sm:py-1 bg-primary-500 md:rounded-xl sm:rounded-lg hover:duration-200 
+                    group hover:ease-in-out hover:bg-secondary-600 hover:text-neutral-white-100"
                   >
                     <svg
-                      className="group-hover:stroke-neutral-white-100"
+                      className="group-hover:stroke-neutral-white-100 md:size-[20px] sm:size-[16px]"
                       width="21"
                       height="20"
                       viewBox="0 0 21 20"
@@ -322,7 +322,7 @@ export default function Register() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <h4 className="text-h4-bold text-neutral-black-800">
+                    <h4 className="md:text-h4-bold sm:text-h5-bold text-neutral-black-800">
                       เพิ่มรูปโปรไฟล์
                     </h4>
                   </button>
