@@ -29,13 +29,13 @@ export default function InputLabel({
         <h3 className={cn("mb-2 text-h3-bold", textLabelClassName)}>{text}</h3>
         <div
           className={cn(
-            "py-[8px] pl-3 pr-3 rounded-[12px] border-[1px] text-h3 relative",
+            "py-[8px] pl-3 pr-3 rounded-[12px] border-[1px] text-h3 relative flex",
             inputBorderClassName,
             isInline && "flex-1"
           )}
         >
           <input
-            className={cn("w-full", inputClassName)}
+            className={cn("w-full outline-none ", inputClassName)}
             name={name}
             type={eye ? "password" : "text"}
             required={required}
@@ -46,7 +46,7 @@ export default function InputLabel({
           />
           {isEye && (
             <img
-              className="size-[24px] absolute right-0 bottom-3.5 mr-3 cursor-pointer"
+              className="size-[18px] md:size-[24px] absolute right-0 top-1/2 -translate-y-1/2 mr-3 cursor-pointer"
               src={eye ? IconEyeClose : IconEye}
               alt=""
               onClick={handleEye}

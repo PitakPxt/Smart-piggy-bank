@@ -45,11 +45,13 @@ export default function Login() {
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
         <div
-          className=" bg-primary-100 rounded-3xl overflow-hidden drop-shadow-lg
+          className=" bg-primary-100 rounded-3xl overflow-hidden shadow-main-shadow
           xl:w-[1196px] xl:h-[708px] 
         lg:w-[1040px] lg:h-[620px]
         md:w-[692px] md:h-[772px] 
-        sm:w-[344px] sm:h-[564px]"
+        sm:w-[344px] sm:h-[564px]
+        w-full h-full
+        "
         >
           <div
             className="w-full h-full bg-no-repeat bg-contain bg-bottom content-center"
@@ -64,16 +66,13 @@ export default function Login() {
             }}
           >
             <div
-              className="flex mx-auto overflow-hidden rounded-3xl 
+              className="flex mx-auto overflow-hidden rounded-3xl p-4
               xl:gap-[40px] lg:gap-[32px] md:gap-[32px] sm:gap-[24px]
               xl:w-[1036px] xl:h-[524px] 
               lg:w-[900px] lg:h-[568px]
               md:w-[568px] md:h-[768px] 
-              sm:w-[300px] sm:h-[650px]
-              xl:flex-row xl:justify-start xl:items-start
               lg:flex-row lg:justify-start lg:items-start 
-              md:flex-col md:justify-center md:items-center 
-              sm:flex-col sm:justify-center sm:items-center"
+             flex-col sm:justify-center items-center"
             >
               <div className="xl:w-1/2 lg:w-1/2 md:w-full sm:w-full h-auto">
                 <div className="w-full flex flex-col items-center text-center justify-start ">
@@ -87,22 +86,23 @@ export default function Login() {
                       Smart Piggy Bank
                     </h1>
                   </div>
-                  <p className="xl:text-h3 lg:text-h4 md:text-h3 sm:text-h5 xl:mt-[32px] lg:mt-[24px] md:mt-[24px] sm:mt-[8px]">
-                    ยินดีต้องรับสู่ Smart Piggy Bank
+                  <p className="xl:text-h3 lg:text-h4 md:text-h3 sm:text-h5 xl:mt-[32px] lg:mt-[24px] md:mt-[24px] mt-[8px]">
+                    ยินดีต้องรับสู่ Smart Piggy Bank{" "}
+                    <br className="lg:hidden" />
                     โลกที่จะพาคุณไปสนุกกับการออมเงิน
                   </p>
                 </div>
               </div>
               <form
                 onSubmit={handleSubmit}
-                className="w-1/2 h-full flex justify-center items-center"
+                className="w-full h-full flex justify-center items-center lg:w-1/2"
               >
                 <div
-                  className="flex flex-col h-full items-center justify-center bg-neutral-white-100
-                xl:px-[68px] md:px-[68px] lg:px-[40px] sm:px-[24px]
-                xl:py-[68px] md:py-[68px] lg:py-[68px] sm:py-[42px]"
+                  className="flex flex-col h-full items-center  lg:justify-center bg-neutral-white-100 rounded-2xl
+                xl:px-[68px] md:px-[68px] lg:px-[40px] px-[24px]
+                xl:py-[68px] md:py-[68px] lg:py-[68px] py-[18px]"
                 >
-                  <h2 className="text-center mb-[22px] xl:text-h2-bold lg:text-h2-bold md:text-h2-bold sm:text-h4-bold">
+                  <h2 className="text-center mb-[18px] lg:mb-[22px] xl:text-h2-bold lg:text-h2-bold md:text-h2-bold sm:text-h4-bold">
                     เข้าสู่ระบบ
                   </h2>
                   <div className=" xl:w-[382px] md:w-[432px] lg:w-[432px] sm:w-[252px] xl:mb-[34px] lg:mb-[34px] md:mb-[34px] sm:mb-[1px]">
@@ -116,7 +116,7 @@ export default function Login() {
                         autoComplete="on"
                         textLabelClassName="xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
                         inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
-                        inputBorderClassName="xl:py-[8px] lg:py-[4px] md:py-[4px] sm:py-[2px]"
+                        // inputBorderClassName="xl:py-[8px] lg:py-[4px] md:py-[4px] sm:py-[2px]"
                         onChange={(e) => setEmail(e.target.value)}
                       />
                       <InputLabel
@@ -128,7 +128,7 @@ export default function Login() {
                         autoComplete="on"
                         textLabelClassName="xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
                         inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
-                        inputBorderClassName="xl:py-[8px] lg:py-[4px] md:py-[4px] sm:py-[2px]"
+                        // inputBorderClassName="xl:py-[8px] lg:py-[4px] md:py-[4px] sm:py-[2px]"
                         onChange={(e) => setPassword(e.target.value)}
                       />
                       <div className="w-full flex justify-end">
