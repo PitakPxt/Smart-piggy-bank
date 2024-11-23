@@ -69,7 +69,7 @@ export default function Login() {
               className="flex mx-auto overflow-hidden rounded-3xl p-4
               xl:gap-[40px] lg:gap-[32px] md:gap-[32px] sm:gap-[24px]
               xl:w-[1036px] xl:h-[524px] 
-              lg:w-[900px] lg:h-[568px]
+              lg:w-[960px] lg:h-[568px]
               md:w-[568px] md:h-[768px] 
               lg:flex-row lg:justify-start lg:items-start 
              flex-col sm:justify-center items-center"
