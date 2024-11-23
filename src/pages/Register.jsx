@@ -270,7 +270,7 @@ export default function Register() {
             <Link to="/">
               <BtnBack />
             </Link>
-            <div className="size-full flex flex-col justify-center items-center xl:gap-[28px] md:gap-[26px] sm:gap-[18px]">
+            <div className="size-full flex flex-col justify-center items-center xl:gap-[28px] md:gap-[18px] sm:gap-[18px]">
               <div
                 className="w-full flex justify-center items-center xl:gap-[102px] md:gap-[18px] sm:gap-[10px] 
               xl:mb-[48px] md:mb-[26px] lg:flex-row sm:flex-col flex-col "
