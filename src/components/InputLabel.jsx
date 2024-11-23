@@ -15,7 +15,6 @@ export default function InputLabel({
   onChange,
   autoComplete,
   isEye = true,
-  textLabelClassName,
   inputBorderClassName,
   inputClassName,
 }) {
@@ -26,7 +25,13 @@ export default function InputLabel({
   return (
     <>
       <div className={cn(isInline ? "flex gap-3.5 items-center" : "w-full")}>
-        <h3 className={cn("mb-2 text-h3-bold", textLabelClassName)}>{text}</h3>
+        <h3
+          className={cn(
+            "xl:mb-[10px] lg:mb-[10px] md:mb-[10px] sm:mb-[4px] mb-2 text-h3-bold xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
+          )}
+        >
+          {text}
+        </h3>
         <div
           className={cn(
             "py-[8px] pl-3 pr-3 rounded-[12px] border-[1px] text-h3 relative flex",

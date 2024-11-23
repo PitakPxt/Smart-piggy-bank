@@ -260,18 +260,26 @@ export default function Register() {
         ) : (
           <form
             onSubmit={handleSubmit}
-            className="w-[1104px] h-[786px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg"
+            className=" bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg
+            xl:w-[1104px] xl:h-[786px]
+            lg:w-[980px] lg:h-[680px]
+            md:w-[680px] md:h-[980px]
+            w-[344px] h[670px]
+            "
           >
             <Link to="/">
               <BtnBack />
             </Link>
             <div className="size-full flex flex-col justify-center items-center">
-              <div className="w-full flex justify-center items-center gap-[102px] mb-[48px]">
+              <div
+                className="w-full flex justify-center items-center xl:gap-[102px] lg:gap-[24px] gap-[18px] 
+              xl:mb-[48px] md:mb-[26px] lg:flex-row sm:flex-col flex-col"
+              >
                 <div className="flex flex-col items-center justify-center text-center">
                   <h2 className="text-h2-bold mb-[32px]">สมัครสมาชิก</h2>
-                  <div className="mb-[26px]">
+                  <div className="xl:mb-[26px] sm:mb-[12px]">
                     <img
-                      className="size-[276px] border-neutral-white-500 object-cover rounded-full p-[10px] border-2"
+                      className="xl:size-[276px] lg:size-[276px] md:size-[176px] sm:size-[116px] border-neutral-white-500 object-cover rounded-full p-[10px] border-2"
                       src={profileImageURL}
                       alt="รูปโปรไฟล์"
                     />
@@ -317,7 +325,7 @@ export default function Register() {
                     </h4>
                   </button>
                 </div>
-                <div className="w-[502px] flex flex-col">
+                <div className="xl:w-[502px] md:w-[476px] sm:w-[268px] flex flex-col">
                   <InputLabel
                     className={"w-full mb-[8px]"}
                     text="ชื่อบัญชี"
@@ -327,6 +335,8 @@ export default function Register() {
                     isEye={false}
                     onChange={(e) => setName(e.target.value)}
                     autoComplete="off"
+                    textLabelClassName="xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
+                    inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
                   />
                   <InputLabel
                     className={"w-full mb-[8px]"}
@@ -345,6 +355,8 @@ export default function Register() {
                     pattern="[0-9]*"
                     maxLength={12}
                     autoComplete="tel"
+                    textLabelClassName="xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
+                    inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
                   />
                   <InputLabel
                     className={"w-full mb-[8px]"}
@@ -358,6 +370,8 @@ export default function Register() {
                     }}
                     type="email"
                     autoComplete="email"
+                    textLabelClassName="xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
+                    inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
                   />
                   <InputLabel
                     className={"w-full mb-[8px]"}
@@ -368,6 +382,7 @@ export default function Register() {
                     isEye={true}
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete="off"
+                    inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
                   />
                   <InputLabel
                     className={"w-full mb-[8px]"}
@@ -386,12 +401,14 @@ export default function Register() {
                     pattern="[0-9]*"
                     maxLength={5}
                     autoComplete="off"
+                    textLabelClassName="xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
+                    inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
                   />
                 </div>
               </div>
               <BtnYellow
                 type="submit"
-                className={"px-[192px]"}
+                className={"md:px-[192px] sm:px-[103px]"}
                 text="สมัครสมาชิก"
               />
             </div>

@@ -67,7 +67,7 @@ export default function Login() {
           >
             <div
               className="flex mx-auto overflow-hidden rounded-3xl p-4
-              xl:gap-[40px] lg:gap-[32px] md:gap-[32px] sm:gap-[24px]
+              xl:gap-[40px] md:gap-[32px] sm:gap-[24px]
               xl:w-[1036px] xl:h-[524px] 
               lg:w-[960px] lg:h-[568px]
               md:w-[568px] md:h-[768px] 
@@ -88,7 +88,7 @@ export default function Login() {
                   </div>
                   <p className="xl:text-h3 lg:text-h4 md:text-h3 sm:text-h5 xl:mt-[32px] lg:mt-[24px] md:mt-[24px] mt-[8px]">
                     ยินดีต้องรับสู่ Smart Piggy Bank{" "}
-                    <br className="lg:hidden" />
+                    <br className="lg:hidden xl:block" />
                     โลกที่จะพาคุณไปสนุกกับการออมเงิน
                   </p>
                 </div>
