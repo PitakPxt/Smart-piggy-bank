@@ -262,7 +262,7 @@ export default function Register() {
             onSubmit={handleSubmit}
             className=" bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg
             xl:w-[1104px] xl:h-[786px]
-            lg:w-[980px] lg:h-[665px]
+            lg:w-[980px] lg:h-[600px]
             md:w-[670px] md:h-[980px]
             w-[344px] h-[670px]
             "
