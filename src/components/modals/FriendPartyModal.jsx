@@ -430,9 +430,7 @@ const PartyRequestItem = () => {
       // เช็คว่าผู้ใช้มี party อยู่แล้วหรือไม่
       const userDoc = await getDoc(doc(db, "users", userId));
       if (userDoc.exists() && userDoc.data().party) {
-        toast.error(
-          "คุณอยู่ในปาร์ตี้อื่นอยู่แล้ว ไม่สามารถเข้าร่วมปาร์ตี้ใหม่ได้"
-        );
+        toast.error("คุณอยู่ในปาร์ตี้อื่นอยู่แล้ว");
         return;
       }
 
