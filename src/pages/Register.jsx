@@ -273,7 +273,7 @@ export default function Register() {
             <div className="size-full flex flex-col justify-center items-center xl:gap-[28px] md:gap-[26px] sm:gap-[18px]">
               <div
                 className="w-full flex justify-center items-center xl:gap-[102px] md:gap-[24px] sm:gap-[10px] 
-              xl:mb-[48px] md:mb-[26px] lg:flex-row sm:flex-col flex-col "
+              xl:mb-[34px] sm:mb-[4px] lg:flex-row sm:flex-col flex-col "
               >
                 <div className="flex flex-col items-center justify-center text-center">
                   <h2 className="md:text-h2-bold sm:text-h4-bold xl:mb-[32px] md:mb-[18px] sm:mb-[14px]">
