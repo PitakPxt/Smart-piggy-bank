@@ -262,8 +262,8 @@ export default function Register() {
             onSubmit={handleSubmit}
             className=" bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg
             xl:w-[1104px] xl:h-[786px]
-            lg:w-[980px] lg:h-[680px]
-            md:w-[680px] md:h-[980px]
+            lg:w-[980px] lg:h-[690px]
+            md:w-[680px] md:h-[990px]
             w-[344px] h[670px]
             "
           >
@@ -276,7 +276,9 @@ export default function Register() {
               xl:mb-[48px] md:mb-[26px] lg:flex-row sm:flex-col flex-col"
               >
                 <div className="flex flex-col items-center justify-center text-center">
-                  <h2 className="text-h2-bold mb-[32px]">สมัครสมาชิก</h2>
+                  <h2 className="md:text-h2-bold sm:text-h4-bold xl:mb-[32px] md:mb-[18px] sm:mb-[14px]">
+                    สมัครสมาชิก
+                  </h2>
                   <div className="xl:mb-[26px] sm:mb-[12px]">
                     <img
                       className="xl:size-[276px] lg:size-[276px] md:size-[176px] sm:size-[116px] border-neutral-white-500 object-cover rounded-full p-[10px] border-2"
