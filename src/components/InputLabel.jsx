@@ -34,7 +34,7 @@ export default function InputLabel({
         </h3>
         <div
           className={cn(
-            "py-[8px] pl-3 pr-3 rounded-[12px] border-[1px] text-h3 relative flex",
+            "sm:py-[4px] md:py-[8px] pl-3 pr-3 rounded-[12px] border-[1px] text-h3 relative flex",
             inputBorderClassName,
             isInline && "flex-1"
           )}

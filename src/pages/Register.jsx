@@ -262,8 +262,8 @@ export default function Register() {
             onSubmit={handleSubmit}
             className=" bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg
             xl:w-[1104px] xl:h-[786px]
-            lg:w-[980px] lg:h-[690px]
-            md:w-[680px] md:h-[990px]
+            lg:w-[980px] lg:h-[680px]
+            md:w-[680px] md:h-[980px]
             w-[344px] h-[670px]
             "
           >
@@ -327,7 +327,7 @@ export default function Register() {
                     </h4>
                   </button>
                 </div>
-                <div className="xl:w-[502px] md:w-[476px] sm:w-[268px] flex flex-col">
+                <div className="xl:w-[502px] md:w-[476px] sm:w-[268px] flex flex-col xl:gap-[4px] md:gap-[4px] sm:gap-[2px]">
                   <InputLabel
                     className={"w-full mb-[8px]"}
                     text="ชื่อบัญชี"
@@ -410,7 +410,7 @@ export default function Register() {
               </div>
               <BtnYellow
                 type="submit"
-                className={"md:px-[192px] sm:px-[103px]"}
+                className={"md:px-[192px] sm:px-[96px]"}
                 text="สมัครสมาชิก"
               />
             </div>
