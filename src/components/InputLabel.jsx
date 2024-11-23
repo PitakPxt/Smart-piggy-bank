@@ -27,7 +27,7 @@ export default function InputLabel({
       <div className={cn(isInline ? "flex gap-3.5 items-center" : "w-full")}>
         <h3
           className={cn(
-            "xl:mb-[10px] lg:mb-[10px] md:mb-[10px] sm:mb-[4px] mb-2 text-h3-bold xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
+            "xl:mb-[10px] lg:mb-[4px] md:mb-[4px] sm:mb-2 mb-2 text-h3-bold xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
           )}
         >
           {text}

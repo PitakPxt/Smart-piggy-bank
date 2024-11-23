@@ -261,7 +261,7 @@ export default function Register() {
           <form
             onSubmit={handleSubmit}
             className=" bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg
-            xl:w-[1104px] xl:h-[786px]
+            xl:w-[1104px] xl:h-[726px]
             lg:w-[980px] lg:h-[600px]
             md:w-[670px] md:h-[980px]
             w-[344px] h-[670px]
@@ -270,9 +270,9 @@ export default function Register() {
             <Link to="/">
               <BtnBack />
             </Link>
-            <div className="size-full flex flex-col justify-center items-center xl:gap-[28px] md:gap-[18px] sm:gap-[18px]">
+            <div className="size-full flex flex-col justify-center items-center xl:gap-[28px] md:gap-[26px] sm:gap-[18px]">
               <div
-                className="w-full flex justify-center items-center xl:gap-[102px] md:gap-[18px] sm:gap-[10px] 
+                className="w-full flex justify-center items-center xl:gap-[102px] md:gap-[24px] sm:gap-[10px] 
               xl:mb-[48px] md:mb-[26px] lg:flex-row sm:flex-col flex-col "
               >
                 <div className="flex flex-col items-center justify-center text-center">
