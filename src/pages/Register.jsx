@@ -260,7 +260,7 @@ export default function Register() {
         ) : (
           <form
             onSubmit={handleSubmit}
-            className=" bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg
+            className=" bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow relative
             xl:w-[1104px] xl:h-[726px]
             lg:w-[980px] lg:h-[600px]
             md:w-[670px] md:h-[980px]
