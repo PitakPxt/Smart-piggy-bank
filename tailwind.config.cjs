@@ -13,7 +13,7 @@ export default {
         xl: "1512px",
       },
       boxShadow: {
-        "main-shadow": "0 3px 4px 3px rgba(0, 0, 0, 0.25)",
+        "main-shadow": "0 3px 12px 3px rgba(0, 0, 0, 0.15)",
       },
     },
 
