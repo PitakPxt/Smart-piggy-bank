@@ -26,8 +26,7 @@ export default function UnlockSuccess() {
         status: false,
       });
 
-      // นำทางกลับไปหน้า home
-      // navigate("/home");
+      navigate("/home");
     } catch (error) {
       console.error("Error updating status:", error);
     }
