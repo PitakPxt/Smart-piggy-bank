@@ -16,6 +16,7 @@ import Party from "@pages/Party";
 import Ranking from "@pages/Ranking";
 import UnlockSuccess from "@pages/UnlockSuccess";
 import ProtectedRoute from "@components/ProtectedRoute";
+import FriendParty from "@components/modals/FriendPartyModal";
 
 import AddFriendModal from "@components/modals/AddFriendModal";
 import YourComponent from "@pages/YourComponent";
@@ -59,6 +60,7 @@ function App() {
             <Route path="otp" element={<Otp />} />
             <Route path="forget" element={<Forget />} />
             <Route path="unlockpin" element={<UnlockPin />} />
+            <Route path="friend-party" element={<FriendParty />} />
           </Route>
         </Routes>
       </Router>

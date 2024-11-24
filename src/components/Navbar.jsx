@@ -145,7 +145,17 @@ export default function Navbar() {
                           </div>
                           <NavbarItem text="ปลดล็อค" to="/unlock-pin" />
                           <NavbarItem text="สร้างปาร์ตี้" to="/create-party" />
-                          <NavbarItem text="คอมมูนิตี้" to="/community" />
+                          <div role="button" className="px-4 py-2">
+                            <div className="relative" ref={modalRef}>
+                              <span
+                                onClick={handleShowFriendPartyModal}
+                                className="text-secondary-300"
+                              >
+                                คอมมูนิตี้
+                              </span>
+                              {showFriendPartyModal && <FriendPartyModal />}
+                            </div>
+                          </div>
                           <NavbarItem text="โปรไฟล์" to="/profile" />
                         </div>
 
