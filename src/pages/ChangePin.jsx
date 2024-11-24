@@ -60,7 +60,7 @@ export default function ChangePin() {
           className="bg-neutral-white-100 rounded-[32px] overflow-hidden shadow-main-shadow justify-center items-center
       xl:w-[756px] xl:h-[740px]
       lg:w-[642px] lg:h-[626px]
-      md:w-[676px] md:h-[642px]
+      md:w-[676px] md:h-[612px]
       sm:w-[344px] sm:h-[426px]"
         >
           <div className="size-full flex flex-col items-center justify-center">
