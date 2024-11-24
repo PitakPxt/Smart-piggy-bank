@@ -117,7 +117,7 @@ export default function UnlockPin() {
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
         <div
-          className=" bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow 
+          className=" bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg 
         xl:w-[756px] xl:h-[742px]
         lg:w-[728px] lg:h-[624px]
         md:w-[664px] md:h-[608px]

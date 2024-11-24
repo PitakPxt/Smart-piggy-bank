@@ -40,8 +40,11 @@ export default function ForgetPin() {
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
         <div
-          className=" bg-neutral-white-100 rounded-3xl overflow-hidden shadow-lg
-        w-[756px] h-[742px] 
+          className=" bg-neutral-white-100 rounded-3xl overflow-hidden shadow-lg relative
+        xl:w-[756px] xl:h-[742px] 
+        lg:w-[684px] lg:h-[628px]
+        md:w-[708px] md:h-[684px]
+        sm:w-[344px] sm:h-[504px]
         "
         >
           <Link to="/unlock-pin">
@@ -50,18 +53,21 @@ export default function ForgetPin() {
           <div className="w-full h-full flex flex-col justify-center items-center">
             <form
               onSubmit={handleSubmit}
-              className="w-[512px] h-[524px] flex flex-col items-center"
+              className="xl:w-[512px] xl:h-[524px] md:w-[512px] md:h-[520px] sm:w-[292px] sm:h-[388px] flex flex-col items-center"
             >
               <img
-                className="size-[228px] mb-[18px]"
+                className="xl:size-[228px] md:size-[228px] sm:size-[180px] md:mb-[18px] sm:mb-[8px]"
                 src={LogoForgetPin}
                 alt=""
               />
-              <h2 className="text-h2-bold mb-[56px]">Smart Piggy Bank</h2>
+              <h2 className="md:text-h2-bold sm:text-h3-bold md:mb-[52px] sm:mb-[32px]">
+                Smart Piggy Bank
+              </h2>
 
               <div className="w-full mb-10">
-                <p className="text-h3-bold mb-2">รหัสผ่านเข้าสู่ระบบ</p>
+                {/* <p className="text-h3-bold mb-2">รหัสผ่านเข้าสู่ระบบ</p> */}
                 <InputLabel
+                  text="รหัสผ่านเข้าสู่ระบบ"
                   className="w-full"
                   type="password"
                   placeHolder="กรอกรหัสผ่านเข้าสู่ระบบ"
@@ -70,7 +76,11 @@ export default function ForgetPin() {
                   autoComplete="current-password"
                 />
               </div>
-              <BtnYellow type="submit" className="px-[132px]" text="ถัดไป" />
+              <BtnYellow
+                type="submit"
+                className="md:px-[132px] sm:px-[92px]"
+                text="ถัดไป"
+              />
             </form>
           </div>
         </div>
