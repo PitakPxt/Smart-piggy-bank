@@ -75,7 +75,6 @@ export default function Forget() {
               <h2 className="md:text-h2-bold sm:text-h3-bold md:mb-[24px] sm:mb-[12px]">
                 Smart Piggy Bank
               </h2>
-
               <div className="xl:w-[512px] md:w-[492px] sm:w-[292px] md:mb-[42px] sm:mb-[34px]">
                 <InputLabel
                   className={"mb-[42px] w-full"}
@@ -91,7 +90,7 @@ export default function Forget() {
               </div>
               <BtnYellow
                 type="submit"
-                className={"px-[164px] sm:px-[91px]"}
+                className={"md:px-[164px] sm:px-[92px]"}
                 text="ยืนยัน"
               />
             </form>

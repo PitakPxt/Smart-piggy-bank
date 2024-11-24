@@ -63,12 +63,12 @@ export default function ChangePin() {
       md:w-[676px] md:h-[612px]
       sm:w-[344px] sm:h-[426px]"
         >
-          <div className="size-full flex flex-col items-center justify-center">
-            <Logo className="md:mb-[34px] sm:mb-[16px]" />
+          <div className="w-full h-full flex flex-col justify-center items-center">
             <form
+              className="size-full xl:w-[512px] xl:h-[524px] md:w-[512px] sm:w-[300px] flex flex-col justify-center items-center"
               onSubmit={handleSubmit}
-              className="xl:w-[512px] xl:h-[524px] md:w-[512px] sm:w-[300px] flex flex-col"
             >
+              <Logo className="md:mb-[34px] sm:mb-[16px]" />
               <div className="flex flex-col md:gap-8 sm:gap-[4px]">
                 <InputPin
                   textPin="กรุณากรอก PIN ใหม่ :"
@@ -80,12 +80,12 @@ export default function ChangePin() {
                   onChange={handleConfirmPinChange}
                 />
               </div>
+              <BtnYellow
+                type="submit"
+                className="md:px-[146px] sm:px-[48px]"
+                text="เปลี่ยนรหัสผ่าน"
+              />
             </form>
-            <BtnYellow
-              type="submit"
-              className="md:px-[146px] sm:px-[48px]"
-              text="เปลี่ยนรหัสผ่าน"
-            />
           </div>
         </div>
       </div>
