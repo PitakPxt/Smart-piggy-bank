@@ -12,6 +12,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useScreen } from "@/hooks/useScreen";
 import LogoImage from "../assets/images/logo-pic.svg";
+import PortalModal from "@components/modals/PortalModal";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -98,7 +99,6 @@ export default function Navbar() {
               {!isMobile ? (
                 <>
                   <NavbarItem text="ปลดล็อค" to="/unlock-pin" />
-                  <NavbarItem text="สร้างปาร์ตี้" to="/create-party" />
                   <div role="button" className="px-4 py-2">
                     <div className="relative" ref={modalRef}>
                       <span
@@ -110,6 +110,7 @@ export default function Navbar() {
                       {showFriendPartyModal && <FriendPartyModal />}
                     </div>
                   </div>
+                  <NavbarItem text="สร้างปาร์ตี้" to="/create-party" />
                   <NavbarItem text="โปรไฟล์" to="/profile" />
                 </>
               ) : (
@@ -141,14 +142,18 @@ export default function Navbar() {
                           <NavbarItem text="ปลดล็อค" to="/unlock-pin" />
                           <NavbarItem text="สร้างปาร์ตี้" to="/create-party" />
                           <div role="button" className="px-4 py-2">
-                            <div className="relative" ref={modalRef}>
+                            <div className="relative">
                               <span
                                 onClick={handleShowFriendPartyModal}
                                 className="text-secondary-300"
                               >
                                 คอมมูนิตี้
                               </span>
-                              {showFriendPartyModal && <FriendPartyModal />}
+                              {showFriendPartyModal && (
+                                <PortalModal>
+                                  <FriendPartyModal />
+                                </PortalModal>
+                              )}
                             </div>
                           </div>
                           <NavbarItem text="โปรไฟล์" to="/profile" />
