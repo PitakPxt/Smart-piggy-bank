@@ -1,4 +1,3 @@
-import LogoImage from "@images/logo-pic.svg";
 import HamburgerMenu from "@images/hamburger-menu.svg";
 import FriendPartyModal from "@modals/FriendPartyModal";
 import BtnYellow from "../components/BtnYellow";
@@ -7,11 +6,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useUserAuth } from "../context/AuthContext";
 import { cn } from "../lib/tailwindcss";
 import { Link } from "react-router-dom";
-
+import Logo from "../components/Logo";
 import React, { useEffect, useRef, useState } from "react";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useScreen } from "@/hooks/useScreen";
+import LogoImage from "../assets/images/logo-pic.svg";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -89,12 +89,7 @@ export default function Navbar() {
     <>
       <div className="w-full flex pt-[20px] pb-[16px] items-center justify-between">
         <Link to="/home" className="flex items-center gap-[6px]">
-          <img
-            src={LogoImage}
-            alt=""
-            className="lg:size-[88px] md:size-[64px] sm:size-[56px]"
-          />
-          <h1 className="md:text-h3-bold sm:text-h4-bold">Smart Piggy Bank</h1>
+          <Logo />
         </Link>
 
         <div className="flex gap-1 lg:gap-5 items-center text-h4-bold lg:text-h3-bold">

@@ -58,7 +58,7 @@ export default function Forget() {
         <div
           className=" bg-neutral-white-100 rounded-3xl overflow-hidden shadow-lg relative
         xl:w-[756px] xl:h-[742px]
-         md:w-[684px] md:h-[722px]
+         md:w-[624px] md:h-[640px]
         sm:w-[344px] sm:h-[504px]
         "
         >
@@ -76,7 +76,7 @@ export default function Forget() {
                 Smart Piggy Bank
               </h2>
 
-              <div className="xl:w-[512px] md:w-[512px] sm:w-[292px] md:mb-[42px] sm:mb-[34px]">
+              <div className="xl:w-[512px] md:w-[492px] sm:w-[292px] md:mb-[42px] sm:mb-[34px]">
                 <InputLabel
                   className={"mb-[42px] w-full"}
                   text="อีเมล์"

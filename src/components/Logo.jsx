@@ -6,10 +6,12 @@ export default function Logo({ className }) {
   return (
     <>
       <div className={cn("flex items-center gap-[6px]", className)}>
-        <img src={LogoImage} alt="" className="size-[88px] font-bold" />
-        <h1 className="text-[48px] leading-[38px] font-bold">
-          Smart Piggy Bank
-        </h1>
+        <img
+          src={LogoImage}
+          alt=""
+          className="lg:size-[88px] md:size-[64px] sm:size-[56px]"
+        />
+        <h1 className="md:text-h3-bold sm:text-h4-bold">Smart Piggy Bank</h1>
       </div>
     </>
   );

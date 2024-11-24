@@ -17,6 +17,7 @@ import Ranking from "@pages/Ranking";
 import UnlockSuccess from "@pages/UnlockSuccess";
 import ProtectedRoute from "@components/ProtectedRoute";
 import FriendParty from "@components/modals/FriendPartyModal";
+import Test from "@pages/test";
 
 import AddFriendModal from "@components/modals/AddFriendModal";
 import YourComponent from "@pages/YourComponent";
@@ -61,6 +62,7 @@ function App() {
             <Route path="forget" element={<Forget />} />
             <Route path="unlockpin" element={<UnlockPin />} />
             <Route path="friend-party" element={<FriendParty />} />
+            <Route path="/test" element={<Test />} />
           </Route>
         </Routes>
       </Router>
