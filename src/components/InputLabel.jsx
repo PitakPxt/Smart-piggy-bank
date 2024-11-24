@@ -16,7 +16,6 @@ export default function InputLabel({
   autoComplete,
   isEye = true,
   inputBorderClassName,
-  inputClassName,
 }) {
   const [eye, setEye] = useState(isEye);
   const handleEye = () => {
@@ -40,7 +39,9 @@ export default function InputLabel({
           )}
         >
           <input
-            className={cn("w-full outline-none ", inputClassName)}
+            className={cn(
+              "w-full outline-none xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
+            )}
             name={name}
             type={eye ? "password" : "text"}
             required={required}

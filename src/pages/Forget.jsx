@@ -55,33 +55,45 @@ export default function Forget() {
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
-        <div className="w-[756px] h-[742px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
+        <div
+          className=" bg-neutral-white-100 rounded-3xl overflow-hidden shadow-lg relative
+        xl:w-[756px] xl:h-[742px]
+         md:w-[684px] md:h-[722px]
+        sm:w-[344px] sm:h-[504px]
+        "
+        >
           <Link to="/">
             <BtnBack />
           </Link>
           <div className="w-full h-full flex flex-col justify-center items-center">
-            <form
-              onSubmit={fetchEmail}
-              className="w-[512px] h-[524px] flex flex-col items-center"
-            >
+            <form onSubmit={fetchEmail} className="flex flex-col items-center">
               <img
-                className="size-[228px] mb-[18px]"
+                className="xl:size-[228px] md:size-[228px] sm:size-[170px] xl:mb-[18px] md:mb-[18px] sm:mb-[8px] "
                 src={LogoUnlockPinSucces}
                 alt=""
               />
-              <h2 className="text-h2-bold mb-[56px]">Smart Piggy Bank</h2>
+              <h2 className="md:text-h2-bold sm:text-h3-bold md:mb-[24px] sm:mb-[12px]">
+                Smart Piggy Bank
+              </h2>
 
-              <InputLabel
-                className={"mb-[42px] w-full"}
-                text="อีเมล์"
-                name="email"
-                placeHolder="กรอกอีเมล์"
-                value={email}
-                isEye={false}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
+              <div className="xl:w-[512px] md:w-[512px] sm:w-[292px] md:mb-[42px] sm:mb-[34px]">
+                <InputLabel
+                  className={"mb-[42px] w-full"}
+                  text="อีเมล์"
+                  name="email"
+                  placeHolder="กรอกอีเมล์"
+                  value={email}
+                  isEye={false}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  textLabelClassName="xl:text-h3-bold md:text-h3-bold sm:text-h5-bold"
+                />
+              </div>
+              <BtnYellow
+                type="submit"
+                className={"px-[164px] sm:px-[91px]"}
+                text="ยืนยัน"
               />
-              <BtnYellow type="submit" className={"px-[164px]"} text="ยืนยัน" />
             </form>
           </div>
         </div>
