@@ -120,7 +120,7 @@ export default function UnlockPin() {
           className=" bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg 
         xl:w-[756px] xl:h-[742px]
         lg:w-[728px] lg:h-[624px]
-        md:w-[664px] md:h-[608px]
+        md:w-[664px] md:h-[658px]
         sm:w-[344px] sm:h-[546px]
         w-full h-full"
         >
