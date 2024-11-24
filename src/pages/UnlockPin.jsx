@@ -116,34 +116,41 @@ export default function UnlockPin() {
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
-        <div className="w-[756px] h-[742px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
-          <div className="w-full h-full flex flex-col justify-center items-center ">
+        <div
+          className=" bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg 
+        xl:w-[756px] xl:h-[742px]
+        lg:w-[728px] lg:h-[624px]
+        md:w-[664px] md:h-[608px]
+        sm:w-[344px] sm:h-[546px]
+        w-full h-full"
+        >
+          <div className="w-full h-full flex flex-col justify-center items-center">
             <div onClick={handleBack} className="cursor-pointer">
               <BtnBack />
             </div>
-            <div className="flex flex-col justify-center text-center gap-2 mb-[38px]">
-              <div className="flex flex-col gap-[18px] items-center">
+            <div className="flex flex-col justify-center text-center gap-2 xl:mb-[38px] md:mb-[38px] sm:mb-[24px]">
+              <div className="flex flex-col xl:gap-[18px] sm:gap-2 items-center">
                 <img
                   src={LogoPicUnlockPin}
                   alt=""
-                  className="size-[202px] object-cover"
+                  className="xl:size-[202px] md:size-[202px] sm:size-[180px] object-cover"
                 />
-                <h2 className="text-h3 font-bold text-neutral-white-800 text-center">
+                <h2 className="md:text-h3-bold sm:text-h4-bold font-bold text-neutral-white-800 text-center">
                   {userPin === null
                     ? "กำหนด PIN สำหรับปลดล็อคกระปุก"
                     : "ปลดล็อคกระปุก"}
                 </h2>
               </div>
-              <h2 className="text-h2-bold text-neutral-white-800 text-center">
+              <h2 className="md:text-h2-bold sm:text-h3-bold text-neutral-white-800 text-center">
                 Smart Piggy Bank
               </h2>
             </div>
-            <div className="flex flex-col relative mb-[52px] gap-2">
+            <div className="flex flex-col relative xl:mb-[52px] sm:mb-[44px] gap-2">
               <InputPin textPin="กรุณากรอก PIN :" onChange={handlePinChange} />
               {userPin !== null && (
                 <div className="absolute bottom-[-28px] right-0">
                   <span
-                    className="text-h4 text-neutral-white-500 cursor-pointer"
+                    className="md:text-h4 sm:text-h5 text-neutral-white-500 cursor-pointer"
                     onClick={handleForgetPassword}
                   >
                     ลืมรหัสผ่าน?
@@ -152,7 +159,7 @@ export default function UnlockPin() {
               )}
             </div>
             <BtnYellow
-              className={"px-[136px] mt-6"}
+              className={"xl:px-[136px] md:px-[105px] sm:px-[64px]"}
               text={userPin === null ? "ยืนยัน PIN" : "ปลดล็อคกระปุก"}
               onClick={handleSubmit}
             />
