@@ -26,6 +26,7 @@ export default function UnlockSuccess() {
         status: false,
       });
 
+      // นำทางกลับไปหน้า home
       navigate("/home");
     } catch (error) {
       console.error("Error updating status:", error);
@@ -55,7 +56,7 @@ export default function UnlockSuccess() {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div
-        className=" bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg
+        className=" bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow
       xl:w-[856px] xl:h-[726px]
       lg:w-[676px] lg:h-[624px]
       md:w-[714px] md:h-[686px]
