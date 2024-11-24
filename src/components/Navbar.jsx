@@ -92,9 +92,9 @@ export default function Navbar() {
           <img
             src={LogoImage}
             alt=""
-            className="lg:size-[88px] md:size-[64px] size-[48px]"
+            className="lg:size-[88px] md:size-[64px] sm:size-[56px]"
           />
-          <h1 className="text-h4-bold lg:text-h1-bold">Smart Piggy Bank</h1>
+          <h1 className="md:text-h3-bold sm:text-h4-bold">Smart Piggy Bank</h1>
         </Link>
 
         <div className="flex gap-1 lg:gap-5 items-center text-h4-bold lg:text-h3-bold">
