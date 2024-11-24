@@ -124,7 +124,7 @@ export default function UnlockPin() {
         sm:w-[344px] sm:h-[546px]
         w-full h-full"
         >
-          <div className="w-full h-full flex flex-col justify-center items-center">
+          <div className="w-full h-full flex flex-col justify-center items-center shadow-main-shadow">
             <div onClick={handleBack} className="cursor-pointer">
               <BtnBack />
             </div>
