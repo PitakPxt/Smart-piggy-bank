@@ -27,7 +27,7 @@ export default function UnlockSuccess() {
       });
 
       // นำทางกลับไปหน้า home
-      navigate("/home");
+      // navigate("/home");
     } catch (error) {
       console.error("Error updating status:", error);
     }
@@ -55,17 +55,25 @@ export default function UnlockSuccess() {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      <div className="w-[856px] h-[726px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
+      <div
+        className=" bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg
+      xl:w-[856px] xl:h-[726px]
+      lg:w-[676px] lg:h-[624px]
+      md:w-[714px] md:h-[686px]
+      sm:w-[344px] sm:h-[414px]"
+      >
         <div className="w-full h-full flex flex-col justify-center items-center">
           <img
-            className="size-[376px] mb-11"
+            className="xl:size-[376px] md:size-[334px] sm:size-[204px] md:mb-10 sm:mb-6"
             src={LogoUnlockPinSucces}
             alt=""
           />
-          <h2 className="text-h2-bold mb-[54px]">ปลดล็อคกระปุกสำเร็จ</h2>
+          <h2 className="md:text-h2-bold sm:text-h4-bold -bold mb-[54px]">
+            ปลดล็อคกระปุกสำเร็จ
+          </h2>
           <button
             onClick={handleLockClick}
-            className="px-[124px] py-3 bg-primary-500 text-h3-bold rounded-xl drop-shadow-lg hover:bg-primary-600 transition-colors"
+            className="xl:px-[124px] md:px-[84px] sm:px-[64px] py-3 bg-primary-500 md:text-h3-bold sm:text-h5-bold  rounded-xl drop-shadow-lg hover:bg-primary-600 transition-colors"
           >
             ล็อคกระปุก ({countdown})
           </button>
