@@ -131,6 +131,7 @@ export default function AddFriendModal({ onClose }) {
                 className="w-[512px]"
                 text="เบอร์โทรศัพท์"
                 placeHolder="กรอกเบอร์โทรศัพท์"
+                inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
               />
             </div>
             <div className="w-full flex justify-end px-12">

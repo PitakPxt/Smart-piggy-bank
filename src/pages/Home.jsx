@@ -12,8 +12,22 @@ import { Link } from "react-router-dom";
 // สร้าง component ย่อยสำหรับแสดงข้อมูลเหรียญ
 const CoinDisplay = ({ coinImage, value }) => (
   <div className="flex items-center gap-5">
-    <img src={coinImage} alt="coin" />
-    <h1 className="w-[226px] h-[72px] bg-neutral-white-200 text-center text-h2-bold rounded-3xl content-center drop-shadow-lg">
+    <img
+      className="xl:size-[120px] md:size-[116px] sm:size-[86px]"
+      src={coinImage}
+      alt="coin"
+    />
+    <h1
+      className=" bg-neutral-white-200 text-center content-center drop-shadow-lg
+      xl:text-h2-bold md:text-h3-bold sm:text-h4-bold
+      xl:rounded-3xl
+      md:rounded-2xl
+      sm:rounded-xl
+      xl:w-[226px] xl:h-[72px]
+      md:w-[180px] md:h-[60px]
+      sm:w-[182px] sm:h-[62px]
+    "
+    >
       {value}
     </h1>
   </div>
@@ -79,11 +93,24 @@ export default function Home() {
 
   return (
     <div className="flex flex-col w-full h-full justify-center items-center">
-      <div className="flex flex-col w-[856px] h-[649px] bg-neutral-white-100 opacity-95 rounded-3xl drop-shadow-lg mx-auto overflow-hidden justify-center items-center mb-[50px]">
-        <h1 className="w-[384px] h-[96px] mb-[76px] bg-primary-400 text-center text-h2-bold rounded-3xl content-center drop-shadow-lg">
+      <div
+        className="flex flex-col bg-neutral-white-100 opacity-95 rounded-3xl drop-shadow-lg mx-auto overflow-hidden justify-center items-center mb-[50px] 
+        xl:w-[856px] xl:h-[649px]
+        md:w-[676px] md:h-[432px]
+        sm:w-[344px] sm:h-[568px]
+      "
+      >
+        <h1
+          className="xl:mb-[76px] md:mb-[36px] sm:mb-[32px] bg-primary-400 text-center content-center drop-shadow-lg
+          xl:text-h2-bold md:text-h3-bold sm:text-h4-bold
+          xl:w-[384px] xl:h-[96px] xl:rounded-3xl
+          md:w-[268px] md:h-[80px] md:rounded-2xl
+          sm:w-[202px] sm:h-[62px] sm:rounded-lg
+        "
+        >
           ยอดรวม : {savingData?.total || 0} บาท
         </h1>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="md:grid md:grid-cols-2 md:gap-4 sm:grid sm:grid-cols-1 sm:gap-2">
           {coins.map((coin, index) => (
             <CoinDisplay
               key={index}
