@@ -94,7 +94,7 @@ export default function Home() {
   return (
     <div className="flex flex-col w-full h-full justify-center items-center">
       <div
-        className="flex flex-col bg-neutral-white-100 opacity-95 rounded-3xl drop-shadow-lg mx-auto overflow-hidden justify-center items-center mb-[50px] 
+        className="flex flex-col bg-neutral-white-100 opacity-95 rounded-3xl shadow-main-shadow mx-auto overflow-hidden justify-center items-center mb-[50px] 
         xl:w-[856px] xl:h-[649px]
         md:w-[676px] md:h-[432px]
         sm:w-[344px] sm:h-[568px]
