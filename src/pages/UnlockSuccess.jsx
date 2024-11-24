@@ -61,6 +61,7 @@ export default function UnlockSuccess() {
       lg:w-[676px] lg:h-[624px]
       md:w-[714px] md:h-[686px]
       sm:w-[344px] sm:h-[414px]"
+        //
       >
         <div className="w-full h-full flex flex-col justify-center items-center">
           <img
