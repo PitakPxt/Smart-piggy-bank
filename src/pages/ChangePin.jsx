@@ -54,34 +54,41 @@ export default function ChangePin() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center">
-      <div className="w-[756px] bg-neutral-white-100 rounded-[32px] overflow-hidden drop-shadow-lg p-16">
-        <div className="w-full flex flex-col items-center">
-          <div className="mb-16">
-            <Logo />
-          </div>
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col w-full max-w-[500px] gap-12"
-          >
-            <div className="flex flex-col gap-8">
-              <InputPin
-                textPin="กรุณากรอก PIN ใหม่ :"
-                onChange={handlePinChange}
-              />
-              <InputPin
-                textPin="กรุณายืนยัน PIN :"
-                onChange={handleConfirmPinChange}
-              />
-            </div>
+    <>
+      <div className="w-full h-full flex flex-col justify-center items-center">
+        <div
+          className="bg-neutral-white-100 rounded-[32px] overflow-hidden shadow-main-shadow justify-center items-center
+      xl:w-[756px] xl:h-[740px]
+      lg:w-[642px] lg:h-[626px]
+      md:w-[676px] md:h-[642px]
+      sm:w-[344px] sm:h-[426px]"
+        >
+          <div className="size-full flex flex-col items-center justify-center">
+            <Logo className="md:mb-[34px] sm:mb-[16px]" />
+            <form
+              onSubmit={handleSubmit}
+              className="xl:w-[512px] xl:h-[524px] md:w-[512px] sm:w-[300px] flex flex-col"
+            >
+              <div className="flex flex-col md:gap-8 sm:gap-[4px]">
+                <InputPin
+                  textPin="กรุณากรอก PIN ใหม่ :"
+                  onChange={handlePinChange}
+                />
+                <InputPin
+                  className="md:mb-[38px] sm:mb-[34px]"
+                  textPin="กรุณายืนยัน PIN :"
+                  onChange={handleConfirmPinChange}
+                />
+              </div>
+            </form>
             <BtnYellow
               type="submit"
-              className="w-full rounded-[16px] py-4 text-xl font-bold"
+              className="md:px-[146px] sm:px-[48px]"
               text="เปลี่ยนรหัสผ่าน"
             />
-          </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

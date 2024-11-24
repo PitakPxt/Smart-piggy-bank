@@ -50,7 +50,7 @@ export default function ForgetPin() {
           <Link to="/unlock-pin">
             <BtnBack />
           </Link>
-          <div className="w-full h-full flex flex-col justify-center items-center">
+          <div className="size-full flex flex-col justify-center items-center">
             <form
               onSubmit={handleSubmit}
               className="xl:w-[512px] xl:h-[524px] md:w-[512px] md:h-[520px] sm:w-[292px] sm:h-[388px] flex flex-col items-center"
@@ -65,7 +65,6 @@ export default function ForgetPin() {
               </h2>
 
               <div className="w-full mb-10">
-                {/* <p className="text-h3-bold mb-2">รหัสผ่านเข้าสู่ระบบ</p> */}
                 <InputLabel
                   text="รหัสผ่านเข้าสู่ระบบ"
                   className="w-full"

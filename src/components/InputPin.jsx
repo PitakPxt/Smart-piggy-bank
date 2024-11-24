@@ -44,32 +44,34 @@ export default function InputPin({
   };
 
   return (
-    <div>
-      <h2 className="md:text-h3-bold sm:text-h5-bold font-bold text-neutral-white-800 xl:mb-[10px] sm:mb-2">
-        {textPin}
-      </h2>
-      <div
-        className={`flex justify-center md:gap-5 sm:gap-[6px] mb-2 ${className}`}
-      >
-        {pin.map((digit, index) => (
-          <input
-            key={index}
-            ref={(ref) => (inputRefs.current[index] = ref)}
-            type="text"
-            inputMode="numeric"
-            maxLength="1"
-            value={digit}
-            className={`md:w-[72px] md:h-[102px] sm:w-[44px] sm:h-[62px] text-h2-bold text-center md:text-h2-bold sm:text-h4-bold rounded-md focus:outline-none ${
-              digit
-                ? "border border-neutral-white-800 text-neutral-white-800"
-                : "border border-neutral-white-300 text-neutral-white-300"
-            }`}
-            onChange={(e) => handleChange(index, e.target.value)}
-            onKeyDown={(e) => handleKeyDown(index, e)}
-            autoFocus={index === 0}
-          />
-        ))}
+    <>
+      <div className="flex flex-col items-start justify-center">
+        <h2 className="md:text-h3-bold sm:text-h5-bold text-neutral-white-800 xl:mb-[10px] sm:mb-2">
+          {textPin}
+        </h2>
+        <div
+          className={`flex justify-center md:gap-5 sm:gap-[6px] mb-2 ${className}`}
+        >
+          {pin.map((digit, index) => (
+            <input
+              key={index}
+              ref={(ref) => (inputRefs.current[index] = ref)}
+              type="text"
+              inputMode="numeric"
+              maxLength="1"
+              value={digit}
+              className={`md:w-[72px] md:h-[102px] sm:w-[44px] sm:h-[62px] text-h2-bold text-center md:text-h2-bold sm:text-h4-bold rounded-md focus:outline-none ${
+                digit
+                  ? "border border-neutral-white-800 text-neutral-white-800"
+                  : "border border-neutral-white-300 text-neutral-white-300"
+              }`}
+              onChange={(e) => handleChange(index, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              autoFocus={index === 0}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

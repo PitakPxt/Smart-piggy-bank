@@ -9,7 +9,7 @@ export default function Logo({ className }) {
         <img
           src={LogoImage}
           alt=""
-          className="lg:size-[88px] md:size-[64px] sm:size-[56px]"
+          className="lg:size-[88px] md:size-[88px] sm:size-[52px]"
         />
         <h1 className="md:text-h3-bold sm:text-h4-bold">Smart Piggy Bank</h1>
       </div>
