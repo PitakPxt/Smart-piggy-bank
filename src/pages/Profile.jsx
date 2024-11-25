@@ -64,7 +64,7 @@ export default function Profile() {
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
-        <div className="xl:w-[768px] xl:h-[754px] lg:w-[756px] lg:h-[680px] md:w-[680px] md:h-[616px] sm:w-[340px] sm:h-[516px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow relative">
+        <div className="xl:w-[768px] xl:h-[754px] lg:w-[756px] lg:h-[680px] md:w-[680px] md:h-[590px] sm:w-[340px] sm:h-[516px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow relative">
           <Link to="/home">
             <BtnBack />
           </Link>
