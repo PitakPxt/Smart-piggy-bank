@@ -11,7 +11,7 @@ import { useScreen } from "../hooks/useScreen";
 
 const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
   const isFirstPlace = rank === 1;
-  const { isMobile, isTablet, isDesktop } = useScreen();
+  const { isMobile, isTablet, isTabletHorizontal, isDesktop } = useScreen();
 
   const getHeight = () => {
     if (isMobile) {
@@ -22,6 +22,10 @@ const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
       if (isFirstPlace) return "388px";
       if (rank === 2) return "276px";
       return "206px";
+    } else if (isTabletHorizontal) {
+      if (isFirstPlace) return "248px";
+      if (rank === 2) return "176px";
+      return "146px";
     } else if (isDesktop) {
       if (isFirstPlace) return "368px";
       if (rank === 2) return "286px";
@@ -33,7 +37,7 @@ const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
     <div className="flex flex-col justify-end">
       <div className="flex flex-col text-center items-center xl:mb-4 sm:mb-1">
         <img
-          className="md:size-[120px] sm:size-[78px] border-neutral-white-500 object-cover rounded-full p-[6px] border-2"
+          className="xl:size-[120px] lg:size-[95px] md:size-[100px] sm:size-[78px] border-neutral-white-500 object-cover rounded-full p-[6px] border-2"
           src={avatar}
           alt={`${name}'s profile`}
         />
@@ -50,10 +54,12 @@ const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
           borderTopRightRadius: "1rem",
         }}
       >
-        <h1 className="md:text-[128px] sm:text-[78px] font-bold">{rank}</h1>
+        <h1 className="xl:text-[128px] lg:text-[95px] md:text-[128px] sm:text-[78px] font-bold">
+          {rank}
+        </h1>
         {isFirstPlace && (
           <img
-            className="xl:size-[148px] md:size-[130px] sm:size-[80px] drop-shadow-lg"
+            className="xl:size-[148px] lg:size-[90px] md:size-[130px] sm:size-[80px] drop-shadow-lg"
             src={LogoRang}
             alt="First place badge"
           />
@@ -196,13 +202,13 @@ export default function Ranking() {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      <div className="xl:w-[756px] xl:h-[840px] lg:w-[822px] lg:h-[618px] md:w-[678px] md:h-[862px] sm:w-[344px] sm:h-[550px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow">
-        <div className="xl:w-[620px] xl:h-[714px] md:w-[598px] md:h-[738px] sm:w-[312px] sm:h-[466px] flex flex-col justify-center items-center text-center">
+      <div className="xl:w-[756px] xl:h-[840px] lg:w-[800px] lg:h-[618px] md:w-[678px] md:h-[862px] sm:w-[344px] sm:h-[550px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow">
+        <div className="xl:w-[620px] xl:h-[714px] lg:w-[682px] lg:h-[580px] md:w-[598px] md:h-[738px] sm:w-[312px] sm:h-[466px] flex flex-col justify-center items-center text-center">
           <div className="flex flex-col size-full">
             <h2 className="md:mb-[28px] md:text-h2-bold sm:text-h3-bold">
               การจัดอันดับ
             </h2>
-            <div className="grid grid-cols-3 xl:gap-6 sm:gap-3 h-full md:mb-[34px] sm:mb-[24px] justify-center items-end">
+            <div className="grid grid-cols-3 xl:gap-6 sm:gap-3 h-full xl:mb-[34px] lg:mb-[18px] md:mb-[34px] sm:mb-[24px] justify-center items-end">
               {orderedRankData().map(
                 (player, index) =>
                   player && (
