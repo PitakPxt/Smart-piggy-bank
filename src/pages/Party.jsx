@@ -45,35 +45,37 @@ function PlayerListItem({
 
   return (
     <li
-      className={`w-[680px] h-[100px] flex items-center justify-between ${
+      className={`xl:w-[680px] xl:h-[100px] md:w-[640px] md:h-[100px] sm:w-[308px] sm:h-[60px] flex items-center justify-between ${
         bgColors[rank] || bgColors.default
-      } rounded-3xl`}
+      } sm:rounded-[12px]`}
     >
-      <div className="flex">
+      <div className="flex items-center">
         {rank <= 3 && (
           <img
-            className="size-[82px] border-neutral-white-500 object-cover mr-[24px] absolute ml-[36px]"
+            className="xl:size-[82px] md:size-[76px] sm:size-[48px] border-neutral-white-500 object-cover mr-[24px] absolute xl:ml-[36px] md:ml-[24px] sm:ml-[12px]"
             src={player.rankImage}
             alt={`Rank ${rank}`}
           />
         )}
-        <div className="flex items-center gap-[24px]">
+        <div className="flex items-center xl:gap-[24px] md:gap-[18px] sm:gap-[8px]">
           <img
-            className="size-[82px] border-neutral-white-500 object-cover rounded-full p-[4px] border-2 ml-[142px]"
+            className="xl:size-[84px] md:size-[82px] sm:size-[52px] border-neutral-white-500 object-cover rounded-full p-[4px] border-2 xl:ml-[142px] md:ml-[108px] sm:ml-[68px]"
             src={player.avatar}
             alt={player.name}
           />
-          <h2 className="text-h2-bold w-[180px] truncate">{player.name}</h2>
+          <h2 className="md:text-h2-bold xl:w-[120px] md:w-[150px] sm:w-[55px] sm:text-h5-bold truncate">
+            {player.name}
+          </h2>
         </div>
       </div>
-      <div className="flex items-center mr-[48px] gap-[24px]">
-        <div className="w-[120px] flex justify-end">
-          <h2 className="text-h2-bold">{player.amount} ฿</h2>
+      <div className="flex items-center xl:mr-[48px] md:mr-[36px] sm:mr-[18px] md:gap-[24px] sm:gap-[12px]">
+        <div className="xl:w-[120px] md:w-[130px] sm:w-[60px] flex justify-end">
+          <h2 className="md:text-h2-bold sm:text-h5-bold">{player.amount} ฿</h2>
         </div>
-        <div className="w-[32px]">
+        <div className="md:w-[32px] sm:w-[20px]">
           {canDelete && (
             <img
-              className="size-[32px] cursor-pointer"
+              className="md:size-[32px] sm:size-[18px] cursor-pointer"
               src={LogoDelete}
               alt="Delete"
               onClick={() => onDelete(player)}
@@ -489,44 +491,6 @@ export default function Party() {
     setShowPartySucceedModal(false);
   }, []);
 
-  // useEffect(() => {
-  //   if (!partyData?.createdAt) return;
-
-  //   // อัพเดทเวลาปัจจุบันทุกวินาที
-  //   timerRef.current = setInterval(() => {
-  //     setCurrentTime(new Date());
-  //   }, 1000);
-
-  //   return () => {
-  //     if (timerRef.current) {
-  //       clearInterval(timerRef.current);
-  //     }
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (!partyData?.createdAt) return;
-
-  //   const endDate = new Date(partyData.createdAt.toDate());
-  //   endDate.setDate(endDate.getDate() + parseInt(partyData.days));
-  //   const timeDiff = endDate - currentTime;
-
-  //   if (timeDiff <= 0) {
-  //     setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  //     if (!partyData.status || partyData.status !== "end") {
-  //       handleEndParty();
-  //     }
-  //     return;
-  //   }
-
-  //   setTimeLeft({
-  //     days: Math.floor(timeDiff / (1000 * 60 * 60 * 24)),
-  //     hours: Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-  //     minutes: Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60)),
-  //     seconds: Math.floor((timeDiff % (1000 * 60)) / 1000),
-  //   });
-  // }, [currentTime, partyData]);
-
   if (loading || userLoading) {
     return (
       <NotFoundModal
@@ -552,26 +516,32 @@ export default function Party() {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div
-        className="w-[768px] h-[814px] flex flex-col justify-start items-center bg-neutral-white-100 rounded-3xl overflow-hidden
-      drop-shadow-lg gap-[8px] pt-[24px] relative"
+        className="flex flex-col justify-start items-center bg-neutral-white-100 rounded-3xl overflow-hidden
+      drop-shadow-lg gap-[8px] md:pt-[28px] sm:pt-[38px] relative
+      xl:w-[768px] xl:h-[814px] 
+      lg:w-[736px] lg:h-[646px]
+      md:w-[676px] md:h-[856px] 
+      sm:w-[344px] sm:h-[542px]"
       >
         <Link to="/home">
           <BtnBack />
         </Link>
         <div className="text-center items-center">
           <div className="flex flex-col">
-            <h2 className="text-h2-bold">
+            <h2 className="md:text-h2-bold sm:text-h4-bold">
               เป้าหมาย : {partyData?.target || 0} บาท
             </h2>
-            <h2 className="text-h2-bold">ปาร์ตี้ : {partyData?.partyName}</h2>
-            <h3 className="text-h3">
+            <h2 className="md:text-h2-bold sm:text-h4-bold">
+              ปาร์ตี้ : {partyData?.partyName}
+            </h2>
+            <h3 className="md:text-h3 sm:text-h5">
               เวลาที่เหลือ {timeLeft.days} วัน {timeLeft.hours} ชั่วโมง{" "}
               {timeLeft.minutes} นาที {timeLeft.seconds} วินาที
             </h3>
           </div>
         </div>
-        <div className="w-[680px] justify-center items-center flex-grow">
-          <ul className="flex flex-col gap-[8px]">
+        <div className="md:w-[680px] sm:w-[308px] justify-center items-center flex-grow">
+          <ul className="flex flex-col gap-[8px] items-center">
             {playerData?.map((player, index) => (
               <PlayerListItem
                 key={player.id}
@@ -587,8 +557,8 @@ export default function Party() {
         </div>
         {isPartyCreator && (
           <div
-            className="px-[32px] py-[12px] absolute bottom-[24px] bg-transparent border-2 border-error-300 text-error-300 text-h3-bold 
-            rounded-xl drop-shadow-lg hover:border-error-200 hover:bg-error-200 hover:text-neutral-white-100 cursor-pointer"
+            className="px-[32px] py-[6px] absolute bottom-[24px] bg-transparent border-2 border-error-300 text-error-300 md:text-h3-bold sm:text-h5-bold
+            rounded-[12px] drop-shadow-lg hover:border-error-200 hover:bg-error-200 hover:text-neutral-white-100 cursor-pointer"
             onClick={() => setShowPartySucceedModal(true)}
           >
             สิ้นสุดปาร์ตี้
