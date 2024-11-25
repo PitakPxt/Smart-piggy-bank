@@ -64,33 +64,38 @@ export default function Profile() {
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
-        <div
-          className="w-[768px] h-[754px] flex flex-col justify-center items-center
-    bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg"
-        >
+        <div className="xl:w-[768px] xl:h-[754px] lg:w-[756px] lg:h-[680px] md:w-[680px] md:h-[616px] sm:w-[340px] sm:h-[516px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow relative">
           <Link to="/home">
             <BtnBack />
           </Link>
           <div
-            className="absolute top-[42px] right-[42px] cursor-pointer"
+            className="absolute xl:top-[42px] xl:right-[42px] md:top-[42px] md:right-[42px] sm:top-[24px] sm:right-[24px] cursor-pointer"
             onClick={() => setShowModal(true)}
           >
-            <img src={EditProfile} alt="edit-profile" />
+            <img
+              className="sm:size-[16px] md:size-[24px] "
+              src={EditProfile}
+              alt="edit-profile"
+            />
           </div>
-          <div className="flex flex-col items-center justify-center text-center">
-            <h2 className="text-h2-bold mb-[36px]">โปรไฟล์</h2>
-            <div className="flex flex-col items-center justify-center mb-[52px]">
+          <div className="flex flex-col items-center justify-center text-center ">
+            <h2 className="md:text-h2-bold sm:text-h3-bold xl:mb-[36px] md:mb-[24px] sm:mb-[8px]">
+              โปรไฟล์
+            </h2>
+            <div className="flex flex-col items-center justify-center xl:mb-[52px] md:mb-[28px] sm:mb-[24px]">
               <img
-                className="size-[276px] border-neutral-white-500 object-cover rounded-full p-[10px] border-2 mb-[28px]"
+                className="xl:size-[276px] lg:size-[276px] md:size-[216px] sm:size-[186px] border-neutral-white-500 object-cover rounded-full p-[10px] border-2     xl:mb-[28px] md:mb-[20px] sm:mb-[18px]"
                 src={userData?.profileImageURL || DefaultProfile}
                 alt="โปรไฟล์"
               />
               <div className="flex flex-col gap-2">
-                <h1 className="text-h1-bold">{userData?.name || "Name"}</h1>
-                <h2 className="text-h3-bold">
+                <h1 className="xl:text-h1-bold md:text-h2-bold sm:text-h3-bold">
+                  {userData?.name || "Name"}
+                </h1>
+                <h2 className="xl:text-h3-bold md:text-h4-bold sm:text-h4-bold">
                   รหัสกระปุก : {userData?.savingNumber || "00XXX"}
                 </h2>
-                <h2 className="text-h3">
+                <h2 className="text-h3 sm:text-h4">
                   {userData?.phone
                     ? userData.phone.replace(
                         /(\d{3})(\d{3})(\d{4})/,
@@ -98,13 +103,13 @@ export default function Profile() {
                       )
                     : "099-XXX-XXXX"}
                 </h2>
-                <h2 className="text-h3">
+                <h2 className="text-h3 sm:text-h4">
                   {userData?.email || "xxxxxx@gmail.com"}
                 </h2>
               </div>
             </div>
             <BtnYellow
-              className={"px-[192px]"}
+              className={"xl:px-[192px] md:px-[160px] sm:px-[90px]"}
               text="ออกจากระบบ"
               onClick={handleLogoutClick}
             />
