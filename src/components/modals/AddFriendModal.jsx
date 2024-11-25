@@ -115,7 +115,7 @@ export default function AddFriendModal({ onClose }) {
   return (
     <>
       <div className="z-[999] w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px]">
-        <div className="w-[728px] h-[312px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg flex justify-center items-center">
+        <div className="xl:w-[728px] xl:h-[312px] md:w-[540px] md:h-[312px] sm:w-[358px] sm:h-[180px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg flex justify-center items-center">
           <div className="flex flex-col justify-center items-center gap-[24px]">
             <div className="flex w-[634px] justify-between items-center">
               <h3 className="text-h3-bold text-neutral-black-800">
@@ -123,12 +123,12 @@ export default function AddFriendModal({ onClose }) {
               </h3>
               <BtnClose onClick={onClose} />
             </div>
-            <div className="flex justify-center">
+            <div className="xl:w-[512px] md:w-[386px] sm:w-[266px] flex justify-center">
               <InputLabel
                 onChange={(e) => setAddPhone(formatPhoneNumber(e.target.value))}
                 value={addPhone}
                 isEye={false}
-                className="w-[512px]"
+                className=""
                 text="เบอร์โทรศัพท์"
                 placeHolder="กรอกเบอร์โทรศัพท์"
                 inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"

@@ -5,21 +5,21 @@ import BtnYellow from "@components/BtnYellow";
 export default function LogoutModal({ onCancel, onConfirm }) {
   return (
     <>
-      <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px]">
-        <div className="w-[662px] h-[366px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg flex justify-center items-center">
-          <div className="flex flex-col">
-            <Logo className="mb-[28px]" />
-            <h3 className="text-h2 text-neutral-black-800 text-center mb-[58px]">
+      <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px] shadow-main-shadow bg-black/20">
+        <div className="xl:w-[662px] xl:h-[366px] md:w-[540px] md:h-[312px] sm:w-[318px] sm:h-[188px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg flex justify-center items-center">
+          <div className="flex flex-col items-center">
+            <Logo className="md:mb-[28px] sm:mb-[18px]" />
+            <h3 className="md:text-h3 sm:text-h5 text-neutral-black-800 text-center md:mb-[58px] sm:mb-[18px]">
               คุณต้องการออกจากระบบใช่หรือไม่
             </h3>
-            <div className="flex gap-[58px] text-center">
+            <div className="flex md:gap-[58px] sm:gap-[26px] text-center">
               <BtnYellow
-                className="w-[192px] py-3 bg-primary-200"
+                className="md:w-[192px] sm:w-[128px] py-3 sm:py-2 bg-primary-200"
                 text="ยกเลิก"
                 onClick={onCancel}
               />
               <BtnYellow
-                className="w-[192px] py-3"
+                className="md:w-[192px] sm:w-[128px] py-3 sm:py-2"
                 text="ออกจากระบบ"
                 onClick={onConfirm}
               />
