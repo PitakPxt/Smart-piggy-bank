@@ -64,7 +64,7 @@ export default function Profile() {
   return (
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
-        <div className="xl:w-[768px] xl:h-[754px] lg:w-[756px] lg:h-[680px] md:w-[680px] md:h-[590px] sm:w-[340px] sm:h-[516px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow relative">
+        <div className="xl:w-[768px] xl:h-[754px] lg:w-[756px] lg:h-[660px] md:w-[680px] md:h-[590px] sm:w-[340px] sm:h-[516px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow relative">
           <Link to="/home">
             <BtnBack />
           </Link>
@@ -84,7 +84,7 @@ export default function Profile() {
             </h2>
             <div className="flex flex-col items-center justify-center xl:mb-[52px] md:mb-[28px] sm:mb-[24px]">
               <img
-                className="xl:size-[276px] lg:size-[276px] md:size-[216px] sm:size-[186px] border-neutral-white-500 object-cover rounded-full p-[10px] border-2     xl:mb-[28px] md:mb-[20px] sm:mb-[18px]"
+                className="xl:size-[276px] lg:size-[236px] md:size-[216px] sm:size-[186px] border-neutral-white-500 object-cover rounded-full p-[10px] border-2     xl:mb-[28px] md:mb-[20px] sm:mb-[18px]"
                 src={userData?.profileImageURL || DefaultProfile}
                 alt="โปรไฟล์"
               />
