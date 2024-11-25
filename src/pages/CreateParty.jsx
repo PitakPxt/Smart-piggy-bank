@@ -110,7 +110,7 @@ export default function CreateParty() {
       <div className="w-full h-full flex flex-col justify-center items-center">
         <div
           className="flex flex-col justify-center items-center
-            bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg
+            bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow
             xl:w-[756px] xl:h-[740px]
             lg:w-[769px] lg:h-[646px] 
             md:w-[676px] md:h-[626px]
