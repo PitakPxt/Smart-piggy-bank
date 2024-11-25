@@ -31,7 +31,7 @@ export default function NotFoundModal({
             loop
             autoplay
           />
-          <h2 className="text-h2-bold p-2">{text}</h2>
+          <h2 className="md:text-h2-bold sm:text-h4-bold p-2">{text}</h2>
         </div>
       </div>
     </>

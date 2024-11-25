@@ -496,7 +496,7 @@ export default function Party() {
       <NotFoundModal
         src={LogoLoading}
         text="กำลังโหลดข้อมูล..."
-        className="h-[220px]"
+        className="md:h-[220px] sm:h-[120px]"
         showBackButton={false}
       />
     );
@@ -507,7 +507,7 @@ export default function Party() {
       <NotFoundModal
         src={LogoPig}
         text="ไม่พบข้อมูลปาร์ตี้"
-        className="w-[480px]"
+        className="md:w-[480px] sm:w-[260px]"
         to="/home"
       />
     );
