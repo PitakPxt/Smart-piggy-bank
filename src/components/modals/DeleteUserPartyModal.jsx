@@ -5,7 +5,7 @@ import BtnYellow from "@components/BtnYellow";
 export default function DeleteUserPartyModal({ onClose, onConfirm }) {
   return (
     <>
-      <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px]  bg-black/20 z-[100]">
+      <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px] bg-black/20 z-[100]">
         <div className="xl:w-[700px] xl:h-[542px] md:w-[614px] md:h-[516px] sm:w-[324px] sm:h-[290px] bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow">
           <div className="w-full h-full flex flex-col items-center justify-center">
             <img

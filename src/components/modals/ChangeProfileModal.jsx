@@ -184,7 +184,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
 
   return (
     <>
-      <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px]">
+      <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px] bg-black/20 z-[100]">
         {isLoading ? (
           <NotFoundModal
             src={LogoLoading}
@@ -193,18 +193,18 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
             showBackButton={false}
           />
         ) : (
-          <div className="w-[540px] h-[800px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg flex justify-center">
-            <div className="flex flex-col w-[436px] items-center pt-[42px]">
+          <div className="xl:w-[540px] xl:h-[800px] lg:w-[540px] lg:h-[720px] md:w-[500px] md:h-[670px] sm:w-[342px] sm:h-[620px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg flex justify-center">
+            <div className="flex flex-col md:w-[436px] sm:w-[266px] items-center pt-[42px]">
               <div className="self-end mr-[42px]" onClick={onClose}>
                 <BtnClose />
               </div>
 
-              <h2 className="text-h2-bold text-neutral-black-800 mb-[28px]">
+              <h2 className="md:text-h2-bold sm:text-h3-bold text-neutral-black-800 mb-[28px]">
                 โปรไฟล์
               </h2>
 
               <img
-                className="size-[276px] border-neutral-white-500 object-cover rounded-full p-[10px] border-2 mb-[22px]"
+                className="xl:size-[276px] lg:size-[226px] md:size-[186px] sm:size-[186px] border-neutral-white-500 object-cover rounded-full p-[10px] border-2 mb-[22px]"
                 src={
                   newImage
                     ? URL.createObjectURL(newImage)
@@ -214,9 +214,9 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
               />
 
               <div className="flex gap-[56px] mb-[26px]">
-                <label className="flex gap-[10px] items-center px-6 py-2 bg-primary-500 rounded-xl cursor-pointer hover:duration-200 hover:ease-in-out hover:bg-secondary-600 hover:text-neutral-white-100 group">
+                <label className="flex gap-[10px] items-center md:px-6 sm:px-4 py-2 bg-primary-500 rounded-xl cursor-pointer hover:duration-200 hover:ease-in-out hover:bg-secondary-600 hover:text-neutral-white-100 group">
                   <svg
-                    className="group-hover:stroke-neutral-white-100"
+                    className="group-hover:stroke-neutral-white-100 sm:size-[16px] md:size-[18px]"
                     width="21"
                     height="20"
                     viewBox="0 0 21 20"
@@ -241,7 +241,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
                     />
                   </svg>
 
-                  <h4 className="text-h4-bold text-neutral-black-800">
+                  <h4 className="md:text-h4-bold sm:text-h5-bold text-neutral-black-800">
                     เปลี่ยน
                   </h4>
                   <input
@@ -252,11 +252,11 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
                   />
                 </label>
                 <button
-                  className="flex gap-[10px] items-center px-6 py-2 bg-primary-500 rounded-xl hover:duration-200 hover:ease-in-out hover:bg-secondary-600 hover:text-neutral-white-100 group"
+                  className="flex gap-[10px] items-center md:px-6 sm:px-4 py-2 bg-primary-500 rounded-xl hover:duration-200 hover:ease-in-out hover:bg-secondary-600 hover:text-neutral-white-100 group"
                   onClick={handleRemoveImage}
                 >
                   <svg
-                    className="group-hover:stroke-neutral-white-100"
+                    className="group-hover:stroke-neutral-white-100 "
                     width="25"
                     height="24"
                     viewBox="0 0 25 24"
@@ -278,7 +278,9 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
                     />
                   </svg>
 
-                  <h4 className="text-h4-bold text-neutral-black-800">นำออก</h4>
+                  <h4 className="md:text-h4-bold sm:text-h5-bold text-neutral-black-800">
+                    นำออก
+                  </h4>
                 </button>
               </div>
 
