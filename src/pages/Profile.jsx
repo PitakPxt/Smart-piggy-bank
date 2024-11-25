@@ -69,7 +69,7 @@ export default function Profile() {
             <BtnBack />
           </Link>
           <div
-            className="absolute xl:top-[42px] xl:right-[42px] md:top-[42px] md:right-[42px] sm:top-[24px] sm:right-[24px] cursor-pointer"
+            className="absolute xl:top-[42px] xl:right-[42px] md:top-[42px] md:right-[42px] sm:top-[28px] sm:right-[28px] cursor-pointer"
             onClick={() => setShowModal(true)}
           >
             <img
