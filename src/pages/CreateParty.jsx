@@ -120,7 +120,7 @@ export default function CreateParty() {
             <BtnBack />
           </Link>
           <div className="xl:w-[520px] md:w-[480px] sm:w-[300px] h-full flex flex-col justify-center items-center mt-[20px] ">
-            <div className="flex flex-col w-full xl:gap-[18px] md:gap-[10px] sm:gap-[8px] md:mb-[32px] sm:mb-[42px]">
+            <div className="flex flex-col w-full xl:gap-[18px] md:gap-[10px] sm:gap-[8px] md:mb-[32px] sm:mb-[32px]">
               <h2 className="md:text-h2-bold sm:text-h3-bold text-center">
                 สร้างปาร์ตี้
               </h2>
