@@ -15,7 +15,7 @@ export default function NotFoundModal({
       <div className="w-full h-full flex justify-center items-center">
         <div
           className="flex flex-col gap-[24px] justify-center items-center bg-neutral-white-100 
-        rounded-3xl drop-shadow-lg p-[24px]"
+        rounded-3xl drop-shadow-lg p-[24px] relative"
         >
           {showBackButton && (
             <Link to={to}>
