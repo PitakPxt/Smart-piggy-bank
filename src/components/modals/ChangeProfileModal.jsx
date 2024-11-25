@@ -194,9 +194,8 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
           />
         ) : (
           <div className="xl:w-[540px] xl:h-[800px] lg:w-[540px] lg:h-[710px] md:w-[500px] md:h-[670px] sm:w-[342px] sm:h-[620px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg flex justify-center">
-            <div className="flex flex-col md:w-[436px] sm:w-[266px] items-center pt-[42px]">
+            <div className="flex flex-col md:w-[436px] sm:w-[266px] items-center pt-[42px] relative">
               <BtnClose />
-
               <h2 className="md:text-h2-bold sm:text-h3-bold text-neutral-black-800 mb-[28px]">
                 โปรไฟล์
               </h2>
