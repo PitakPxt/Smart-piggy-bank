@@ -109,15 +109,21 @@ export default function CreateParty() {
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
         <div
-          className="w-[756px] h-[740px] flex flex-col justify-center items-center
-            bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg"
+          className="flex flex-col justify-center items-center
+            bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg
+            xl:w-[756px] xl:h-[740px]
+            lg:w-[769px] lg:h-[646px] 
+            md:w-[676px] md:h-[626px]
+            sm:w-[344px] sm:h-[552px]"
         >
           <Link to="/home">
             <BtnBack />
           </Link>
-          <div className="w-[520px] h-full flex flex-col justify-center items-center mt-[20px]">
-            <div className="flex flex-col w-full gap-[18px] mb-[52px]">
-              <h2 className="text-h2-bold text-center">สร้างปาร์ตี้</h2>
+          <div className="xl:w-[520px] md:w-[480px] sm:w-[300px] h-full flex flex-col justify-center items-center mt-[20px] ">
+            <div className="flex flex-col w-full xl:gap-[18px] md:gap-[10px] sm:gap-[8px] md:mb-[32px] sm:mb-[42px]">
+              <h2 className="md:text-h2-bold sm:text-h3-bold text-center">
+                สร้างปาร์ตี้
+              </h2>
               <InputLabel
                 InputLabel
                 className={"w-full"}
@@ -160,12 +166,14 @@ export default function CreateParty() {
                 }}
               />
               <div>
-                <h3 className="text-h3-bold mb-[10px]">เชิญเพื่อน : </h3>
-                <ul className="flex flex-wrap gap-[16px] ">
+                <h3 className="md:text-h3-bold sm:text-h5-bold mb-[10px]">
+                  เชิญเพื่อน :{" "}
+                </h3>
+                <ul className="flex flex-wrap gap-[16px]">
                   {invitedFriends.map((friend) => (
                     <li
                       key={friend.phone}
-                      className="flex flex-col items-center relative w-[68px] h-[68px]"
+                      className="flex flex-col items-center relative md:size-[68px] sm:size-[54px]"
                     >
                       <div
                         className="absolute -right-0 -top-0 z-5 cursor-pointer size-[20px] bg-neutral-white-100 rounded-full"
@@ -185,7 +193,7 @@ export default function CreateParty() {
               </div>
             </div>
             <BtnYellow
-              className={"px-[156px]"}
+              className={"xl:px-[156px] md:px-[138px] sm:px-[84px]"}
               text={"สร้างปาร์ตี้"}
               onClick={handleCreateParty}
             />
@@ -206,11 +214,11 @@ export default function CreateParty() {
 function addFriendButton(src, onClickHandler) {
   return (
     <div
-      className="w-[66px] h-[66px] flex justify-center items-center rounded-full 
+      className="md:size-[66px] sm:size-[54px] flex justify-center items-center rounded-full 
     border-2 border-neutral-white-500 bg-neutral-white-100 cursor-pointer "
       onClick={onClickHandler}
     >
-      <img className="size-[26px]" src={src} />
+      <img className="md:size-[26px] sm:size-[20px]" src={src} />
     </div>
   );
 }
