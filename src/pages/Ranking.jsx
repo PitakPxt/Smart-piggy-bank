@@ -7,26 +7,38 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { deleteDoc, doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useUserAuth } from "../context/AuthContext";
+import { useScreen } from "../hooks/useScreen";
 
 const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
   const isFirstPlace = rank === 1;
+  const { isMobile, isTablet, isDesktop } = useScreen();
 
   const getHeight = () => {
-    if (isFirstPlace) return "368px";
-    if (rank === 2) return "286px";
-    return "216px";
+    if (isMobile) {
+      if (isFirstPlace) return "217px";
+      if (rank === 2) return "148px";
+      return "110px";
+    } else if (isTablet) {
+      if (isFirstPlace) return "388px";
+      if (rank === 2) return "276px";
+      return "206px";
+    } else if (isDesktop) {
+      if (isFirstPlace) return "368px";
+      if (rank === 2) return "286px";
+      return "216px";
+    }
   };
 
   return (
     <div className="flex flex-col justify-end">
-      <div className="flex flex-col text-center items-center mb-4">
+      <div className="flex flex-col text-center items-center xl:mb-4 sm:mb-1">
         <img
-          className="size-[120px] border-neutral-white-500 object-cover rounded-full p-[6px] border-2"
+          className="md:size-[120px] sm:size-[78px] border-neutral-white-500 object-cover rounded-full p-[6px] border-2"
           src={avatar}
           alt={`${name}'s profile`}
         />
-        <h3 className="text-h3-bold">{name}</h3>
-        <h2 className="text-h2-bold">{amount} ฿</h2>
+        <h3 className="md:text-h3-bold sm:text-h5-bold">{name}</h3>
+        <h2 className="md:text-h2-bold sm:text-h4-bold">{amount} ฿</h2>
       </div>
       <div
         className={`flex ${
@@ -38,10 +50,10 @@ const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
           borderTopRightRadius: "1rem",
         }}
       >
-        <h1 className="text-[128px] font-bold">{rank}</h1>
+        <h1 className="md:text-[128px] sm:text-[78px] font-bold">{rank}</h1>
         {isFirstPlace && (
           <img
-            className="size-[148px] drop-shadow-mddrop-shadow-lg"
+            className="xl:size-[148px] md:size-[130px] sm:size-[80px] drop-shadow-lg"
             src={LogoRang}
             alt="First place badge"
           />
@@ -184,11 +196,13 @@ export default function Ranking() {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      <div className="w-[756px] h-[840px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
-        <div className="w-[620px] h-[714px] flex flex-col justify-center items-center text-center">
+      <div className="xl:w-[756px] xl:h-[840px] lg:w-[822px] lg:h-[618px] md:w-[678px] md:h-[862px] sm:w-[344px] sm:h-[550px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
+        <div className="xl:w-[620px] xl:h-[714px] md:w-[598px] md:h-[738px] sm:w-[312px] sm:h-[466px] flex flex-col justify-center items-center text-center">
           <div className="flex flex-col size-full">
-            <h2 className="text-h2-bold mb-[28px]">การจัดอันดับ</h2>
-            <div className="grid grid-cols-3 gap-6 h-full mb-[34px] justify-center items-end">
+            <h2 className="md:mb-[28px] md:text-h2-bold sm:text-h3-bold">
+              การจัดอันดับ
+            </h2>
+            <div className="grid grid-cols-3 xl:gap-6 sm:gap-3 h-full md:mb-[34px] sm:mb-[24px] justify-center items-end">
               {orderedRankData().map(
                 (player, index) =>
                   player && (
