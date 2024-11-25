@@ -517,7 +517,7 @@ export default function Party() {
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div
         className="flex flex-col justify-start items-center bg-neutral-white-100 rounded-3xl overflow-hidden
-      drop-shadow-lg gap-[8px] md:pt-[28px] sm:pt-[38px] relative
+      shadow-main-shadow gap-[8px] md:pt-[28px] sm:pt-[38px] relative
       xl:w-[768px] xl:h-[814px] 
       lg:w-[736px] lg:h-[646px]
       md:w-[676px] md:h-[856px] 
