@@ -557,7 +557,7 @@ export default function Party() {
         </div>
         {isPartyCreator && (
           <div
-            className="px-[32px] py-[6px] absolute bottom-[24px] bg-transparent border-2 border-error-300 text-error-300 md:text-h3-bold sm:text-h5-bold
+            className="px-[32px] py-[6px] absolute md:bottom-[24px] sm:bottom-[12px] bg-transparent border-2 border-error-300 text-error-300 md:text-h3-bold sm:text-h5-bold
             rounded-[12px] drop-shadow-lg hover:border-error-200 hover:bg-error-200 hover:text-neutral-white-100 cursor-pointer"
             onClick={() => setShowPartySucceedModal(true)}
           >

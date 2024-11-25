@@ -6,7 +6,7 @@ export default function DeleteFriendModal({ onClose, onConfirm }) {
   return (
     <>
       <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px] z-[100]">
-        <div className="w-[660px] h-[544px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
+        <div className="xl:w-[660px] xl:h-[544px]  bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
           <div className="w-full h-full flex flex-col items-center justify-center">
             <img className="w-[266px] mb-[28px]" src={DeleteFriend} alt="" />
             <h2 className="text-h2-bold text-neutral-black-800 mb-[34px]">
