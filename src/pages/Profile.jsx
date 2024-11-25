@@ -92,7 +92,7 @@ export default function Profile() {
                 <h1 className="xl:text-h1-bold md:text-h2-bold sm:text-h3-bold">
                   {userData?.name || "Name"}
                 </h1>
-                <h2 className="xl:text-h3-bold md:text-h4-bold sm:text-h4-bold">
+                <h2 className="xl:text-h3-bold md:text-h3-bold sm:text-h4-bold">
                   รหัสกระปุก : {userData?.savingNumber || "00XXX"}
                 </h2>
                 <h2 className="text-h3 sm:text-h4">
