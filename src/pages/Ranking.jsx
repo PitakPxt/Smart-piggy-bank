@@ -202,7 +202,7 @@ export default function Ranking() {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      <div className="xl:w-[756px] xl:h-[840px] lg:w-[800px] lg:h-[618px] md:w-[678px] md:h-[862px] sm:w-[344px] sm:h-[550px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow">
+      <div className="xl:w-[756px] xl:h-[820px] lg:w-[800px] lg:h-[618px] md:w-[678px] md:h-[862px] sm:w-[344px] sm:h-[550px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow">
         <div className="xl:w-[620px] xl:h-[714px] lg:w-[682px] lg:h-[580px] md:w-[598px] md:h-[738px] sm:w-[312px] sm:h-[466px] flex flex-col justify-center items-center text-center">
           <div className="flex flex-col size-full">
             <h2 className="md:mb-[28px] md:text-h2-bold sm:text-h3-bold">
