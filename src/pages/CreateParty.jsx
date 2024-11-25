@@ -173,7 +173,7 @@ export default function CreateParty() {
                   {invitedFriends.map((friend) => (
                     <li
                       key={friend.phone}
-                      className="flex flex-col items-center relative md:size-[68px] sm:size-[54px]"
+                      className="flex flex-col items-center relative md:size-[68px] sm:size-[50px]"
                     >
                       <div
                         className="absolute -right-0 -top-0 z-5 cursor-pointer size-[20px] bg-neutral-white-100 rounded-full"
@@ -214,7 +214,7 @@ export default function CreateParty() {
 function addFriendButton(src, onClickHandler) {
   return (
     <div
-      className="md:size-[66px] sm:size-[54px] flex justify-center items-center rounded-full 
+      className="md:size-[66px] sm:size-[50px] flex justify-center items-center rounded-full 
     border-2 border-neutral-white-500 bg-neutral-white-100 cursor-pointer "
       onClick={onClickHandler}
     >
