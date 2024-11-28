@@ -23,12 +23,10 @@ import BtnBack from "../components/BtnBack";
 import PartySucceedModal from "../components/modals/PartySucceedModal";
 import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/AuthContext";
-import DeleteUserPartyModal from "../components/modals/DeleteUserPartyModal";
 
 function PlayerListItem({
   rank,
   player,
-  onDelete,
   isCreator,
   currentUserId,
   creatorName,
@@ -39,9 +37,6 @@ function PlayerListItem({
     3: "bg-primary-300",
     default: "bg-primary-200",
   };
-
-  const canDelete =
-    isCreator && player.id !== currentUserId && player.name !== creatorName;
 
   return (
     <li
@@ -71,16 +66,6 @@ function PlayerListItem({
       <div className="flex items-center xl:mr-[48px] md:mr-[36px] sm:mr-[18px] md:gap-[24px] sm:gap-[12px]">
         <div className="xl:w-[120px] md:w-[130px] sm:w-[60px] flex justify-end">
           <h2 className="md:text-h2-bold sm:text-h5-bold">{player.amount} ฿</h2>
-        </div>
-        <div className="md:w-[32px] sm:w-[20px]">
-          {canDelete && (
-            <img
-              className="md:size-[32px] sm:size-[18px] cursor-pointer"
-              src={LogoDelete}
-              alt="Delete"
-              onClick={() => onDelete(player)}
-            />
-          )}
         </div>
       </div>
     </li>
@@ -279,7 +264,7 @@ export default function Party() {
                   partyId: partyId,
                   members: party.members,
                 },
-                replace: true, // เพิ่ม replace: true เพื่อป้องกันการกลับมาหน้า party
+                replace: true, // เพิ่ม replace: true เพื่อป้องกันการกลับมาห��้า party
               });
             }
 
@@ -547,7 +532,6 @@ export default function Party() {
                 key={player.id}
                 rank={index + 1}
                 player={player}
-                onDelete={handleDeleteClick}
                 isCreator={isPartyCreator}
                 currentUserId={user.uid}
                 creatorName={partyData?.createdBy}
