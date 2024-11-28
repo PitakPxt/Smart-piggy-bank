@@ -21,16 +21,27 @@ import Test from "@pages/test";
 
 import AddFriendModal from "@components/modals/AddFriendModal";
 import YourComponent from "@pages/YourComponent";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { SavingProvider } from "./context/SavingContext";
+import { useUserAuth } from "./context/UserAuthContext";
 
 function App() {
+  const { user } = useUserAuth();
+
   return (
     <SavingProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route path="/" element={<Login />} />
+            <Route
+              path="/"
+              element={user ? <Navigate to="/home" replace /> : <Login />}
+            />
             <Route
               path="home"
               element={
