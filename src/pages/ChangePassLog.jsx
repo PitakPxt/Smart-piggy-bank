@@ -2,20 +2,19 @@ import React, { useEffect, useState } from "react";
 import Logo from "../components/Logo";
 import InputLabel from "../components/InputLabel";
 import BtnYellow from "../components/BtnYellow";
-import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { updateDoc } from "firebase/firestore";
-import { collection, getDocs, query, where, doc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import { updatePassword } from "firebase/auth";
 import { db } from "../lib/firebase";
 import {
   getAuth,
-  EmailAuthProvider,
-  reauthenticateWithCredential,
   isSignInWithEmailLink,
   signInWithEmailLink,
 } from "firebase/auth";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useUserAuth } from "../context/AuthContext";
 
 export default function ChangePassLog() {
   const navigate = useNavigate();
@@ -24,6 +23,7 @@ export default function ChangePassLog() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const auth = getAuth();
+  const { logOut } = useUserAuth();
 
   useEffect(() => {
     // ดึง userId จาก URL parameters
@@ -85,6 +85,7 @@ export default function ChangePassLog() {
       });
 
       toast.success("เปลี่ยนรหัสผ่านสำเร็จ");
+      logOut();
       navigate("/");
     } catch (error) {
       console.error("Error:", error);
