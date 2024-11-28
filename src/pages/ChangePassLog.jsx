@@ -98,7 +98,7 @@ export default function ChangePassLog() {
         <form
           onSubmit={handleChangePassword}
           className="flex flex-col justify-center items-center
-         bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg
+         bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow
          xl:w-[756px] xl:h-[726px]
          md:w-[646px] md:h-[602px]
          sm:w-[344px] sm:h-[426px]"

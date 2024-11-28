@@ -56,7 +56,7 @@ export default function Forget() {
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
         <div
-          className=" bg-neutral-white-100 rounded-3xl overflow-hidden shadow-lg relative
+          className=" bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow relative
         xl:w-[756px] xl:h-[742px]
          md:w-[624px] md:h-[640px]
         sm:w-[344px] sm:h-[504px]

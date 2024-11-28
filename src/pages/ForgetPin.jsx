@@ -40,7 +40,7 @@ export default function ForgetPin() {
     <>
       <div className="w-full h-full flex flex-col justify-center items-center">
         <div
-          className=" bg-neutral-white-100 rounded-3xl overflow-hidden shadow-lg relative
+          className=" bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow relative
         xl:w-[756px] xl:h-[742px] 
         lg:w-[684px] lg:h-[628px]
         md:w-[708px] md:h-[684px]
