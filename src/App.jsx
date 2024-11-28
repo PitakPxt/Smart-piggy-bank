@@ -28,7 +28,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { SavingProvider } from "./context/SavingContext";
-import { useUserAuth } from "./context/UserAuthContext";
+import { useUserAuth } from "./context/AuthContext";
 
 function App() {
   const { user } = useUserAuth();
