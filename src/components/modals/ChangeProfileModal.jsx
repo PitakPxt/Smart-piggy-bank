@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getAuth } from "firebase/auth";
-import { getDoc, doc, updateDoc } from "firebase/firestore";
+import { getDoc, doc, updateDoc, setDoc, deleteDoc } from "firebase/firestore";
 import {
   ref,
   uploadBytes,
@@ -14,7 +14,13 @@ import DefaultProfile from "@images/default-Profile.svg";
 import BtnClose from "../BtnClose";
 import NotFoundModal from "../../components/modals/NotFoundModal";
 import LogoLoading from "/lottie/loading.lottie";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  writeBatch,
+} from "firebase/firestore";
 import { toast } from "react-toastify";
 
 export default function ChangeProfileModal({ onClose, onUpdate }) {
@@ -141,6 +147,46 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
         savingNumber: formData.savingNumber,
       };
 
+      // เพิ่มโค้ดอัพเดทชื่อในคอลเลคชันอื่นๆ
+      const userDoc = await getDoc(userRef);
+      const oldName = userDoc.data().name;
+
+      if (oldName !== formData.name) {
+        // อ้นหา party ที่ผู้ใช้เป็นเจ้าของ (createdBy)
+        const partyRef = collection(db, "party");
+        const q = query(partyRef, where("createdBy", "==", oldName));
+        const querySnapshot = await getDocs(q);
+
+        // ถ้าพบ party ที่ผู้ใช้เป็นเจ้าของ
+        querySnapshot.forEach(async (partyDoc) => {
+          const partyData = partyDoc.data();
+
+          // สร้าง document ใหม่โดยใช้ชื่อใหม่เป็น document ID
+          const newPartyRef = doc(db, "party", formData.name);
+          await setDoc(newPartyRef, {
+            ...partyData,
+            createdBy: formData.name,
+          });
+
+          // ลบ document เก่า
+          await deleteDoc(doc(db, "party", partyDoc.id));
+
+          // อัพเดทชื่อใน users collection สำหรับทุกคนที่อยู่ในปาร์ตี้เดียวกัน
+          const usersRef = collection(db, "users");
+          const userQuery = query(usersRef, where("party", "==", oldName));
+          const userSnapshot = await getDocs(userQuery);
+
+          const batch = writeBatch(db);
+          userSnapshot.forEach((userDoc) => {
+            batch.update(userDoc.ref, {
+              party: formData.name,
+            });
+          });
+          await batch.commit();
+        });
+      }
+
+      // อัพเดทรูปโปรไฟล์
       if (newImage) {
         if (
           userData.profileImageURL &&
@@ -162,6 +208,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
       onClose();
     } catch (error) {
       console.error("Error updating profile:", error);
+      toast.error("เกิดข้อผิดพลาดในการอัพเดทข้อมูล");
     } finally {
       setIsLoading(false);
     }
