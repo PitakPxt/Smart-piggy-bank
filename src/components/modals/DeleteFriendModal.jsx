@@ -5,7 +5,7 @@ import BtnYellow from "@components/BtnYellow";
 export default function DeleteFriendModal({ onClose, onConfirm }) {
   return (
     <>
-      <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px] z-[100]">
+      <div className="w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px] z-[100] bg-black/20">
         <div className="xl:w-[660px] xl:h-[544px]  bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg">
           <div className="w-full h-full flex flex-col items-center justify-center">
             <img className="w-[266px] mb-[28px]" src={DeleteFriend} alt="" />
