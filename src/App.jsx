@@ -1,4 +1,4 @@
-import "./index.css";]
+import "./index.css";
 
 import Layout from "@components/Layout";
 import Login from "@pages/Login";
