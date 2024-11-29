@@ -50,8 +50,14 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setShowFriendPartyModal(false);
+      if (isMobile) {
+        if (event.target.id === "mobile-modal-wrapper") {
+          setShowFriendPartyModal(false);
+        }
+      } else {
+        if (modalRef.current && !modalRef.current.contains(event.target)) {
+          setShowFriendPartyModal(false);
+        }
       }
     };
 
@@ -142,7 +148,7 @@ export default function Navbar() {
                           <NavbarItem text="ปลดล็อค" to="/unlock-pin" />
                           <NavbarItem text="สร้างปาร์ตี้" to="/create-party" />
                           <div role="button" className="px-4 py-2">
-                            <div className="relative">
+                            <div className="relative" ref={modalRef}>
                               <span
                                 onClick={handleShowFriendPartyModal}
                                 className="text-secondary-300"

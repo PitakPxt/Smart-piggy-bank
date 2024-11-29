@@ -8,6 +8,8 @@ import { deleteDoc, doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useUserAuth } from "../context/AuthContext";
 import { useScreen } from "../hooks/useScreen";
+import BtnBack from "../components/BtnBack";
+import { cn } from "../lib/tailwindcss";
 
 const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
   const isFirstPlace = rank === 1;
@@ -18,11 +20,11 @@ const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
       if (isFirstPlace) return "217px";
       if (rank === 2) return "148px";
       return "110px";
-    } else if (isTablet) {
+    } else if (isTablet && !isTabletHorizontal) {
       if (isFirstPlace) return "388px";
       if (rank === 2) return "276px";
       return "206px";
-    } else if (isTabletHorizontal) {
+    } else if (isTablet && isTabletHorizontal) {
       if (isFirstPlace) return "248px";
       if (rank === 2) return "176px";
       return "146px";
@@ -76,6 +78,8 @@ export default function Ranking() {
   const [isLoading, setIsLoading] = useState(true);
   const [winners, setWinners] = useState([]);
   const partyId = location.state?.partyId;
+
+  const { isTablet, isTabletHorizontal } = useScreen();
 
   const handleBackToHome = async () => {
     try {
@@ -200,10 +204,23 @@ export default function Ranking() {
     );
   }
 
+  const screenWidth = window.innerWidth;
+
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      <div className="xl:w-[756px] xl:h-[820px] lg:w-[800px] lg:h-[618px] md:w-[678px] md:h-[862px] sm:w-[344px] sm:h-[550px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow">
-        <div className="xl:w-[620px] xl:h-[714px] lg:w-[682px] lg:h-[580px] md:w-[598px] md:h-[738px] sm:w-[312px] sm:h-[466px] flex flex-col justify-center items-center text-center">
+      <div
+        className={cn(
+          "relative xl:w-[756px] xl:h-[820px] lg:w-[800px] lg:h-[618px] md:w-[678px] md:max-h-[862px] sm:w-[344px] sm:max-h-[550px] flex flex-col justify-center items-center bg-neutral-white-100 rounded-3xl overflow-hidden shadow-main-shadow md:justify-start h-fit",
+          !isTablet && screenWidth <= 1024 && "py-12",
+          isTablet && !isTabletHorizontal && screenWidth <= 1024 && "pt-4 pb-12"
+        )}
+      >
+        {isTablet && isTabletHorizontal && (
+          <div className="absolute top-4 left-4">
+            <BtnBack onClick={handleBackToHome} />
+          </div>
+        )}
+        <div className="xl:w-[620px] xl:h-[714px] lg:w-[682px] lg:h-[580px] md:w-[598px] h-fit md:max-h-[738px] sm:w-[312px] sm:max-h-[466px] flex flex-col justify-center items-center text-center py-4">
           <div className="flex flex-col size-full">
             <h2 className="md:mb-[28px] md:text-h2-bold sm:text-h3-bold">
               การจัดอันดับ
@@ -221,13 +238,15 @@ export default function Ranking() {
                   )
               )}
             </div>
-            <div className="w-full">
-              <BtnYellow
-                className="px-[36px]"
-                text="กลับไปหน้าหลัก"
-                onClick={handleBackToHome}
-              />
-            </div>
+            {!isTabletHorizontal && (
+              <div className="w-full">
+                <BtnYellow
+                  className="px-[36px]"
+                  text="กลับไปหน้าหลัก"
+                  onClick={handleBackToHome}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

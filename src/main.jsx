@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthContextProvider } from "./context/AuthContext";
 import { SavingProvider } from "./context/SavingContext";
+import TailwindcssIndicator from "./components/TailwindcssIndicator";
+
 createRoot(document.getElementById("root")).render(
   <Fragment>
     {/* <StrictMode> */}
@@ -13,5 +15,6 @@ createRoot(document.getElementById("root")).render(
       </AuthContextProvider>
     </SavingProvider>
     {/* </StrictMode> */}
+    <TailwindcssIndicator />
   </Fragment>
 );
