@@ -72,7 +72,6 @@ function App() {
             <Route path="forget" element={<Forget />} />
             <Route path="unlockpin" element={<UnlockPin />} />
             <Route path="friend-party" element={<FriendParty />} />
-            <Route path="/test" element={<Test />} />
           </Route>
         </Routes>
       </Router>
