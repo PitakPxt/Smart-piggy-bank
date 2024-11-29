@@ -67,7 +67,7 @@ export default function FriendPartyModal() {
   return (
     <>
       <div
-        className="z-[99] md:absolute md:button-0 md:left-1/2 md:-translate-x-1/2 w-[374px] h-auto bg-neutral-white-100 rounded-3xl 
+        className="z-[99] md:absolute md:button-0 md:left-1/2 md:-translate-x-1/2 w-[374px] h-auto bg-black/20 backdrop-blur-[2px] bg-neutral-white-100 rounded-3xl 
       overflow-hidden shadow-xl"
       >
         <div className="size-auto px-6 py-[18px] flex flex-col items-center justify-center ">
