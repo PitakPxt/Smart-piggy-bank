@@ -129,7 +129,7 @@ export default function Navbar() {
 
                   <div
                     className={cn(
-                      "fixed inset-0 z-[999] transition-transform duration-300 translate-x-full flex justify-end backdrop-blur-[2px]",
+                      "fixed inset-0 z-[99] transition-transform duration-300 translate-x-full flex justify-end backdrop-blur-[2px]",
                       isOpen && "translate-x-0"
                     )}
                   >

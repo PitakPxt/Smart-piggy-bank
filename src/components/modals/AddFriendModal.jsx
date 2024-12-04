@@ -114,8 +114,8 @@ export default function AddFriendModal({ onClose }) {
 
   return (
     <>
-      <div className="z-[999] w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px] bg-black/20">
-        <div className="xl:w-[728px] xl:h-[312px] md:w-[540px] md:h-[312px] sm:w-[358px] sm:h-[180px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg flex justify-center items-center relative">
+      <div className="z-[999] w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px] bg-black/20 shadow-main-shadow">
+        <div className="xl:w-[728px] xl:h-[312px] md:w-[540px] md:h-[312px] sm:w-[358px] sm:h-[180px] bg-neutral-white-100 rounded-3xl overflow-hidden flex justify-center items-center relative">
           <div className="w-full flex flex-col justify-center items-center md:gap-[24px] sm:gap-[8px]">
             <BtnClose onClick={onClose} />
             <div className="flex items-start justify-start w-full md:px-12 sm:px-6">
