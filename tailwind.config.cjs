@@ -15,7 +15,8 @@ export default {
         xl: "1512px",
       },
       boxShadow: {
-        "main-shadow": "0 3px 12px 3px rgba(0, 0, 0, 0.15)",
+        "main-shadow": "6px 6px 8px 3px rgba(0, 0, 0, 0.20)",
+        "party-shadow": "2px 4px 4px 0px rgba(0, 0, 0, 0.25)",
       },
 
       colors: {

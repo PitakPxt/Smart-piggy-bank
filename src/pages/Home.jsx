@@ -121,7 +121,10 @@ export default function Home() {
         </div>
       </div>
       <Link to="/party">
-        <BtnYellow className={"px-[98px] shadow-lg"} text={"ดูปาร์ตี้"} />
+        <BtnYellow
+          className={"px-[98px] shadow-party-shadow"}
+          text={"ดูปาร์ตี้"}
+        />
       </Link>
     </div>
   );
