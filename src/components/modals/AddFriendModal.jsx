@@ -115,13 +115,13 @@ export default function AddFriendModal({ onClose }) {
   return (
     <>
       <div className="z-[999] w-full h-full flex justify-center items-center fixed top-0 left-0 backdrop-blur-[2px] bg-black/20">
-        <div className="xl:w-[728px] xl:h-[312px] md:w-[540px] md:h-[312px] sm:w-[358px] sm:h-[180px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg flex justify-center items-center">
-          <div className="w-full flex flex-col justify-center items-center gap-[24px]">
-            <div className="flex w-[634px] justify-between items-center">
-              <h3 className="text-h3-bold text-neutral-black-800">
+        <div className="xl:w-[728px] xl:h-[312px] md:w-[540px] md:h-[312px] sm:w-[358px] sm:h-[180px] bg-neutral-white-100 rounded-3xl overflow-hidden drop-shadow-lg flex justify-center items-center relative">
+          <div className="w-full flex flex-col justify-center items-center md:gap-[24px] sm:gap-[8px]">
+            <BtnClose onClick={onClose} />
+            <div className="flex items-start justify-start w-full md:px-12 sm:px-6">
+              <h3 className="md:text-h3-bold sm:text-h5-bold text-neutral-black-800">
                 เพิ่มเพื่อนใหม่!!
               </h3>
-              <BtnClose onClick={onClose} />
             </div>
             <div className="xl:w-[512px] lg:w-[386px] md:w-[386px] sm:w-[266px] flex justify-center">
               <InputLabel
@@ -134,10 +134,10 @@ export default function AddFriendModal({ onClose }) {
                 inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
               />
             </div>
-            <div className="w-full flex justify-end px-12">
+            <div className="w-full flex justify-end md:px-12 sm:px-6">
               <BtnYellow
                 onClick={handleAddFriend}
-                className="px-[22px]"
+                className="md:px-[22px] sm:px-[14px] md:py-[10px] sm:py-[8px]"
                 text="เพิ่มเพื่อน"
               />
             </div>

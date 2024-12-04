@@ -32,9 +32,9 @@ function PlayerListItem({
   creatorName,
 }) {
   const bgColors = {
-    1: "bg-primary-500",
-    2: "bg-primary-400",
-    3: "bg-primary-300",
+    1: "bg-ranking-1",
+    2: "bg-ranking-2",
+    3: "bg-ranking-3",
     default: "bg-primary-200",
   };
 
@@ -58,13 +58,13 @@ function PlayerListItem({
             src={player.avatar}
             alt={player.name}
           />
-          <h2 className="md:text-h2-bold xl:w-[120px] md:w-[150px] sm:w-[55px] sm:text-h5-bold truncate">
+          <h2 className="md:text-h2-bold xl:w-[180px] md:w-[150px] sm:w-[55px] sm:text-h5-bold truncate">
             {player.name}
           </h2>
         </div>
       </div>
       <div className="flex items-center xl:mr-[48px] md:mr-[36px] sm:mr-[18px] md:gap-[24px] sm:gap-[12px]">
-        <div className="xl:w-[120px] md:w-[130px] sm:w-[60px] flex justify-end">
+        <div className="xl:w-[130px] md:w-[130px] sm:w-[60px] flex justify-end">
           <h2 className="md:text-h2-bold sm:text-h5-bold">{player.amount} ฿</h2>
         </div>
       </div>

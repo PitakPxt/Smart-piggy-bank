@@ -258,7 +258,7 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
               />
 
               <div className="flex gap-[56px] mb-[26px]">
-                <label className="flex gap-[10px] items-center md:px-6 sm:px-4 py-2 bg-primary-500 rounded-xl cursor-pointer hover:duration-200 hover:ease-in-out hover:bg-secondary-600 hover:text-neutral-white-100 group">
+                <label className="flex gap-[10px] items-center md:px-6 sm:px-4 py-2 text-neutral-100 bg-secondary-300 rounded-xl cursor-pointer hover:duration-200 hover:ease-in-out hover:bg-secondary-600 hover:text-neutral-white-100 group">
                   <svg
                     className="group-hover:stroke-neutral-white-100 sm:size-[16px] md:size-[18px]"
                     width="21"
@@ -295,12 +295,12 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
                     onChange={handleImageChange}
                   />
                 </label>
-                <button
-                  className="flex gap-[10px] items-center md:px-6 sm:px-4 py-2 bg-primary-500 rounded-xl hover:duration-200 hover:ease-in-out hover:bg-secondary-600 hover:text-neutral-white-100 group"
+                <label
+                  className="flex gap-[10px] items-center md:px-6 sm:px-4 py-2 text-neutral-100 bg-secondary-300 rounded-xl cursor-pointer hover:duration-200 hover:ease-in-out hover:bg-secondary-600 hover:text-neutral-white-100 group"
                   onClick={handleRemoveImage}
                 >
                   <svg
-                    className="group-hover:stroke-neutral-white-100 "
+                    className="group-hover:stroke-neutral-white-100"
                     width="25"
                     height="24"
                     viewBox="0 0 25 24"
@@ -321,11 +321,10 @@ export default function ChangeProfileModal({ onClose, onUpdate }) {
                       strokeWidth="1.5"
                     />
                   </svg>
-
                   <h4 className="md:text-h4-bold sm:text-h5-bold text-neutral-black-800">
                     นำออก
                   </h4>
-                </button>
+                </label>
               </div>
 
               <div className="flex flex-col gap-[10px] mb-[26px] w-full">

@@ -116,7 +116,6 @@ export default function Login() {
                         autoComplete="on"
                         textLabelClassName="xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
                         inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
-                        // inputBorderClassName="xl:py-[8px] lg:py-[4px] md:py-[4px] sm:py-[2px]"
                         onChange={(e) => setEmail(e.target.value)}
                       />
                       <InputLabel
@@ -128,7 +127,6 @@ export default function Login() {
                         autoComplete="on"
                         textLabelClassName="xl:text-h3-bold lg:text-h3-bold md:text-h3-bold sm:text-h5-bold"
                         inputClassName="xl:text-h3 lg:text-h4 md:text-h4 sm:text-h5"
-                        // inputBorderClassName="xl:py-[8px] lg:py-[4px] md:py-[4px] sm:py-[2px]"
                         onChange={(e) => setPassword(e.target.value)}
                       />
                       <div className="w-full flex justify-end">

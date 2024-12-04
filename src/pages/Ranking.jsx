@@ -61,7 +61,7 @@ const RankCard = ({ rank, name, amount, bgColor, avatar }) => {
         </h1>
         {isFirstPlace && (
           <img
-            className="xl:size-[148px] lg:size-[90px] md:size-[130px] sm:size-[80px] drop-shadow-lg"
+            className="xl:size-[148px] lg:size-[90px] md:size-[130px] sm:size-[80px]"
             src={LogoRang}
             alt="First place badge"
           />
@@ -157,36 +157,36 @@ export default function Ranking() {
       rankData[1] = {
         ...winners[0],
         rank: 1,
-        bgColor: "bg-primary-500",
+        bgColor: "bg-ranking-1",
       };
     } else if (validWinners.length === 2) {
       // อันดับ 1 ตรงกลาง, อันดับ 2 ซ้าย
       rankData[0] = {
         ...winners[1],
         rank: 2,
-        bgColor: "bg-[#F36B39]",
+        bgColor: "bg-ranking-2",
       };
       rankData[1] = {
         ...winners[0],
         rank: 1,
-        bgColor: "bg-primary-500",
+        bgColor: "bg-ranking-1",
       };
     } else if (validWinners.length >= 3) {
       // อันดับ 1 ตรงกลาง, อันดับ 2 ซ้าย, อันดับ 3 ขวา
       rankData[0] = {
         ...winners[1],
         rank: 2,
-        bgColor: "bg-[#F36B39]",
+        bgColor: "bg-ranking-2",
       };
       rankData[1] = {
         ...winners[0],
         rank: 1,
-        bgColor: "bg-primary-500",
+        bgColor: "bg-ranking-1",
       };
       rankData[2] = {
         ...winners[2],
         rank: 3,
-        bgColor: "bg-[#9BD0F2]",
+        bgColor: "bg-ranking-3",
       };
     }
 

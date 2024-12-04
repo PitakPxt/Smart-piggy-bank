@@ -14,7 +14,7 @@ export default function DeleteFriendModal({ onClose, onConfirm }) {
             </h2>
             <div className="flex justify-center gap-[80px] text-center">
               <BtnYellow
-                className="w-[176px] bg-primary-200"
+                className="w-[176px] bg-transparent border-2 border-secondary-500 text-secondary-500"
                 text="ยกเลิก"
                 onClick={onClose}
               />

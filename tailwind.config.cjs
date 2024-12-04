@@ -1,3 +1,5 @@
+import Ranking from "@";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -15,6 +17,7 @@ export default {
       boxShadow: {
         "main-shadow": "0 3px 12px 3px rgba(0, 0, 0, 0.15)",
       },
+
       colors: {
         primary: {
           100: "#fff8e9",
@@ -75,6 +78,11 @@ export default {
           300: "#FBE697",
           400: "#F9DE75",
           500: "#F8D652",
+        },
+        ranking: {
+          1: "#FC713E",
+          2: "#FFBC31",
+          3: "#85CCFA",
         },
       },
       fontFamily: {

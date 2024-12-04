@@ -14,7 +14,7 @@ export default function LogoutModal({ onCancel, onConfirm }) {
             </h3>
             <div className="flex md:gap-[58px] sm:gap-[26px] text-center">
               <BtnYellow
-                className="md:w-[192px] sm:w-[128px] py-3 sm:py-2 bg-primary-200"
+                className="md:w-[192px] sm:w-[128px] py-3 sm:py-2 bg-transparent border-2 border-secondary-500 text-secondary-500"
                 text="ยกเลิก"
                 onClick={onCancel}
               />

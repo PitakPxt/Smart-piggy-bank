@@ -76,7 +76,7 @@ export default function FriendPartyModal() {
               <h4
                 className={`text-h4-bold px-[16px] py-[12px] rounded-xl cursor-pointer ${
                   activeTab === "friends"
-                    ? "text-neutral-white-100 bg-secondary-600"
+                    ? "text-neutral-white-100 bg-secondary-500"
                     : "text-secondary-500"
                 }`}
                 onClick={() => setActiveTab("friends")}
@@ -88,7 +88,7 @@ export default function FriendPartyModal() {
               <h4
                 className={`text-h4-bold px-[16px] py-[12px] rounded-xl cursor-pointer ${
                   activeTab === "invitesParty"
-                    ? "text-neutral-white-100 bg-secondary-600"
+                    ? "text-neutral-white-100 bg-secondary-500"
                     : "text-secondary-500"
                 }`}
                 onClick={() => setActiveTab("invitesParty")}
@@ -102,7 +102,7 @@ export default function FriendPartyModal() {
             <>
               <BtnYellow
                 onClick={handleAddFriendClick}
-                className="w-[274px] text-h3-bold text-black text-center mb-5"
+                className="w-[274px] md:text-h3-bold sm:text-h4-bold text-black text-center mb-5"
                 text="เพิ่มเพื่อน!"
               />
               <FriendList

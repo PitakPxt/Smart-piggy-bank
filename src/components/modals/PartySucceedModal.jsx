@@ -25,7 +25,7 @@ export default function PartySucceedModal({
             </h2>
             <div className="flex justify-center xl:gap-[80px] md:gap-[76px] sm:gap-[24px] text-center">
               <BtnYellow
-                className="xl:w-[176px] md:w-[174px] sm:w-[128px] bg-primary-200"
+                className="xl:w-[176px] md:w-[174px] sm:w-[128px] bg-transparent border-2 border-secondary-500 text-secondary-500"
                 text="ยกเลิก"
                 onClick={handleCancel}
               />
