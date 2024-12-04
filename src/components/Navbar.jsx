@@ -129,11 +129,11 @@ export default function Navbar() {
 
                   <div
                     className={cn(
-                      "fixed inset-0 z-50 transition-transform duration-300 translate-x-full flex justify-end backdrop-blur-[2px]",
+                      "fixed inset-0 z-[999] transition-transform duration-300 translate-x-full flex justify-end backdrop-blur-[2px]",
                       isOpen && "translate-x-0"
                     )}
                   >
-                    <div className="max-w-[246px] w-full bg-primary-100 rounded-lg shadow-main-shadow ">
+                    <div className="max-w-[246px] w-full bg-primary-100 rounded-lg shadow-main-shadow">
                       <div className="flex flex-col gap-2 w-full h-full justify-between">
                         <div className="flex flex-col">
                           <div className="flex justify-end pt-[50px] pr-[28px] pb-[20px]">
