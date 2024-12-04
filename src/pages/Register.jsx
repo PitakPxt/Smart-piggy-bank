@@ -294,34 +294,31 @@ export default function Register() {
                   <button
                     onClick={handleUpload}
                     type="button"
-                    className="flex gap-[10px] items-center md:px-6 md:py-2 sm:px-[18px] sm:py-1 bg-primary-500 md:rounded-xl sm:rounded-lg hover:duration-200 
-                    group hover:ease-in-out hover:bg-secondary-600 hover:text-neutral-white-100"
+                    className="flex gap-[10px] items-center md:px-6 md:py-2 sm:px-[18px] sm:py-1 text-neutral-white-100 bg-secondary-300 md:rounded-xl sm:rounded-lg hover:duration-200 hover:ease-in-out hover:bg-secondary-600"
                   >
                     <svg
-                      className="group-hover:stroke-neutral-white-100 md:size-[20px] sm:size-[16px]"
-                      width="21"
+                      width="20"
                       height="20"
-                      viewBox="0 0 21 20"
+                      viewBox="0 0 20 20"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        className="group-hover:fill-neutral-white-100"
-                        d="M14.709 3.54949L16.9505 5.79104M16.1501 1.57476L10.0861 7.63871C9.77279 7.95159 9.55911 8.35023 9.47199 8.78437L8.91187 11.5882L11.7157 11.027C12.1498 10.9402 12.5479 10.7273 12.8613 10.4139L18.9253 4.34997C19.1075 4.16775 19.252 3.95142 19.3506 3.71333C19.4493 3.47525 19.5 3.22007 19.5 2.96237C19.5 2.70466 19.4493 2.44949 19.3506 2.2114C19.252 1.97332 19.1075 1.75699 18.9253 1.57476C18.743 1.39254 18.5267 1.24799 18.2886 1.14938C18.0505 1.05076 17.7954 1 17.5377 1C17.28 1 17.0248 1.05076 16.7867 1.14938C16.5486 1.24799 16.3323 1.39254 16.1501 1.57476Z"
-                        stroke="#0E0E0E"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        d="M14.2092 3.54949L16.4508 5.79104M15.6503 1.57476L9.58636 7.63871C9.27304 7.95159 9.05935 8.35023 8.97223 8.78437L8.41211 11.5882L11.2159 11.027C11.65 10.9402 12.0481 10.7273 12.3616 10.4139L18.4255 4.34997C18.6077 4.16775 18.7523 3.95142 18.8509 3.71333C18.9495 3.47525 19.0003 3.22007 19.0003 2.96237C19.0003 2.70466 18.9495 2.44949 18.8509 2.2114C18.7523 1.97332 18.6077 1.75699 18.4255 1.57476C18.2433 1.39254 18.027 1.24799 17.7889 1.14938C17.5508 1.05076 17.2956 1 17.0379 1C16.7802 1 16.525 1.05076 16.2869 1.14938C16.0489 1.24799 15.8325 1.39254 15.6503 1.57476Z"
+                        stroke="#FFF8E9"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
                       />
                       <path
-                        className="group-hover:stroke-neutral-white-100"
-                        d="M17.3825 13.706V16.8825C17.3825 17.4442 17.1594 17.9828 16.7623 18.3799C16.3651 18.7771 15.8265 19.0002 15.2648 19.0002H3.61767C3.05603 19.0002 2.51739 18.7771 2.12025 18.3799C1.72311 17.9828 1.5 17.4442 1.5 16.8825V5.23534C1.5 4.6737 1.72311 4.13507 2.12025 3.73793C2.51739 3.34079 3.05603 3.11768 3.61767 3.11768H6.79417"
-                        stroke="#0E0E0E"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        d="M16.8825 13.706V16.8825C16.8825 17.4442 16.6594 17.9828 16.2623 18.3799C15.8651 18.7771 15.3265 19.0002 14.7648 19.0002H3.11767C2.55603 19.0002 2.01739 18.7771 1.62025 18.3799C1.22311 17.9828 1 17.4442 1 16.8825V5.23534C1 4.6737 1.22311 4.13507 1.62025 3.73793C2.01739 3.34079 2.55603 3.11768 3.11767 3.11768H6.29417"
+                        stroke="#FFF8E9"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
                       />
                     </svg>
+
                     <h4 className="md:text-h4-bold sm:text-h5-bold text-neutral-black-800">
                       เพิ่มรูปโปรไฟล์
                     </h4>
