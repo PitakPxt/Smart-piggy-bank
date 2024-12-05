@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BtnBack from "../components/BtnBack";
-import EditProfile from "../assets/images/edit-porfile.svg";
+import EditProfile from "@images/edit-porfile-gray.svg";
 import BtnYellow from "../components/BtnYellow";
 import DefaultProfile from "@images/default-Profile.svg";
 import { useUserAuth } from "../context/AuthContext";
@@ -73,7 +73,7 @@ export default function Profile() {
             onClick={() => setShowModal(true)}
           >
             <img
-              className="sm:size-[16px] md:size-[24px] "
+              className="sm:size-[16px] md:size-[24px]"
               src={EditProfile}
               alt="edit-profile"
             />

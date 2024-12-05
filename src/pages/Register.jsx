@@ -3,7 +3,6 @@ import BtnBack from "../components/BtnBack";
 import BtnYellow from "../components/BtnYellow";
 import InputLabel from "../components/InputLabel";
 import DefaultProfile from "@images/default-Profile.svg";
-import InputPin from "../components/InputPin";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
