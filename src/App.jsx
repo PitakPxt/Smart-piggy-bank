@@ -1,5 +1,4 @@
 import "./index.css";
-
 import Layout from "@components/Layout";
 import Login from "@pages/Login";
 import Home from "@pages/Home";
@@ -17,7 +16,6 @@ import Ranking from "@pages/Ranking";
 import UnlockSuccess from "@pages/UnlockSuccess";
 import ProtectedRoute from "@components/ProtectedRoute";
 import FriendParty from "@components/modals/FriendPartyModal";
-
 import AddFriendModal from "@components/modals/AddFriendModal";
 import YourComponent from "@pages/YourComponent";
 import {
