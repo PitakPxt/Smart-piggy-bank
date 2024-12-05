@@ -24,7 +24,7 @@ export const useScreen = () => {
   };
 
   useEffect(() => {
-    console.log(screen);
+    // console.log(screen);
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
   }, []);
