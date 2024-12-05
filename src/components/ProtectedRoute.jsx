@@ -4,7 +4,7 @@ import { useUserAuth } from "../context/AuthContext";
 import NotFoundModal from "./modals/NotFoundModal";
 export default function ProtectedRoute({ children }) {
   const { user, loading } = useUserAuth();
-  if (!loading) {
+  if (loading) {
     return (
       <div className="w-full h-full flex justify-center items-center">
         <NotFoundModal
