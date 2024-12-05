@@ -79,7 +79,7 @@ export default function Ranking() {
   const [winners, setWinners] = useState([]);
   const partyId = location.state?.partyId;
 
-  const { isTablet, isTabletHorizontal } = useScreen();
+  const { isTablet, isTabletHorizontal, isDesktop, isMobile } = useScreen();
 
   const handleBackToHome = async () => {
     try {
@@ -193,17 +193,6 @@ export default function Ranking() {
     return rankData;
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <NotFoundModal
-  //       src={LogoLoading}
-  //       text="กำลังโหลดข้อมูล..."
-  //       className="md:h-[220px] sm:h-[120px]"
-  //       showBackButton={false}
-  //     />
-  //   );
-  // }
-
   const screenWidth = window.innerWidth;
 
   return (
@@ -239,6 +228,15 @@ export default function Ranking() {
               )}
             </div>
             {!isTabletHorizontal && (
+              <div className="w-full">
+                <BtnYellow
+                  className="px-[36px]"
+                  text="กลับไปหน้าหลัก"
+                  onClick={handleBackToHome}
+                />
+              </div>
+            )}
+            {(isDesktop || isMobile) && (
               <div className="w-full">
                 <BtnYellow
                   className="px-[36px]"

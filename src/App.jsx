@@ -39,21 +39,56 @@ function App() {
               path="/"
               element={user ? <Navigate to="/home" replace /> : <Login />}
             />
+            <Route path="home" element={<Home />} />
+            <Route path="register" element={<Register />} />
             <Route
-              path="home"
+              path="unlock-pin"
               element={
                 <ProtectedRoute>
-                  <Home />
+                  <UnlockPin />
                 </ProtectedRoute>
               }
             />
-            <Route path="register" element={<Register />} />
-            <Route path="unlock-pin" element={<UnlockPin />} />
-            <Route path="unlock-success" element={<UnlockSuccess />} />
-            <Route path="change-pin" element={<ChangePin />} />
-            <Route path="forget-pin" element={<ForgetPin />} />
-            <Route path="create-party" element={<CreateParty />} />
-            <Route path="party" element={<Party />} />
+            <Route
+              path="unlock-success"
+              element={
+                <ProtectedRoute>
+                  <UnlockSuccess />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="change-pin"
+              element={
+                <ProtectedRoute>
+                  <ChangePin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="forget-pin"
+              element={
+                <ProtectedRoute>
+                  <ForgetPin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="create-party"
+              element={
+                <ProtectedRoute>
+                  <CreateParty />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="party"
+              element={
+                <ProtectedRoute>
+                  <Party />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="ranking"
               element={
@@ -62,7 +97,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="saving" element={<YourComponent />} />
+            <Route
+              path="saving"
+              element={
+                <ProtectedRoute>
+                  <YourComponent />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="profile"
               element={
@@ -71,12 +113,54 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="add-friend" element={<AddFriendModal />} />
-            <Route path="reset-password" element={<ChangePassLog />} />
-            <Route path="otp" element={<Otp />} />
-            <Route path="forget" element={<Forget />} />
-            <Route path="unlockpin" element={<UnlockPin />} />
-            <Route path="friend-party" element={<FriendParty />} />
+            <Route
+              path="add-friend"
+              element={
+                <ProtectedRoute>
+                  <AddFriendModal />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="reset-password"
+              element={
+                <ProtectedRoute>
+                  <ChangePassLog />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="otp"
+              element={
+                <ProtectedRoute>
+                  <Otp />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="forget"
+              element={
+                <ProtectedRoute>
+                  <Forget />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="unlockpin"
+              element={
+                <ProtectedRoute>
+                  <UnlockPin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="friend-party"
+              element={
+                <ProtectedRoute>
+                  <FriendParty />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </Router>

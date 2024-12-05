@@ -2,7 +2,6 @@ import React from "react";
 import Logo from "@components/Logo";
 import BtnYellow from "@components/BtnYellow";
 import BtnClose from "@components/BtnClose";
-import ImgFriend from "@images/whawha.jpg";
 import { useState, useEffect } from "react";
 import { useUserAuth } from "../../context/AuthContext";
 import {

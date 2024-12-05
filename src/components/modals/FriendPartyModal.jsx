@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import BtnYellow from "@components/BtnYellow";
-import ImgFriend from "@images/whawha.jpg";
 import DeleteIcon from "@images/icon-delete.svg";
 import AcceptIcon from "@images/icon-accept.svg";
 import RefuseIcon from "@images/icon-refuse.svg";
