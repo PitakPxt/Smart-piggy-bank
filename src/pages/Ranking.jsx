@@ -193,16 +193,16 @@ export default function Ranking() {
     return rankData;
   };
 
-  if (isLoading) {
-    return (
-      <NotFoundModal
-        src={LogoLoading}
-        text="กำลังโหลดข้อมูล..."
-        className="md:h-[220px] sm:h-[120px]"
-        showBackButton={false}
-      />
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <NotFoundModal
+  //       src={LogoLoading}
+  //       text="กำลังโหลดข้อมูล..."
+  //       className="md:h-[220px] sm:h-[120px]"
+  //       showBackButton={false}
+  //     />
+  //   );
+  // }
 
   const screenWidth = window.innerWidth;
 
