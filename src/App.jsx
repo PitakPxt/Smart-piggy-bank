@@ -54,7 +54,14 @@ function App() {
             <Route path="forget-pin" element={<ForgetPin />} />
             <Route path="create-party" element={<CreateParty />} />
             <Route path="party" element={<Party />} />
-            <Route path="ranking" element={<Ranking />} />
+            <Route
+              path="ranking"
+              element={
+                <ProtectedRoute>
+                  <Ranking />
+                </ProtectedRoute>
+              }
+            />
             <Route path="saving" element={<YourComponent />} />
             <Route
               path="profile"
