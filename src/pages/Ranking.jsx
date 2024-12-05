@@ -198,7 +198,7 @@ export default function Ranking() {
       <NotFoundModal
         src={LogoLoading}
         text="กำลังโหลดข้อมูล..."
-        className="h-[220px]"
+        className="md:h-[220px] sm:h-[120px]"
         showBackButton={false}
       />
     );
