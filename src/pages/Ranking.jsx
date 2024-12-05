@@ -227,15 +227,6 @@ export default function Ranking() {
                   )
               )}
             </div>
-            {!isTabletHorizontal && (
-              <div className="w-full">
-                <BtnYellow
-                  className="px-[36px]"
-                  text="กลับไปหน้าหลัก"
-                  onClick={handleBackToHome}
-                />
-              </div>
-            )}
             {(isDesktop || isMobile) && (
               <div className="w-full">
                 <BtnYellow
