@@ -121,14 +121,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="reset-password"
-              element={
-                <ProtectedRoute>
-                  <ChangePassLog />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="reset-password" element={<ChangePassLog />} />
             <Route
               path="otp"
               element={
