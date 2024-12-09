@@ -130,14 +130,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="forget"
-              element={
-                <ProtectedRoute>
-                  <Forget />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="forget" element={<Forget />} />
             <Route
               path="unlockpin"
               element={
