@@ -83,9 +83,8 @@ export default function ChangePassLog() {
       await updateDoc(doc(db, "users", userId), {
         password: newPassword,
       });
-
+      await logOut();
       toast.success("เปลี่ยนรหัสผ่านสำเร็จ");
-      logOut();
       navigate("/");
     } catch (error) {
       console.error("Error:", error);
