@@ -26,11 +26,14 @@
 curl -fsSL https://bun.sh/install | bash
 ```
 
-### 2. โคลนโปรเจค
+### 2. แตกไฟล์ Source Code
+
+1. แตกไฟล์ ZIP ที่ได้รับมาไว้ในโฟลเดอร์ที่ต้องการ
+2. เปิด Terminal หรือ Command Prompt
+3. เข้าไปยังโฟลเดอร์ที่แตกไฟล์ไว้
 
 ```bash
-git clone <repository-url>
-cd <project-directory>
+cd path/to/extracted/folder
 ```
 
 ### 3. ติดตั้ง Dependencies
